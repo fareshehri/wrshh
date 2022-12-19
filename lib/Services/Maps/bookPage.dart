@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'show CalendarCarousel, EventList;
 
-import '../MapScreen.dart';
+import 'package:wrshh/Pages/Home.dart';
 
 /// Book Page (Calendar)
 class bookPage extends StatefulWidget {
@@ -61,7 +61,7 @@ class _BookPageState extends State<bookPage> {
               child: Container(
                   child: ElevatedButton(
                     onPressed: (){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MapScreen()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Home()));
                     },
                     child: const Text("book"),
                   )
