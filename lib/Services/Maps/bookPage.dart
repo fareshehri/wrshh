@@ -5,7 +5,7 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'show Ca
 
 import 'package:wrshh/Pages/Home.dart';
 
-/// Book Page (Calendaar)
+/// Book Page (Calendar)
 class bookPage extends StatefulWidget {
   @override
   _BookPageState createState() => _BookPageState();
