@@ -66,7 +66,7 @@ class BottomPill extends StatelessWidget {
             children: [
               /// Picture part shape
               ClipOval(
-                  child: Image.asset('assets/images/FFFF.jpg',
+                  child: Image.asset('/wrshh/assets/images/FFFF.jpg',
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
