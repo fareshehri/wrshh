@@ -22,7 +22,10 @@ final _formKey = GlobalKey<FormState>();
   var buttoncolor= [Colors.red[300],Colors.green[300],Colors.blue[300],Colors.orange[300]];
   //var bbcolor= [Colors.orange[300],Colors.blue[300],Colors.green[300],Colors.red[300]];
   var bbcolor= [Colors.transparent,Colors.transparent,Colors.transparent,Colors.transparent];
-  static const TextStyle optionStyle =TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  var titlename=['Home','Maintainance','Bookings'];
+
+  static const TextStyle optionStyle =TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
   int _selectedIndex = 0;
 
 //date picker
@@ -42,7 +45,7 @@ DateTime selectedDate = DateTime.now();
       )),
       //AB:
       //appBar: AppBar(title: Text('Home'),centerTitle: true,backgroundColor:bbcolor[_selectedIndex],) ,
-      appBar: AppBar(systemOverlayStyle: SystemUiOverlayStyle(systemNavigationBarColor: buttoncolor[_selectedIndex]),actionsIconTheme:IconThemeData(color:buttoncolor[_selectedIndex],size: 24 ) ,title: const Text('Account'),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),),
+      appBar: AppBar(systemOverlayStyle: SystemUiOverlayStyle(systemNavigationBarColor: buttoncolor[_selectedIndex]),actionsIconTheme:IconThemeData(color:buttoncolor[_selectedIndex],size: 24 ) ,title:Text(titlename[_selectedIndex],style: optionStyle,),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),),
       
 
       body: Center(child: FutureBuilder(initialData: _selectedIndex,builder: (context, snapshot) {
@@ -76,10 +79,12 @@ DateTime selectedDate = DateTime.now();
 
               else{
               //Account Page?
-              return const Text(
-              'Index 2: School',
-              style: optionStyle,
-              );}
+              return SizedBox(
+                child: ListView(padding: const EdgeInsets.all(8),children: [
+
+                ]
+
+      ));}
 
       
       
@@ -89,8 +94,8 @@ DateTime selectedDate = DateTime.now();
       
       bottomNavigationBar: BottomNavigationBar(elevation: 0,backgroundColor: bbcolor[_selectedIndex],items: const <BottomNavigationBarItem>[
       BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home',backgroundColor: Colors.orange,),
-      BottomNavigationBarItem(icon: Icon(Icons.person),label: 'Maintainance',backgroundColor: Colors.green,),
-      BottomNavigationBarItem(icon: Icon(Icons.person),label: 'Parts',backgroundColor: Colors.blue,),],
+      BottomNavigationBarItem(icon: Icon(Icons.add_circle),label: 'Maintainance',backgroundColor: Colors.green,),
+      BottomNavigationBarItem(icon: Icon(Icons.calendar_month),label: 'Bookings',backgroundColor: Colors.blue,),],
       
       //CI: This will see the button clicked index ex(Home will set index to 0) important on changing the content
       currentIndex: _selectedIndex,
