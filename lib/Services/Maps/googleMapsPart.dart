@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
+//import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
 
 import 'upperPill.dart';
 import 'BottomPill.dart';
@@ -28,7 +28,7 @@ class googleMaps extends StatefulWidget {
 class _googleMapsState extends State<googleMaps> {
 
   /// Google Map Package Controller
-  final Completer<GoogleMapController> _controller = Completer();
+  late final Completer<GoogleMapController> _controller = Completer();
   /// To attack showPinsOnMap() method to the widget
   final Set<Marker> _markers = <Marker> {};
   /// Primarily Hide Pins
