@@ -52,11 +52,13 @@ DateTime selectedDate = DateTime.now();
         if(_selectedIndex ==0){
               //Main PAGE after listview try padding: EdgeInsets.all(8)
               return SizedBox(
-                height: 80.h,
-                child: ListView(padding: const EdgeInsets.all(8),children: [
-                SizedBox(child: Image.asset('images/wallpaper.jpg',fit: BoxFit.contain)),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: ListView(padding: const EdgeInsets.all(8),children: [                
+                SizedBox(child: Image.asset('images/wallpaper.jpg',fit: BoxFit.contain,)),
                 const SizedBox(height: 1,),
                 SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
+                
                 Form(key: _formKey,child: Column(children: <Widget>[
                   TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
@@ -79,12 +81,35 @@ DateTime selectedDate = DateTime.now();
 
               else{
               //Account Page?
-              return SizedBox(
-                child: ListView(padding: const EdgeInsets.all(8),children: [
-
-                ]
-
-      ));}
+              return ListView(children: [
+                SizedBox(height: 50,),
+                Container(
+                          height: 150,
+                          width: double.infinity,
+                          color: Colors.lightGreen,
+                          child: Padding (
+                padding: EdgeInsets.all(16),
+                  child: Row (
+                  children: [
+                    Column (
+                      children: [
+                        Text("Fast Food",style: TextStyle(fontSize: 30, color: Colors.blue)),
+                        SizedBox(height: 10),
+                        Text("Description ....", style: TextStyle(fontStyle: FontStyle.italic))
+                      ],
+                    )
+                    ,
+                    SizedBox(width: 70),
+                    Image.asset (
+                        "images/Logo.png",
+                    ),
+                    
+                    
+                  ],
+                ),
+                    
+                  )),
+              ]);}
 
       
       
