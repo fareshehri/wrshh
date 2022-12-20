@@ -7,6 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
+Size displaySize(BuildContext context) {
+  debugPrint('Size = ' + MediaQuery.of(context).size.toString());
+  return MediaQuery.of(context).size;
+}
+
+double displayHeight(BuildContext context) {
+  debugPrint('Height = ' + displaySize(context).height.toString());
+  return displaySize(context).height;
+}
+
+double displayWidth(BuildContext context) {
+  debugPrint('Width = ' + displaySize(context).width.toString());
+  return displaySize(context).width;
+}
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -15,6 +30,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+
+
 //vin
 final _formKey = GlobalKey<FormState>();
 //styles
@@ -52,12 +70,12 @@ DateTime selectedDate = DateTime.now();
         if(_selectedIndex ==0){
               //Main PAGE after listview try padding: EdgeInsets.all(8)
               return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height-MediaQuery.of(context).padding.top -kToolbarHeight,
+                width: MediaQuery.of(context).size.width*0.9,
                 child: ListView(padding: const EdgeInsets.all(8),children: [                
-                SizedBox(child: Image.asset('images/wallpaper.jpg',fit: BoxFit.contain,)),
-                const SizedBox(height: 1,),
-                SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
+                SizedBox(child: Image.asset('images/wallpaper3.jpg',fit: BoxFit.contain,)),
+                // const SizedBox(height: 1,),
+                // SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
                 
                 Form(key: _formKey,child: Column(children: <Widget>[
                   TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
