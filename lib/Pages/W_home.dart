@@ -1,25 +1,19 @@
-// ignore_for_file: file_names
-
-import 'package:wrshh/Services/Maps/googleMapsPart.dart';
-import 'package:wrshh/main.dart';
-import 'package:wrshh/Pages/Account.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
+import 'package:wrshh/Pages/Account.dart';
 
-
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class W_home extends StatefulWidget {
+  const W_home({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<W_home> createState() => _W_homeState();
 }
 
-class _HomeState extends State<Home> {
-
-
-
-//vin
+class _W_homeState extends State<W_home> {
+  //vin
 final _formKey = GlobalKey<FormState>();
 //styles
   var tc=[Colors.red[400],Colors.green[400],Colors.blue[400],Colors.orange[400]];
@@ -27,14 +21,13 @@ final _formKey = GlobalKey<FormState>();
   //var bbcolor= [Colors.orange[300],Colors.blue[300],Colors.green[300],Colors.red[300]];
   var bbcolor= [Colors.transparent,Colors.transparent,Colors.transparent,Colors.transparent];
 
-  var titlename=['Home','Maintainance','Bookings'];
+  var titlename=['Upcoming Maintainance','Create Booking','Update Schedule'];
 
   static const TextStyle optionStyle =TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
   int _selectedIndex = 0;
 
 //date picker
 DateTime selectedDate = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     return Sizer(
@@ -59,11 +52,15 @@ DateTime selectedDate = DateTime.now();
                 height: MediaQuery.of(context).size.height-MediaQuery.of(context).padding.top -kToolbarHeight,
                 width: MediaQuery.of(context).size.width*0.9,
                 child: ListView(padding: const EdgeInsets.all(8),children: [                
-                SizedBox(child: Image.asset('images/wallpaper3.jpg',fit: BoxFit.contain,)),
-                // const SizedBox(height: 1,),
-                // SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
+                SizedBox(child: Image.asset('images/wallpaper3.jpg',fit: BoxFit.contain,)),              
                 
-                Form(key: _formKey,child: Column(children: <Widget>[
+      ]
+      )
+      ,)              ;
+}
+
+            if(_selectedIndex ==1){
+            return Form(key: _formKey,child: Column(children: <Widget>[
                   TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
@@ -76,11 +73,7 @@ DateTime selectedDate = DateTime.now();
         
                 ],
       ),
-      )]),)              ;
-}
-
-            if(_selectedIndex ==1){
-            return const googleMaps();
+      );
             }
 
               else{
@@ -122,9 +115,9 @@ DateTime selectedDate = DateTime.now();
       )),
       
       bottomNavigationBar: BottomNavigationBar(elevation: 0,backgroundColor: bbcolor[_selectedIndex],items: const <BottomNavigationBarItem>[
-      BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home',backgroundColor: Colors.orange,),
-      BottomNavigationBarItem(icon: Icon(Icons.add_circle),label: 'Maintainance',backgroundColor: Colors.green,),
-      BottomNavigationBarItem(icon: Icon(Icons.calendar_month),label: 'Bookings',backgroundColor: Colors.blue,),],
+      BottomNavigationBarItem(icon: Icon(Icons.upcoming),label: 'Upcoming Maintainance',backgroundColor: Colors.orange,),
+      BottomNavigationBarItem(icon: Icon(Icons.book),label: 'Create Booking',backgroundColor: Colors.green,),
+      BottomNavigationBarItem(icon: Icon(Icons.edit_calendar),label: 'Update Schedule',backgroundColor: Colors.blue,),],
       
       //CI: This will see the button clicked index ex(Home will set index to 0) important on changing the content
       currentIndex: _selectedIndex,
@@ -140,23 +133,3 @@ DateTime selectedDate = DateTime.now();
     );
   }
 }
-
-
-// ignore: non_constant_identifier_names
-// Route _Wrapper() {
-// return PageRouteBuilder(
-//     pageBuilder: (context, animation, secondaryAnimation) => const Wrapper(),
-//     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-//       const begin = Offset(0.0, 1.0);
-//       const end = Offset.zero;
-//       const curve = Curves.ease;
-
-//       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-//       return SlideTransition(
-//         position: animation.drive(tween),
-//         child: child,
-//       );
-//     },
-//   );
-// }
