@@ -1,13 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../../Models/user.dart';
 
-import '../models/user.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-  //signin
+
+
+  bool isAuth(){
+    final user =  _auth.currentUser;
+    print(user);
+    if (user?.uid != null){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 
   void signInUser(String email, String password) async {
     final user = await _auth.signInWithEmailAndPassword(
@@ -18,24 +30,22 @@ class AuthService {
   Future<UserCredential> signUpUser(AppUser user) async {
     final newUser = await _auth.createUserWithEmailAndPassword(
         email: user.email, password: user.password);
-    print(newUser);
-    if (newUser.user != null) {
+    if (newUser.user?.email != null) {
       if (user.userType == 'ClientUser') {
         _firestore.collection('clients').add(
           {
             'uid': newUser.user?.uid,
-            'username': user.username,
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'name': user.name,
             'city': user.city,
           },
         );
+
       } else if (user.userType == 'WorkshopUser') {
         _firestore.collection('workshopAdmin').add(
           {
-            'uid': user.uid,
-            'username': user.username,
+            'uid': newUser.user?.uid,
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'adminName': user.name,
@@ -43,20 +53,10 @@ class AuthService {
           },
         );
 
-        // TODO: change this
-        _firestore.collection('workshops').add(
-          {
-            'uid': user.uid,
-            'workshopName': user.name,
-            'location': user.city,
-            'overAllRate': 0,
-          },
-        );
       } else if (user.userType == 'AdminUser') {
         _firestore.collection('admins').add(
           {
-            'uid': user.uid,
-            'username': user.username,
+            'uid': newUser.user?.uid,
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'name': user.name,
@@ -68,6 +68,21 @@ class AuthService {
     return newUser;
   }
 
-  //signout
+
+  void logOut(){
+    _auth.signOut();
+  }
+
+
+  void addWorkshop(Workshop workshop){
+    _firestore.collection('workshops').add(
+      {
+        'uid': workshop.uid,
+        'workshopName': workshop.name,
+        'location': workshop.location,
+        'overAllRate': 0,
+      },
+    );
+  }
 
 }
