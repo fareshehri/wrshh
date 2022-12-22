@@ -12,10 +12,18 @@ class Newcar extends StatefulWidget {
 
 class _NewcarState extends State<Newcar> {
 
-  
+  Map<String, List> cars ={
+    'Chevrolet': ["Groove","Captiva","Caprice","Trax","Malibu","Silverado","Tahoe/Suburban","Blazer","Traverse","Camaro","Epica","Cruze","Aveo","Spark",],
+    'Kia':["Rio","Cerato","K5","K8","Stinger","Optima","Quoris","Cadenza","Pegas","Sonet","Seltos","Carens","Sportage","Sorento","Telluride","Soul","Mohave","Niro","Carnival","K900",],
+    "Peugeot":["208","508","2008","3008","5008"],
+    "Hyundai":["Accent","Elantra","Sonata ","Azera","I40","Genesis","Centennial ","Kona","Creta","Tucson","SantaFe","Palisade","H1","Grand Santafe","Veloster","I10","I20","I30","Staria",],
+    "Fiat":['500'],
+    "Byd":["F3","F7","Qin Pro","S6","S7","Song Pro","Song Max","Tang"],
+    "Renault":["Symbol","Megane","Fluence","Safrane","Talisman","Koleos","Capture","Duster","Dokker","Master"],
+};
 
   final List<String> _manufacturers = [
-    "Chevrolet","Kia","Peugeot","Hyundai","Fiat","Byd","Renault","Toyota","Honda","Bestune","Volkswagen","Changan","Alfa Romeo","GAC","Mazda","Geely","Rolls Royce","Ssang Yong","Baic","Nissan","Infiniti","Maxus","Subaru","Ferrari","Cadillac","Dongfeng","Audi","Isuzu","Jac","Genesis","Mercedes","Maserati","Lexus","Lamborghini","Jaguar","Mini","Exeed","Chery","BMW","Chrysler","Bugatti","Jeep","Lifan",
+    "Toyota","Honda","Bestune","Volkswagen","Changan","Alfa Romeo","GAC","Mazda","Geely","Rolls Royce","Ssang Yong","Baic","Nissan","Infiniti","Maxus","Subaru","Ferrari","Cadillac","Dongfeng","Audi","Isuzu","Jac","Genesis","Mercedes","Maserati","Lexus","Lamborghini","Jaguar","Mini","Exeed","Chery","BMW","Chrysler","Bugatti","Jeep","Lifan",
     "Foton","Dodge","Haval","Suzuki","MG","Ford","Bentley","Land Rover","Jetour","Volvo","Porsche","Lincoln","Aston Martin","Mitsubishi","Gmc","Hongqi","Other"];
   String? _currentSelectedManu='Chevrolet';
   int? _currentSelectedYear=2023;
