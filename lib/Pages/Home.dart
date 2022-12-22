@@ -1,7 +1,8 @@
 // ignore_for_file: file_names
 
+import 'package:wrshh/Pages/welcome.dart';
+import 'package:wrshh/Services/Auth/auth.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
-import 'package:wrshh/main.dart';
 import 'package:wrshh/Pages/Account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:sizer/sizer.dart';
 
 
 class Home extends StatefulWidget {
+  static const String id = 'Home_screen';
   const Home({Key? key}) : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ DateTime selectedDate = DateTime.now();
       drawer: Drawer(child: ListView(children: [
       ListTile(hoverColor:tc[_selectedIndex] ,leading: const Icon(Icons.manage_accounts),title: const Text('Account'),onTap: () {setState(() {Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const Account(),));});},)
       ,
-      ListTile(hoverColor:tc[_selectedIndex] ,leading: const Icon(Icons.exit_to_app),title: const Text('Logout'),)//onTap: () {logOut();setState(() {Navigator.of(context,rootNavigator: true,).pushReplacement(_Wrapper());});},)
+      ListTile(hoverColor:tc[_selectedIndex] ,leading: const Icon(Icons.exit_to_app),title: const Text('Logout'), onTap: () {AuthService().logOut(); setState(() {Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) =>  WelcomeScreen(),));});},)
       
       ],
       )),

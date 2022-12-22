@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "856152766204",
+    "firebase_url": "https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "wrshhx",
+    "storage_bucket": "wrshhx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856152766204:android:ece8b213a36207f7b84979",
+        "android_client_info": {
+          "package_name": "com.example.wrshh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "856152766204-ohdruubruj9qsd6veba0j6a81bgbdj8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDu6NWOfF9TGx3lsk2thNHy-bMiTNoZqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "856152766204-ohdruubruj9qsd6veba0j6a81bgbdj8b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

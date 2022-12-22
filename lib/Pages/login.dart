@@ -4,7 +4,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import '../components/roundedButton.dart';
 import '../constants.dart';
-import 'chat_screen.dart';
+import 'Home.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   tag: 'logo',
                   child: Container(
                     height: 200.0,
-                    child: Image.asset('images/logo.png'),
+                    child: Image.asset('assets/images/Logo.png'),
                   ),
                 ),
               ),
@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: 'Log In',
                 colour: Colors.lightBlueAccent,
                 onPressed: () async {
-                  setState((){
+                  setState(() {
                     showSpinner = true;
                   });
 
@@ -80,9 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     if (user != null) {
-                      Navigator.pushNamed(context, ChatScreen.id);
+                      Navigator.pushNamed(context, Home.id);
                     }
-                    setState((){
+                    setState(() {
                       showSpinner = false;
                     });
                   } catch (e) {
