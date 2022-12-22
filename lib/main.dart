@@ -3,13 +3,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/Pages/Home.dart';
 import 'package:wrshh/Pages/welcome.dart';
+import 'firebase_options.dart';
 
 import 'Pages/login.dart';
 import 'Pages/registration.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   runApp(MaterialApp(
     initialRoute: Wrapper.id,
     routes: {
