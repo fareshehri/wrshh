@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../Models/user.dart';
 import '../Services/Auth/auth.dart';
-import '../Services/Maps/BottomPill.dart';
-import '../Services/Maps/bookPage.dart';
 import '../Services/Maps/googleMapsPart.dart';
 import '../components/roundedButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -157,15 +155,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               SizedBox(
                 height: 8.0,
               ),
-              TextField(
-                decoration:
-                    kTextFieldDecoratopn.copyWith(hintText: 'Workshop name'),
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  workshop = value;
-                },
-                enabled: isWorkshop,
-                readOnly: !isWorkshop,
+              Visibility(
+                visible: isWorkshop,
+                child: TextField(
+                  decoration:
+                      kTextFieldDecoratopn.copyWith(hintText: 'Workshop name'),
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    workshop = value;
+                  },
+
+                ),
               ),
               RoundedButton(
                 title: 'Register',
@@ -210,7 +210,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         .viewInsets
                                         .bottom),
                                 child: SizedBox(
-                                  height: 700.0,
+                                  height: MediaQuery.of(context).size.height,
                                   child: googleMapMyLoc(
                                     userInfo: newUser,
                                     workshopName: workshop,

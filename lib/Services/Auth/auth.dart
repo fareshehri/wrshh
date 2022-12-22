@@ -32,7 +32,7 @@ class AuthService {
         email: user.email, password: user.password);
     if (newUser.user?.email != null) {
       if (user.userType == 'ClientUser') {
-        _firestore.collection('clients').add(
+        _firestore.collection('was').add(
           {
             'uid': newUser.user?.uid,
             'email': user.email,
