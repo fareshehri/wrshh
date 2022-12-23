@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
+// import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
 
 import 'upperPill.dart';
 import 'BottomPill.dart';
@@ -13,8 +13,6 @@ const LatLng cityCenter = LatLng(24.708371, 46.716766);
 const double pinVisiblePosition = 20;
 /// Hide pin info part speed
 const double pinInvisiblePosition = -250;
-/// Adjust zoom (still not working)
-const double zoomLevels = 10.75;
 
 
 class googleMaps extends StatefulWidget {
@@ -33,8 +31,6 @@ class _googleMapsState extends State<googleMaps> {
   final Set<Marker> _markers = <Marker> {};
   /// Primarily Hide Pins
   double pinPillPosition = pinInvisiblePosition;
-  /// Adjust zoom (still not working)
-  double zoomLevel = zoomLevels;
 
 
   @override
@@ -54,15 +50,15 @@ class _googleMapsState extends State<googleMaps> {
               /// Remove the Device Location button
               myLocationButtonEnabled: false,
               /// Initial Camera Position
-              initialCameraPosition:   const CameraPosition(
+              initialCameraPosition:  const CameraPosition(
                 /// Target area (coordinates)
                 target: cityCenter,
                 /// Zoom level
-                zoom: 10.75,
+                zoom: 11.75,
               ),
-              /// On Map Creates
+              /// On Map Create
               onMapCreated: (GoogleMapController controller) {
-                /// Attack Previously Stated Controller
+                /// Attach Previously Stated Controller
                 _controller.complete(controller);
                 /// showPinsOnMap() Method call
                 showPinsOnMap();
@@ -72,9 +68,6 @@ class _googleMapsState extends State<googleMaps> {
                 setState(() {
                   /// Hide pin info
                   pinPillPosition = pinInvisiblePosition;
-                  /// Adjust zoom (still not working)
-                  zoomLevel = 10.75;
-                  const CameraPosition(zoom: 9, target: cityCenter);
                 });
               },
             ),
@@ -89,61 +82,68 @@ class _googleMapsState extends State<googleMaps> {
     );
   }
 
-/// Registered Workshops pins
-void showPinsOnMap() {
+  /// Registered Workshops pins
+  Future<void> showPinsOnMap() async {
 
-  /// Pin #1
-  setState(() {
-    _markers.add( Marker(
-        markerId: const MarkerId("marker1"),
-        position: const LatLng(24.700789, 46.654955),
-        draggable: false,
-        onTap: () {
-          setState(() {
-            /// Show pin info
-            pinPillPosition = pinVisiblePosition;
-            /// Adjust zoom (still not working)
-            zoomLevel = 9;
-          });
-        }
-    ),);
+    final GoogleMapController controller = await _controller.future;
 
-  });
+    /// Pin #1
+    setState(() {
+      _markers.add( Marker(
+          markerId: const MarkerId("marker1"),
+          position: const LatLng(24.700789, 46.654955),
+          draggable: false,
+          onTap: () {
+            setState(() {
+              /// Show pin info
+              pinPillPosition = pinVisiblePosition;
+              /// Zoom when tapped
+              controller.animateCamera(
+                  CameraUpdate.newLatLngZoom(LatLng(24.700789, 46.654955), 18)
+              );
+            });
+          }
+      ),);
 
-  /// Pin #2
-  setState(() {
-    _markers.add( Marker(
-        markerId: const MarkerId("marker2"),
-        position: const LatLng(24.700935, 46.654500),
-        draggable: false,
-        onTap: () {
-          setState(() {
-            /// Show pin info
-            pinPillPosition = pinVisiblePosition;
-            /// Adjust zoom (still not working)
-            zoomLevel = 9;
-          });
-        }
-    ),);
-  });
+    });
 
-  /// Pin #3
-  setState(() {
-    _markers.add( Marker(
-        markerId: const MarkerId("marker3"),
-        position: const LatLng(24.704790, 46.806561),
-        draggable: false,
+    /// Pin #2
+    setState(() {
+      _markers.add( Marker(
+          markerId: const MarkerId("marker2"),
+          position: const LatLng(24.700935, 46.654500),
+          draggable: false,
+          onTap: () {
+            setState(() {
+              /// Show pin info
+              pinPillPosition = pinVisiblePosition;
+              /// Zoom when tapped
+              controller.animateCamera(
+                  CameraUpdate.newLatLngZoom(LatLng(24.700935, 46.654500), 18)
+              );
+            });
+          }
+      ),);
+    });
 
-        onTap: () {
-          setState(() {
-            /// Show pin info
-            pinPillPosition = pinVisiblePosition;
-            /// Adjust zoom (still not working)
-            zoomLevel = 9;
-          });
-        }
-    ),);
-  });
-}
+    /// Pin #3
+    setState(() {
+      _markers.add( Marker(
+          markerId: const MarkerId("marker3"),
+          position: const LatLng(24.704790, 46.806561),
+          draggable: false,
+          onTap: () {
+            setState(() {
+              /// Show pin info
+              pinPillPosition = pinVisiblePosition;
+              /// Zoom when tapped
+              controller.animateCamera(
+                  CameraUpdate.newLatLngZoom(LatLng(24.704790, 46.806561), 18)
+              );
+            });
+          }
+      ),);
+    });
+  }
 
 }

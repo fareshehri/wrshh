@@ -267,9 +267,6 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
 
   late Set<Marker> _myMarkers = <Marker>{};
 
-  /// Adjust zoom (still not working)
-  double zoomLevel = zoomLevels;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -367,8 +364,6 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                 )),
                           ));
 
-                  /// Adjust zoom (still not working)
-                  zoomLevel = 10.75;
                   const CameraPosition(zoom: 9, target: cityCenter);
                 });
               },

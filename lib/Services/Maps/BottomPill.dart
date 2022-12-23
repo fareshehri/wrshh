@@ -22,8 +22,8 @@ class BottomPill extends StatelessWidget {
       /// Transition from the bottom
       bottom: pinPillPosition,
       child: Container(
-        margin: const EdgeInsets.only(top: 20, bottom:5, left:14, right:14),
-        padding: const EdgeInsets.all(15),
+        margin: EdgeInsets.only(top: 20, bottom:5, left:14, right:14),
+        padding: EdgeInsets.all(15),
         /// Unnecessary details
         decoration: BoxDecoration(
             color: Colors.white,
@@ -75,7 +75,7 @@ class BottomPill extends StatelessWidget {
             ],
           ),
           /// Area next to Logo part
-          const SizedBox(width: 20),
+          SizedBox(width: 20),
           Expanded(
               child: Column (
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,19 +146,21 @@ class BottomPill extends StatelessWidget {
   ///Book button pill
   Container bookButtonPill(BuildContext context) {
     return Container(
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    const SizedBox(width: 130),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        children: [
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ElevatedButton(
                           onPressed: (){
                             /// Navigate to the bookPage() function
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => bookPage()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const bookPage()));
                           },
                           /// Button Style
                           style: ElevatedButton.styleFrom(
@@ -175,11 +177,13 @@ class BottomPill extends StatelessWidget {
                         )
                       ],
                     )
-                  ],
-                )
-              ],
-            ),
-          );
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
 }
