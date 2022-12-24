@@ -11,11 +11,13 @@ class Editaccount extends StatefulWidget {
   @override
   State<Editaccount> createState() => _EditaccountState();
 }
-var city;
-var email;
 var name;
+var email;
 var phoneNumber;
+var city;
+var car;
 var uid;
+
 class _EditaccountState extends State<Editaccount> {
   final _formKey = GlobalKey<FormState>();
   @override
@@ -24,7 +26,17 @@ class _EditaccountState extends State<Editaccount> {
     appBar: AppBar(title: const Text('Edit Account'),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),),
 
     body: Center(child: Form(key: _formKey,child: Column(children: <Widget>[
+                  Text('Name'),
                   TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
+                  Text('Email'),
+                  TextFormField(),
+                  Text('Phone'),
+                  TextFormField(),
+                  Text('City'),
+                  TextFormField(),
+                  Text('Car'),
+                  TextFormField(),
+                  
                   ElevatedButton.icon(onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
