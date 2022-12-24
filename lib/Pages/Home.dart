@@ -78,7 +78,8 @@ DateTime selectedDate = DateTime.now();
         
                 ],
       ),
-      )]),)              ;
+      )
+      ]),)              ;
 }
 
             if(_selectedIndex ==1){

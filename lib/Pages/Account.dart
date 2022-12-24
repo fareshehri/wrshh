@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:wrshh/Pages/Editaccount.dart';
 import 'package:wrshh/Pages/Newcar.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class _AccountState extends State<Account> {
           setState(() {Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const Newcar()));});})   
      ,
         ListTile(leading: Icon(Icons.note_alt,color: Colors.pink[400]),title: const Text('Edit Account'),subtitle: const Text('Here you can edit your Account Info'),trailing: const Icon(Icons.arrow_forward),hoverColor:Colors.lightBlue[300] ,iconColor: Colors.black,onTap: () {
-          
+          setState(() {Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const Editaccount()));}); 
         },),
        ],
     ),
