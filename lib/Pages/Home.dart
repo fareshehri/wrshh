@@ -195,7 +195,7 @@ class _BookPageState extends State<BookPage> {
       //  Appointments Start time
       bookingStart: DateTime(now.year, now.month, now.day, 8, 0),
       // Appointments End time (next day IDK why)
-      bookingEnd: DateTime(now.year, now.month, now.day, 10, 0),
+      bookingEnd: DateTime(now.year, now.month, now.day, 24, 0),
     );
   }
 
