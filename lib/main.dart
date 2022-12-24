@@ -8,6 +8,14 @@ import 'firebase_options.dart';
 import 'Pages/login.dart';
 import 'Pages/registration.dart';
 
+// void main() async{
+//     WidgetsFlutterBinding.ensureInitialized();
+//     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+//   runApp(const MaterialApp(
+//     home: Wrapper(),
+//   ));
+// }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
@@ -22,6 +30,8 @@ void main() async {
     home: Wrapper(),
   ));
 }
+
+
 
 class Wrapper extends StatefulWidget {
   static const String id = 'Landing';
@@ -49,13 +59,7 @@ class _WrapperState extends State<Wrapper> {
     return user;
   }
 }
-// void main() async{
-//     WidgetsFlutterBinding.ensureInitialized();
-//     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-//   runApp(const MaterialApp(
-//     home: Wrapper(),
-//   ));
-// }
+
 // class Wrapper extends StatefulWidget {
 //   const Wrapper({Key? key}) : super(key: key);
 
