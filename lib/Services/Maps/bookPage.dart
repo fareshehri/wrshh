@@ -108,6 +108,7 @@ class _bookPageState extends State<bookPage> {
               uploadingWidget: const CircularProgressIndicator(),
               startingDayOfWeek: StartingDayOfWeek.sunday,
               disabledDays: const [5, 6],
+              lastDay: DateTime(now.year, 12, 29),
             ),
           ),
         ));
