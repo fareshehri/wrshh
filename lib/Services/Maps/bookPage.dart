@@ -82,7 +82,7 @@ class _bookPageState extends State<bookPage> {
         ),
         home: Scaffold(
           appBar: AppBar(
-            title: const Text('Booking Calendar Demo'),
+            title: const Text('Insert WS Name here'),
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
