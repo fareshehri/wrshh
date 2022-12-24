@@ -2,24 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../Models/user.dart';
 
-
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
-
-
-  bool isAuth(){
-    final user =  _auth.currentUser;
+  bool isAuth() {
+    final user = _auth.currentUser;
     print(user);
-    if (user?.uid != null){
+    if (user?.uid != null) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
-
 
   void signInUser(String email, String password) async {
     final user = await _auth.signInWithEmailAndPassword(
@@ -32,31 +27,26 @@ class AuthService {
         email: user.email, password: user.password);
     if (newUser.user?.email != null) {
       if (user.userType == 'ClientUser') {
-        _firestore.collection('was').add(
+        _firestore.collection('clients').doc(user.email).set(
           {
-            'uid': newUser.user?.uid,
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'name': user.name,
             'city': user.city,
           },
         );
-
       } else if (user.userType == 'WorkshopUser') {
-        _firestore.collection('workshopAdmin').add(
+        _firestore.collection('workshopAdmin').doc(user.email).set(
           {
-            'uid': newUser.user?.uid,
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'adminName': user.name,
             'city': user.city,
           },
         );
-
       } else if (user.userType == 'AdminUser') {
-        _firestore.collection('admins').add(
+        _firestore.collection('admins').doc(user.email).set(
           {
-            'uid': newUser.user?.uid,
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'name': user.name,
@@ -68,13 +58,11 @@ class AuthService {
     return newUser;
   }
 
-
-  void logOut(){
+  void logOut() {
     _auth.signOut();
   }
 
-
-  void addWorkshop(Workshop workshop){
+  void addWorkshop(Workshop workshop) {
     _firestore.collection('workshops').add(
       {
         'uid': workshop.uid,
@@ -84,5 +72,4 @@ class AuthService {
       },
     );
   }
-
 }

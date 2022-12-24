@@ -1,15 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import '../Models/user.dart';
 import '../Services/Auth/auth.dart';
-import '../Services/Maps/googleMapsPart.dart';
+import '../Services/Maps/googleMapMyLoc.dart';
 import '../components/roundedButton.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
+import '../components/validators.dart';
 import '../constants.dart';
 import 'Home.dart';
 
@@ -21,7 +16,10 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final _auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+
+  var gap = const SizedBox(height: 8.0);
+
   String selectedType = 'Client';
   bool isClient = true;
   bool isWorkshop = false;
@@ -36,340 +34,227 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            appBar: AppBar(actionsIconTheme:IconThemeData(size: 24 ) ,title:Text('Register'),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),),
-      
+      appBar: AppBar(
+        actionsIconTheme: IconThemeData(size: 24),
+        title: Text('Register'),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.lightBlue[300], size: 24),
+      ),
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
-          child: ListView(
-            children: <Widget>[
-              Flex(
-                  direction: Axis.horizontal,
-                  mainAxisAlignment: MainAxisAlignment.center,
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: <Widget>[
+                Flex(
+                    direction: Axis.horizontal,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Hero(
+                          tag: 'logo',
+                          child: Container(
+                            height: 200.0,
+                            child: Image.asset('assets/images/Logo.png'),
+                          ),
+                        ),
+                      ),
+                    ]),
+                SizedBox(
+                  height: 48.0,
+                ),
+                Text('Select your account type'),
+                Row(
                   children: [
-                    Flexible(
-                      child: Hero(
-                        tag: 'logo',
-                        child: Container(
-                          height: 200.0,
-                          child: Image.asset('assets/images/Logo.png'),
+                    Expanded(
+                      child: ListTile(
+                        title: const Text(
+                          'Client',
+                        ),
+                        trailing: Checkbox(
+                          activeColor: Colors.lightBlueAccent,
+                          value: isClient,
+                          onChanged: (checboxState) {
+                            setState(() {
+                              isClient = checboxState!;
+                              if (isWorkshop) {
+                                isWorkshop = !isWorkshop;
+                              }
+                            });
+                          },
                         ),
                       ),
                     ),
-                  ]),
-              SizedBox(
-                height: 48.0,
-              ),
-              Text('Select your account type'),
-              Row(
-                children: [
-                  Expanded(
-                    child: ListTile(
-                      title: const Text(
-                        'Client',
-                      ),
-                      trailing: Checkbox(
-                        activeColor: Colors.lightBlueAccent,
-                        value: isClient,
-                        onChanged: (checboxState) {
-                          setState(() {
-                            isClient = checboxState!;
-                            if (isWorkshop) {
-                              isWorkshop = !isWorkshop;
-                            }
-                          });
-                        },
+                    Expanded(
+                      child: ListTile(
+                        title: const Text(
+                          'Workshop',
+                        ),
+                        trailing: Checkbox(
+                          activeColor: Colors.lightBlueAccent,
+                          value: isWorkshop,
+                          onChanged: (checboxState) {
+                            setState(() {
+                              isWorkshop = checboxState!;
+                              if (isClient) {
+                                isClient = !isClient;
+                              }
+                              if (!isWorkshop) {
+                                isClient = true;
+                              }
+                            });
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: ListTile(
-                      title: const Text(
-                        'Workshop',
-                      ),
-                      trailing: Checkbox(
-                        activeColor: Colors.lightBlueAccent,
-                        value: isWorkshop,
-                        onChanged: (checboxState) {
-                          setState(() {
-                            isWorkshop = checboxState!;
-                            if (isClient) {
-                              isClient = !isClient;
-                            }
-                            if (!isWorkshop) {
-                              isClient = true;
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 48.0,
-              ),
-              TextField(
-                decoration:
-                    kTextFieldDecoratopn.copyWith(hintText: 'Enter your email'),
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) {
-                  email = value;
-                },
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                decoration: kTextFieldDecoratopn.copyWith(
-                    hintText: 'Enter your password'),
-                obscureText: true,
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  password = value;
-                },
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                decoration:
-                    kTextFieldDecoratopn.copyWith(hintText: 'Enter your name'),
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  name = value;
-                },
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                decoration: kTextFieldDecoratopn.copyWith(
-                    hintText: 'Enter your phone number'),
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  phoneNumber = value;
-                },
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Visibility(
-                visible: isWorkshop,
-                child: TextField(
-                  decoration:
-                      kTextFieldDecoratopn.copyWith(hintText: 'Workshop name'),
+                  ],
+                ),
+                gap,
+                TextFormField(
+                  decoration: kTextFieldDecoratopn.copyWith(
+                      hintText: 'Enter your email'),
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  validator: (value) {
+                    if (value!.trim().isEmpty ||
+                        !emailValidator.hasMatch(value)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                gap,
+                TextFormField(
+                  decoration: kTextFieldDecoratopn.copyWith(
+                      hintText: 'Enter your password'),
+                  obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {
-                    workshop = value;
+                    password = value;
                   },
-
-                ),
-              ),
-              RoundedButton(
-                title: 'Register',
-                colour: Colors.blueAccent,
-                onPressed: () async {
-                  setState(() {
-                    showSpinner = true;
-                  });
-                  var newUser;
-                  selectedType = isWorkshop ? 'Workshop' : 'Client';
-                  if (selectedType == 'Client') {
-                    newUser = ClientUser(
-                        email: email,
-                        password: password,
-                        phoneNumber: phoneNumber,
-                        name: name);
-                    try {
-                      var user = await AuthService().signUpUser(newUser);
-                      if (user != null) {
-                        Navigator.pushNamed(context, Home.id);
-                      }
-                      setState(() {
-                        showSpinner = false;
-                      });
-                    } catch (e) {
-                      print(e);
+                  validator: (value) {
+                    if (value!.trim().isEmpty || value.length < 6) {
+                      return 'Password must be at least 6 characters';
                     }
-                  } else if (selectedType == 'Workshop') {
-                    newUser = WorkshopUser(
-                        email: email,
-                        password: password,
-                        phoneNumber: phoneNumber,
-                        name: name);
+                    return null;
+                  },
+                ),
+                gap,
+                TextFormField(
+                  decoration: kTextFieldDecoratopn.copyWith(
+                      hintText: 'Enter your name'),
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    name = value;
+                  },
+                  validator: (value) {
+                    if (value!.trim().isEmpty ||
+                        !nameValidator.hasMatch(value)) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                ),
+                gap,
+                TextFormField(
+                  decoration: kTextFieldDecoratopn.copyWith(
+                      hintText: 'Enter your phone number'),
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    phoneNumber = value;
+                  },
+                  validator: (value) {
+                    if (value!.trim().isEmpty ||
+                        !phoneValidator.hasMatch(value)) {
+                      return 'Please enter a valid phone number start with +966';
+                    }
+                    return null;
+                  },
+                ),
+                gap,
+                Visibility(
+                  visible: isWorkshop,
+                  child: TextFormField(
+                    decoration: kTextFieldDecoratopn.copyWith(
+                        hintText: 'Workshop name'),
+                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      workshop = value;
+                    },
+                    validator: (value) {
+                      if (value!.trim().isEmpty ||
+                          !nameValidator.hasMatch(value)) {
+                        return 'Please enter your workshop name';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                RoundedButton(
+                  title: 'Register',
+                  colour: Colors.blueAccent,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        showSpinner = true;
+                      });
+                      var newUser;
+                      selectedType = isWorkshop ? 'Workshop' : 'Client';
+                      if (selectedType == 'Client') {
+                        newUser = ClientUser(
+                            email: email,
+                            password: password,
+                            phoneNumber: phoneNumber,
+                            name: name);
+                        try {
+                          var user = await AuthService().signUpUser(newUser);
+                          if (user.user?.uid != null) {
+                            Navigator.pushNamed(context, Home.id);
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Something went wrong')),
+                          );
+                        } finally {
+                          setState(() {
+                            showSpinner = false;
+                          });
+                        }
+                      } else if (selectedType == 'Workshop') {
+                        newUser = WorkshopUser(
+                            email: email,
+                            password: password,
+                            phoneNumber: phoneNumber,
+                            name: name);
 
-                    showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) => SingleChildScrollView(
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.height,
-                                  child: googleMapMyLoc(
-                                    userInfo: newUser,
-                                    workshopName: workshop,
-                                  ),
-                                ),
-                              ),
-                            ));
-                  }
-
-                  //
-                  // try {
-                  //   var user = await AuthService().signUpUser(newUser);
-                  //   print(user);
-                  //   if (user != null) {
-                  //     Navigator.pushNamed(context, LoginScreen.id);
-                  //   }
-                  //   setState(() {
-                  //     showSpinner = false;
-                  //   });
-                  // } catch (e) {
-                  //   print(e);
-                  // }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class googleMapMyLoc extends StatefulWidget {
-  late WorkshopUser userInfo;
-  late String workshopName;
-  googleMapMyLoc({required this.userInfo, required this.workshopName});
-
-  @override
-  _googleMapsMyLocState createState() => _googleMapsMyLocState(
-        userInfo: userInfo,
-        workshopName: workshopName,
-      );
-}
-
-class _googleMapsMyLocState extends State<googleMapMyLoc> {
-  late WorkshopUser userInfo;
-  late String workshopName;
-  _googleMapsMyLocState({required this.userInfo, required this.workshopName});
-
-  /// Google Map Package Controller
-  late final Completer<GoogleMapController> _controller = Completer();
-
-  late Set<Marker> _myMarkers = <Marker>{};
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          /// The map
-          Positioned.fill(
-            child: GoogleMap(
-              markers: _myMarkers,
-
-              /// Map type (satellite, etc..)
-              mapType: MapType.normal,
-
-              /// Enable zoom
-              zoomControlsEnabled: true,
-
-              /// Remove the Device Location button
-              myLocationButtonEnabled: true,
-              myLocationEnabled: true,
-
-              /// Initial Camera Position
-              initialCameraPosition: const CameraPosition(
-                /// Target area (coordinates)
-                target: cityCenter,
-
-                /// Zoom level
-                zoom: 10.75,
-              ),
-
-              /// On Map Creates
-              onMapCreated: (GoogleMapController controller) {
-                /// Attack Previously Stated Controller
-                _controller.complete(controller);
-              },
-
-              /// On Map tap (Anywhere than the pins)
-              onTap: (LatLng loc) {
-                setState(() {
-                  _myMarkers = {};
-                  _myMarkers.add(Marker(
-                    markerId: MarkerId(loc.toString()),
-                    position: loc,
-                  ));
-
-                  showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) => SingleChildScrollView(
-                            child: Container(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                child: Container(
-                                  margin: EdgeInsets.all(20.0),
-                                  child: Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        /// First Line text
-                                        Text('${loc.toString()}',
-                                            style: TextStyle(
-                                                color: Colors.grey[700],
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15)),
-
-                                        RoundedButton(
-                                          title: 'Register',
-                                          colour: Colors.blueAccent,
-                                          onPressed: () async {
-                                            try {
-                                              var user = await AuthService()
-                                                  .signUpUser(userInfo);
-                                              if (user.user?.uid != null) {
-                                                Workshop workshop = Workshop(
-                                                  uid: user.user?.uid,
-                                                  name: workshopName,
-                                                  location: loc.toString(),
-                                                );
-                                                AuthService()
-                                                    .addWorkshop(workshop);
-                                              }
-
-                                              Navigator.pushNamed(
-                                                  context, Home.id);
-                                            } catch (e) {
-                                              print(e);
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )),
-                          ));
-
-                  const CameraPosition(zoom: 9, target: cityCenter);
-                });
-              },
+                        showSpinner = false;
+                        Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).push(MaterialPageRoute(
+                          builder: (BuildContext context) => googleMapMyLoc(
+                            userInfo: newUser,
+                            workshopName: workshop,
+                          ),
+                        ));
+                      }
+                    }
+                  },
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
