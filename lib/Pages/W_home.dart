@@ -6,6 +6,7 @@ import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/Account.dart';
 
 class W_home extends StatefulWidget {
+  static const String id = 'Workshop_Home';
   const W_home({Key? key}) : super(key: key);
 
   @override

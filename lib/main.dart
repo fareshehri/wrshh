@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/Pages/Home.dart';
 import 'package:wrshh/Pages/welcome.dart';
+import 'Pages/W_home.dart';
 import 'firebase_options.dart';
 
 import 'Pages/login.dart';
@@ -25,7 +26,8 @@ void main() async {
       Wrapper.id: (context) => Wrapper(),
       LoginScreen.id: (context) => LoginScreen(),
       RegistrationScreen.id: (context) => RegistrationScreen(),
-      Home.id: (context) => Home()
+      Home.id: (context) => Home(),
+      W_home.id: (context) => W_home(),
     },
     home: Wrapper(),
   ));

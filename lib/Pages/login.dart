@@ -6,6 +6,7 @@ import '../components/roundedButton.dart';
 import '../components/validators.dart';
 import '../constants.dart';
 import 'Home.dart';
+import 'W_home.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -100,8 +101,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
 
                       try {
-                        AuthService().signInUser(email, password);
-                        Navigator.pushNamed(context, Home.id);
+                        final newUser = await AuthService().signInUser(email, password);
+                        if (newUser.user?.email != null){
+                          var userType = await AuthService().getUserType();
+                          if (userType == 'ClientUser'){
+                            Navigator.pushNamed(context, Home.id);
+                          } else if (userType == 'WorkshopUser'){
+                            Navigator.pushNamed(context, W_home.id);
+                          }
+                        }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

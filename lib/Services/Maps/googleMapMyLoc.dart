@@ -114,9 +114,9 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                             try {
                                               var user = await AuthService()
                                                   .signUpUser(userInfo);
-                                              if (user.user?.uid != null) {
+                                              if (user?.user?.uid != null) {
                                                 Workshop workshop = Workshop(
-                                                  uid: user.user?.uid,
+                                                  uid: user?.user?.uid,
                                                   name: workshopName,
                                                   location: loc.toString(),
                                                 );

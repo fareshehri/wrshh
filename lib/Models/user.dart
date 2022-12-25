@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-
 class AppUser {
-  late String uid;
   late String email;
   late String password;
   late String phoneNumber;
@@ -11,39 +8,44 @@ class AppUser {
 
   AppUser(
       {required this.email,
-      required this.password,
       required this.phoneNumber,
       required this.name,
+      required this.password,
       this.city = 'Al Riyadh',
       required this.userType});
+
+
 }
 
 class ClientUser extends AppUser {
   ClientUser(
       {required super.email,
-      required super.password,
       required super.phoneNumber,
       required super.name,
+      required super.password,
       super.userType = 'ClientUser'});
+
 }
 
 class WorkshopUser extends AppUser {
   WorkshopUser({
     required super.email,
-    required super.password,
     required super.phoneNumber,
     required super.name,
+    required super.password,
     super.userType = 'WorkshopUser',
   });
+
 }
 
 class AdminUser extends AppUser {
   AdminUser(
       {required super.email,
-      required super.password,
       required super.phoneNumber,
       required super.name,
+      required super.password,
       super.userType = 'AdminUser'});
+
 }
 
 class Workshop {
