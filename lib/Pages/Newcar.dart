@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/main.dart';
 import 'package:wrshh/Pages/Account.dart';
@@ -6,13 +7,19 @@ import 'package:flutter/services.dart';
 class Newcar extends StatefulWidget {
   const Newcar({Key? key}) : super(key: key);
 
+
   @override
   State<Newcar> createState() => _NewcarState();
+  
 }
 
+final _firestore = FirebaseFirestore.instance;
+
 class _NewcarState extends State<Newcar> {
+  
   var _selectedB = 'Chevrolet';
   var _selectedC = 'Groove';
+  var _vin;
   //var _selectedC = null;
   var viscar = true;
   var visin = false;
@@ -128,12 +135,15 @@ class _NewcarState extends State<Newcar> {
                   ////
                   SizedBox(height: 50,),
                   Text('Vin'),
-                  TextFormField(decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
+                  TextFormField(onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
                       print(_selectedB);
                       print(_selectedC);
+                      print(_vin);
+
+
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
                       ScaffoldMessenger.of(context).showSnackBar(
