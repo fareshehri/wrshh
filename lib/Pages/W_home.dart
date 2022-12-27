@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/Account.dart';
+import 'package:wrshh/Pages/welcome.dart';
+
+import '../Services/Auth/auth.dart';
+import 'W_UpdatePage/break_Hours.dart';
+import 'W_UpdatePage/capacity.dart';
+import 'W_UpdatePage/services.dart';
+import 'W_UpdatePage/working_Dates.dart';
+import 'W_UpdatePage/working_Hours.dart';
 
 class W_home extends StatefulWidget {
   static const String id = 'Workshop_Home';
@@ -37,7 +45,7 @@ DateTime selectedDate = DateTime.now();
       drawer: Drawer(child: ListView(children: [
       ListTile(hoverColor:tc[_selectedIndex] ,leading: const Icon(Icons.manage_accounts),title: const Text('Account'),onTap: () {setState(() {Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const Account(),));});},)
       ,
-      ListTile(hoverColor:tc[_selectedIndex] ,leading: const Icon(Icons.exit_to_app),title: const Text('Logout'),)//onTap: () {logOut();setState(() {Navigator.of(context,rootNavigator: true,).pushReplacement(_Wrapper());});},)
+      ListTile(hoverColor:tc[_selectedIndex] ,leading: const Icon(Icons.exit_to_app),title: const Text('Logout'), onTap: () {AuthService().logOut(); setState(() {Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) =>  WelcomeScreen(),));});},)
       
       ],
       )),
@@ -60,7 +68,7 @@ DateTime selectedDate = DateTime.now();
       ,)              ;
 }
 
-            if(_selectedIndex ==1){
+        if(_selectedIndex ==1){
             return Form(key: _formKey,child: Column(children: <Widget>[
                   TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
@@ -77,40 +85,9 @@ DateTime selectedDate = DateTime.now();
       );
             }
 
-              else{
-              //Account Page?
-              return ListView(children: [
-                SizedBox(height: 50,),
-                Container(
-                          height: 150,
-                          width: double.infinity,
-                          color: Colors.lightGreen,
-                          child: Padding (
-                padding: EdgeInsets.all(16),
-                  child: Row (
-                  children: [
-                    Column (
-                      children: [
-                        Text("Fast Food",style: TextStyle(fontSize: 30, color: Colors.blue)),
-                        SizedBox(height: 10),
-                        Text("Description ....", style: TextStyle(fontStyle: FontStyle.italic))
-                      ],
-                    )
-                    ,
-                    SizedBox(width: 70),
-                    Image.asset (
-                        "images/Logo.png",
-                    ),
-                    
-                    
-                  ],
-                ),
-                    
-                  )),
-              ]);}
-
-      
-      
+        else{
+          return UpdateScheduleSec();
+        }
         
       },
       )),
@@ -123,14 +100,65 @@ DateTime selectedDate = DateTime.now();
       //CI: This will see the button clicked index ex(Home will set index to 0) important on changing the content
       currentIndex: _selectedIndex,
       selectedItemColor: buttoncolor[_selectedIndex],
-      onTap:(int index) {setState(() {_selectedIndex = index;});
-  },
+      onTap:(int index) {
+        setState(() {
+          _selectedIndex = index;});
+        },
       ),
-      
-
-      );
-    
+    );
+    }
+    );
   }
+}
+
+class UpdateScheduleSec extends StatelessWidget {
+  final titles = ["Working Dates",
+    "Working Hours",
+    "Services",
+    "Capacity",
+    "Break Hours"];
+  final subtitles = [
+    "Update working days",
+    "Update shift time",
+    "Update services provided",
+    "Update working capacity",
+    "Update break hours"];
+  final icons = [
+    Icons.calendar_month,
+    Icons.punch_clock,
+    Icons.category_rounded,
+    Icons.reduce_capacity,
+    Icons.event_busy];
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(itemCount: titles.length, itemBuilder: (context, index) {
+
+        return Card(
+          child: ListTile(
+            title: Text(titles[index]),
+            subtitle: Text(subtitles[index]),
+            leading: Icon(icons[index]),
+            onTap: () {
+              if (index == 0) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => WorkingDates()));
+              }
+              if (index == 1) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => WorkingHours()));
+              }
+              if (index == 2) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Services()));
+              }
+              if (index == 3) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Capacity()));
+              }
+              if (index == 4) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreakHours()));
+              }
+            },
+          ),
+        );
+      }
     );
   }
 }
