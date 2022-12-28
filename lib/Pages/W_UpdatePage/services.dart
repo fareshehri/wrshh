@@ -29,7 +29,7 @@ class _Services extends State<Services> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:const Text("Capacity"),
+        title:const Text("Services"),
         centerTitle: true,
         backgroundColor:Colors.transparent,
         foregroundColor:Colors.black,
@@ -44,6 +44,14 @@ class _Services extends State<Services> {
   }
 }
 
+// Data class for the cards
+class CardData {
+  late final String title;
+  late final String subtitle;
+
+  CardData({required this.title, required this.subtitle});
+}
+
 class UpdateSch extends StatefulWidget {
    const UpdateSch({Key? key}) : super(key: key);
 
@@ -54,75 +62,163 @@ class UpdateSch extends StatefulWidget {
 
 class UpdateScheduleSec extends State<UpdateSch> {
 
-  late TextEditingController controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-
-    super.dispose();
-  }
-
-  List titles = ["Service 1",
-    "Service 2",
-    "Service 3",
-    "Service 4",
-    "Service 5",
+  List<CardData> _cards = [
+    CardData(title: 'Check up', subtitle: 'FREE'),
+    CardData(title: 'Oil change', subtitle: '120SAR'),
+    CardData(title: 'Air Filter change', subtitle: '100SAR'),
   ];
-  List subtitles = [
-    "Check Up - Free",
-    "Oil Change - 150SAR",
-    "etc1",
-    "etc2",
-    "etc3",
-  ];
+
+  // The index of the selected card
+  late int _selectedCardIndex;
+
+  // The controller for the text field
+  TextEditingController _subtitleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemCount: titles.length, itemBuilder: (context, index) {
-      return Card(
-          child: ListTile(
-          title: Text(titles[index]),
-            subtitle: Text(subtitles[index]),
-            leading: const Icon(Icons.accessibility),
-            onTap: () {},
+    return Column(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 30,
+              child: ListView.builder(
+                  itemCount: _cards.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    CardData card = _cards[index];
+                    return Card(
+                        child: ListTile(
+                            title: Text(card.title),
+                            subtitle: Text(card.subtitle),
+                            onTap: () {
+                              // Show the edit/delete options
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  // Set the initial value of the text field to the current subtitle
+                                  _subtitleController.text = card.subtitle;
+                                  _selectedCardIndex = index;
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // The form with the text field
+                                      Form(
+                                        child: TextFormField(
+                                          controller: _subtitleController,
+                                          decoration: const InputDecoration(
+                                            labelText: 'Title',
+                                          ),
+                                        ),
+                                      ),
+                                      // The save button
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // Update the subtitle of the selected card
+                                          setState(() {
+                                            _cards[_selectedCardIndex].title =
+                                                _subtitleController.text;
+
+                                            // Close the modal bottom sheet
+                                            Navigator.pop(context);
+                                          });
+                                        },
+                                        child: const Text('Save'),
+                                      ),
+                                      // The delete option
+                                      ListTile(
+                                        leading: const Icon(Icons.delete),
+                                        title: const Text('Delete'),
+                                        onTap: () {
+                                          // Remove the selected card from the list
+                                          setState(() {
+                                            _cards.removeAt(_selectedCardIndex);
+                                          });
+                                          // Close the modal bottom sheet
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                        )
+                    );
+                  }
+              ),
+            )
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton(
+                  onPressed: () async {
+                    // Display the dialog to add a new card
+                    Map<String, String> values = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // The form with the text fields
+                        TextEditingController titleController = TextEditingController();
+                        TextEditingController subtitleController = TextEditingController();
+                        return AlertDialog(
+                          title: const Text('Add Service'),
+                          content: Form(
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: titleController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Service name',
+                                  ),
+                                  validator: (value) {
+                                    // Validate the text field
+                                  },
+                                ),
+                                TextFormField(
+                                  controller: subtitleController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'price',
+                                  ),
+                                  validator: (value) {
+                                    // Validate the text field
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            // The save button
+                            ElevatedButton(
+                              onPressed: () {
+                                // Return the values to the caller
+                                Navigator.of(context).pop({
+                                  'title': titleController.text,
+                                  'subtitle': subtitleController.text,
+                                });
+                              },
+                              child: const Text('Add'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    // Add the new card to the list
+                    if (values != null) {
+                      setState(() {
+                        _cards.add(CardData(
+                          title: values['title'] as String,
+                          subtitle: values['subtitle'] as String,
+                        ));
+                      });
+                    }
+                  },
+                  child: const Icon(Icons.add),
+                )
+              ],
+            ),
           )
-      );
-    }
+        ]
     );
   }
 }
-
-//   Future<String?> openDialog() => showDialog<String>(
-//     context: context,
-//     builder: (context) => AlertDialog(
-//       title: const Text("Service Name, and Price"),
-//       content: TextField(
-//           autofocus: true,
-//           decoration: const InputDecoration(hintText: 'Enter SERVICE NAME - PRICE'),
-//           controller: controller
-//       ),
-//       actions: [
-//         TextButton(
-//           child: const Text('SUBMIT'),
-//           onPressed: () {
-//             Navigator.of(context).pop(controller.text);
-//           },
-//         ),
-//         TextButton(
-//           child: const Text("CANCEL"),
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//         )
-//       ],
-//     ),
-//   );
-// }
