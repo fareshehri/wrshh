@@ -19,10 +19,9 @@ final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 
-var name=getUsername().toString();
-var carsvin=getUserVin().toString();
 
-Future<dynamic> getUserVin() async {
+
+Future<dynamic> getUserVin(carsvin) async {
   final User user = await _auth.currentUser!;
     final client = await _firestore.collection('clients').doc(user!.email).get();
     if(client.exists){
@@ -32,7 +31,7 @@ Future<dynamic> getUserVin() async {
         // carsvin= client['vin'];
   }
 }
-Future<void> getUsername() async {
+Future<void> getUsername(name) async {
   final User user = await _auth.currentUser!;
     final client = await _firestore.collection('clients').doc(user!.email).get();
     if(client.exists){
@@ -98,7 +97,10 @@ class _NewcarState extends State<Newcar> {
   @override
   Widget build(BuildContext context) {
     
-    
+var name;
+var carsvin;
+getUsername(name).toString();
+getUserVin(carsvin).toString();
 
   var _selectbrand = cars.keys;
   var _selectcar = cars[_selectedB];
