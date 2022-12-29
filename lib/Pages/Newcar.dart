@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wrshh/main.dart';
 import 'package:wrshh/Pages/Account.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Newcar extends StatefulWidget {
   const Newcar({Key? key}) : super(key: key);
@@ -13,14 +14,43 @@ class Newcar extends StatefulWidget {
   
 }
 
+
 final _firestore = FirebaseFirestore.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+var name=getUsername().toString();
+var carsvin=getUserVin().toString();
+
+Future<dynamic> getUserVin() async {
+  final User user = await _auth.currentUser!;
+    final client = await _firestore.collection('clients').doc(user!.email).get();
+    if(client.exists){
+        return carsvin= client['vin'];
+        //email= client['email'];
+        // name= client['name'];
+        // carsvin= client['vin'];
+  }
+}
+Future<void> getUsername() async {
+  final User user = await _auth.currentUser!;
+    final client = await _firestore.collection('clients').doc(user!.email).get();
+    if(client.exists){
+        return name= client['name'];
+        //email= client['email'];
+        // name= client['name'];
+        // carsvin= client['vin'];
+  }
+}
+
+
 
 class _NewcarState extends State<Newcar> {
-  
+
   var _selectedB = 'Chevrolet';
   var _selectedC = 'Groove';
   var _vin;
-  //var _selectedC = null;
+  var _currentSelectedYear;
   var viscar = true;
   var visin = false;
  var cars ={
@@ -67,6 +97,8 @@ class _NewcarState extends State<Newcar> {
 
   @override
   Widget build(BuildContext context) {
+    
+    
 
   var _selectbrand = cars.keys;
   var _selectcar = cars[_selectedB];
@@ -80,6 +112,11 @@ class _NewcarState extends State<Newcar> {
      
      body: Container(margin: EdgeInsets.fromLTRB(25,50,25,50),
        child: ListView(children: [
+        Container(
+          child: Column(children: [
+            Text('Hello $name You have $carsvin Registered')
+          ],),
+        ),
 
         Container(
           child: Form(key: _formKey,child: Column(children: <Widget>[
@@ -141,8 +178,17 @@ class _NewcarState extends State<Newcar> {
                     if (_formKey.currentState!.validate()) {
                       print(_selectedB);
                       print(_selectedC);
+                      print(_currentSelectedYear);
                       print(_vin);
-
+                      print('===================');
+                      print(name);
+                      print(carsvin);
+                      Map<String,String> saved={
+                        'carManufacturer': _selectedB,
+                        'carModel': _selectedC,
+                        'carYear': _currentSelectedYear.toString(),
+                      };
+                      FirebaseFirestore.instance.collection('vin').doc(_vin).set(saved);
 
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
@@ -157,5 +203,6 @@ class _NewcarState extends State<Newcar> {
      ))
      );
     
+    
   }
-}
+  }
