@@ -15,36 +15,22 @@ class Newcar extends StatefulWidget {
 }
 
 
-final _firestore = FirebaseFirestore.instance;
-final FirebaseAuth _auth = FirebaseAuth.instance;
-
-
-
-
-Future<dynamic> getUserVin(carsvin) async {
-  final User user = await _auth.currentUser!;
-    final client = await _firestore.collection('clients').doc(user!.email).get();
-    if(client.exists){
-        return carsvin= client['vin'];
-        //email= client['email'];
-        // name= client['name'];
-        // carsvin= client['vin'];
-  }
-}
-Future<void> getUsername(name) async {
-  final User user = await _auth.currentUser!;
-    final client = await _firestore.collection('clients').doc(user!.email).get();
-    if(client.exists){
-        return name= client['name'];
-        //email= client['email'];
-        // name= client['name'];
-        // carsvin= client['vin'];
-  }
-}
-
-
-
 class _NewcarState extends State<Newcar> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  var name;
+  var carsvin;
+  var email;
+
+Future _getData() async {
+    final User user = await _auth.currentUser!;
+    final client = await _firestore.collection('clients').doc(user!.email).get();
+    setState(() {
+      name = client['name'];
+      carsvin=client['vin'];
+      email=user!.email;
+    });
+  }
 
   var _selectedB = 'Chevrolet';
   var _selectedC = 'Groove';
@@ -96,12 +82,7 @@ class _NewcarState extends State<Newcar> {
 
   @override
   Widget build(BuildContext context) {
-    
-var name;
-var carsvin;
-getUsername(name).toString();
-getUserVin(carsvin).toString();
-
+  _getData();
   var _selectbrand = cars.keys;
   var _selectcar = cars[_selectedB];
   
@@ -116,7 +97,7 @@ getUserVin(carsvin).toString();
        child: ListView(children: [
         Container(
           child: Column(children: [
-            Text('Hello $name You have $carsvin Registered')
+            Text('Hello ($name) Here is Your Registered cars ($carsvin) ')
           ],),
         ),
 
@@ -191,6 +172,9 @@ getUserVin(carsvin).toString();
                         'carYear': _currentSelectedYear.toString(),
                       };
                       FirebaseFirestore.instance.collection('vin').doc(_vin).set(saved);
+                      FirebaseFirestore.instance.collection('clients').doc(email).update({
+                        'vin':_vin
+                      });
 
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
