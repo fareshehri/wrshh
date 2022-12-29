@@ -84,7 +84,7 @@ DateTime selectedDate = DateTime.now();
 }
 
             if(_selectedIndex ==1){
-            return const googleMaps();
+            return const GoogleMaps();
             }
 
               else{

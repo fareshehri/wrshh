@@ -24,6 +24,7 @@ class _Services extends State<Services> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +40,7 @@ class _Services extends State<Services> {
         ),
       ),
 
-      body: UpdateSch()
+      body: const UpdateSch()
     );
   }
 }
@@ -62,163 +63,154 @@ class UpdateSch extends StatefulWidget {
 
 class UpdateScheduleSec extends State<UpdateSch> {
 
-  List<CardData> _cards = [
-    CardData(title: 'Check up', subtitle: 'FREE'),
-    CardData(title: 'Oil change', subtitle: '120SAR'),
-    CardData(title: 'Air Filter change', subtitle: '100SAR'),
+  // The data for the objects
+  List<Map<String, dynamic>> _objects = [
+    {'name': 'Object 1', 'price': 100},
+    {'name': 'Object 2', 'price': 200},
+    {'name': 'Object 3', 'price': 300},
   ];
 
-  // The index of the selected card
-  late int _selectedCardIndex;
-
   // The controller for the text field
-  TextEditingController _subtitleController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 30,
-              child: ListView.builder(
-                  itemCount: _cards.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    CardData card = _cards[index];
-                    return Card(
-                        child: ListTile(
-                            title: Text(card.title),
-                            subtitle: Text(card.subtitle),
-                            onTap: () {
-                              // Show the edit/delete options
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  // Set the initial value of the text field to the current subtitle
-                                  _subtitleController.text = card.subtitle;
-                                  _selectedCardIndex = index;
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // The form with the text field
-                                      Form(
-                                        child: TextFormField(
-                                          controller: _subtitleController,
-                                          decoration: const InputDecoration(
-                                            labelText: 'Title',
-                                          ),
-                                        ),
-                                      ),
-                                      // The save button
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          // Update the subtitle of the selected card
-                                          setState(() {
-                                            _cards[_selectedCardIndex].title =
-                                                _subtitleController.text;
-
-                                            // Close the modal bottom sheet
-                                            Navigator.pop(context);
-                                          });
-                                        },
-                                        child: const Text('Save'),
-                                      ),
-                                      // The delete option
-                                      ListTile(
-                                        leading: const Icon(Icons.delete),
-                                        title: const Text('Delete'),
-                                        onTap: () {
-                                          // Remove the selected card from the list
-                                          setState(() {
-                                            _cards.removeAt(_selectedCardIndex);
-                                          });
-                                          // Close the modal bottom sheet
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                        )
-                    );
-                  }
+    return Scaffold(
+      body: ListView.builder(
+      itemCount: _objects.length,
+      itemBuilder: (BuildContext context, int index) {
+        Map<String, dynamic> object = _objects[index];
+        return ListTile(
+          title: Text(object['name']),
+          subtitle: Text(object['price'].toString()),
+          trailing: PopupMenuButton(
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(
+                value: 'edit',
+                child: Text('Edit'),
               ),
-            )
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  onPressed: () async {
-                    // Display the dialog to add a new card
-                    Map<String, String> values = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
+              const PopupMenuItem(
+                value: 'delete',
+                child: Text('Delete'),
+              ),
+            ],
+            onSelected: (value) {
+              // Edit or delete the selected object
+              if (value == 'edit') {
+                // Show the modal bottom sheet to edit the object
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    // Set the initial value of the text fields to the current name and price
+                    _nameController.text = object['name'];
+                    _priceController.text = object['price'].toString();
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         // The form with the text fields
-                        TextEditingController titleController = TextEditingController();
-                        TextEditingController subtitleController = TextEditingController();
-                        return AlertDialog(
-                          title: const Text('Add Service'),
-                          content: Form(
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: titleController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Service name',
-                                  ),
-                                  validator: (value) {
-                                    // Validate the text field
-                                  },
+                        Form(
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: _nameController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Name',
                                 ),
-                                TextFormField(
-                                  controller: subtitleController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'price',
-                                  ),
-                                  validator: (value) {
-                                    // Validate the text field
-                                  },
+                              ),
+                              TextFormField(
+                                controller: _priceController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Price',
                                 ),
-                              ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        // The save button
+                        ElevatedButton(
+                          onPressed: () {
+                            // Update the name and price of the selected object
+                            setState(() {
+                              _objects[index]['name'] = _nameController.text;
+                              _objects[index]['price'] = int.parse(_priceController.text);
+                            });
+                            // Close the modal bottom sheet
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else if (value == 'delete') {
+                // Remove the selected object from the list
+                setState(() {
+                  _objects.removeAt(index);
+                });
+              }
+            },
+          ),
+
+        );
+      },
+    ),
+      // Add the floating action button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // The form with the text fields
+                    Form(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Name',
                             ),
                           ),
-                          actions: [
-                            // The save button
-                            ElevatedButton(
-                              onPressed: () {
-                                // Return the values to the caller
-                                Navigator.of(context).pop({
-                                  'title': titleController.text,
-                                  'subtitle': subtitleController.text,
-                                });
-                              },
-                              child: const Text('Add'),
+                          TextFormField(
+                            controller: _priceController,
+                            decoration: const InputDecoration(
+                              labelText: 'Price',
                             ),
-                          ],
-                        );
+                          ),
+                        ],
+                      ),
+                    ),
+                    // The save button
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add a new object to the list
+                        setState(() {
+                          _objects.add({
+                            'name': _nameController.text,
+                            'price': _priceController.text,
+                          });
+                        });
+                        // Clear the text fields
+                        _nameController.clear();
+                        _priceController.clear();
+                        // Close the modal bottom sheet
+                        Navigator.pop(context);
                       },
-                    );
-
-                    // Add the new card to the list
-                    if (values != null) {
-                      setState(() {
-                        _cards.add(CardData(
-                          title: values['title'] as String,
-                          subtitle: values['subtitle'] as String,
-                        ));
-                      });
-                    }
-                  },
-                  child: const Icon(Icons.add),
-                )
-              ],
-            ),
-          )
-        ]
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
 
 import '../../Models/user.dart';
-import '../../Pages/Home.dart';
+import '../../Pages/W_home.dart';
 import '../../components/roundedButton.dart';
 import '../Auth/auth.dart';
 
@@ -111,6 +111,7 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                           title: 'Register',
                                           colour: Colors.blueAccent,
                                           onPressed: () async {
+                                            String LOCA = '${loc.longitude},${loc.latitude}';
                                             try {
                                               var user = await AuthService()
                                                   .signUpUser(userInfo);
@@ -118,14 +119,14 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                                 Workshop workshop = Workshop(
                                                   uid: user?.user?.uid,
                                                   name: workshopName,
-                                                  location: loc.toString(),
+                                                  location: LOCA,
                                                 );
                                                 AuthService()
                                                     .addWorkshop(workshop);
                                               }
 
                                               Navigator.pushNamed(
-                                                  context, Home.id);
+                                                  context, W_home.id);
                                             } catch (e) {
                                               print(e);
                                             }
