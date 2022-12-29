@@ -3,6 +3,8 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../Models/user.dart';
 import '../Services/Auth/auth.dart';
 import '../Services/Maps/googleMapMyLoc.dart';
+import '../components/icon_content.dart';
+import '../components/reusable_card.dart';
 import '../components/roundedButton.dart';
 import '../components/validators.dart';
 import '../constants.dart';
@@ -15,14 +17,17 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
+enum accType {
+  client,
+  workshop,
+}
+
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
 
   var gap = const SizedBox(height: 8.0);
 
-  String selectedType = 'Client';
-  bool isClient = true;
-  bool isWorkshop = false;
+  accType selectedType = accType.client;
 
   bool showSpinner = false;
   late String email;
@@ -30,6 +35,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late String phoneNumber;
   late String name;
   late String workshop;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +48,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.lightBlue[300], size: 24),
       ),
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
@@ -49,9 +55,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
+
             key: _formKey,
             child: ListView(
               children: <Widget>[
+
                 Flex(
                     direction: Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -69,52 +77,95 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 SizedBox(
                   height: 48.0,
                 ),
-                Text('Select your account type'),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ListTile(
-                        title: const Text(
-                          'Client',
+                Text('Select your account type',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black,
+                    )),
+                Expanded(
+                    child: Row(
+
+                      children: [
+                        Expanded(
+                          child: ReusableCard(
+                            onPress: () {
+                              setState(() {
+                                selectedType = accType.client;
+                              });
+                            },
+                            colour: selectedType == accType.client
+                                ? kActiveCardColor
+                                : kInactiveCardColor,
+                            cardChild: IconContent(
+                              // client icon
+                              icon: IconData(0xeb93, fontFamily: 'MaterialIcons'),
+                              label: 'Client',
+                            ),
+                          ),
                         ),
-                        trailing: Checkbox(
-                          activeColor: Colors.lightBlueAccent,
-                          value: isClient,
-                          onChanged: (checboxState) {
-                            setState(() {
-                              isClient = checboxState!;
-                              if (isWorkshop) {
-                                isWorkshop = !isWorkshop;
-                              }
-                            });
-                          },
+                        Expanded(
+                          child: ReusableCard(
+                            onPress: () {
+                              setState(() {
+                                selectedType = accType.workshop;
+                              });
+                            },
+                            colour: selectedType == accType.workshop
+                                ? kActiveCardColor
+                                : kInactiveCardColor,
+                            cardChild: IconContent(
+                              icon: IconData(0xe83a, fontFamily: 'MaterialIcons'),
+                              label: 'Workshop',
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListTile(
-                        title: const Text(
-                          'Workshop',
-                        ),
-                        trailing: Checkbox(
-                          activeColor: Colors.lightBlueAccent,
-                          value: isWorkshop,
-                          onChanged: (checboxState) {
-                            setState(() {
-                              isWorkshop = checboxState!;
-                              if (isClient) {
-                                isClient = !isClient;
-                              }
-                              if (!isWorkshop) {
-                                isClient = true;
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                      ],
+                    )),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: ListTile(
+                //         title: const Text(
+                //           'Client',
+                //         ),
+                //         trailing: Checkbox(
+                //           activeColor: Colors.lightBlueAccent,
+                //           value: isClient,
+                //           onChanged: (checboxState) {
+                //             setState(() {
+                //               isClient = checboxState!;
+                //               if (isWorkshop) {
+                //                 isWorkshop = !isWorkshop;
+                //               }
+                //             });
+                //           },
+                //         ),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: ListTile(
+                //         title: const Text(
+                //           'Workshop',
+                //         ),
+                //         trailing: Checkbox(
+                //           activeColor: Colors.lightBlueAccent,
+                //           value: isWorkshop,
+                //           onChanged: (checboxState) {
+                //             setState(() {
+                //               isWorkshop = checboxState!;
+                //               if (isClient) {
+                //                 isClient = !isClient;
+                //               }
+                //               if (!isWorkshop) {
+                //                 isClient = true;
+                //               }
+                //             });
+                //           },
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 gap,
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
@@ -182,7 +233,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 gap,
                 Visibility(
-                  visible: isWorkshop,
+                  visible: accType.workshop == selectedType,
                   child: TextFormField(
                     decoration: kTextFieldDecoratopn.copyWith(
                         hintText: 'Workshop name'),
@@ -201,15 +252,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 RoundedButton(
                   title: 'Register',
-                  colour: Colors.blueAccent,
+                  colour: kInactiveCardColor,
+
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {
                         showSpinner = true;
                       });
                       var newUser;
-                      selectedType = isWorkshop ? 'Workshop' : 'Client';
-                      if (selectedType == 'Client') {
+                      if (accType.client == selectedType) {
                         newUser = ClientUser(
                             email: email,
                             password: password,
@@ -230,7 +281,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             showSpinner = false;
                           });
                         }
-                      } else if (selectedType == 'Workshop') {
+                      } else if (accType.workshop == selectedType) {
                         newUser = WorkshopUser(
                             email: email,
                             password: password,

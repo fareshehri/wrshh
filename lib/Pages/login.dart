@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 gap,
                 RoundedButton(
                   title: 'Log In',
-                  colour: Colors.lightBlueAccent,
+                  colour: kInactiveCardColor,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {

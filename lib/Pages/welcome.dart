@@ -3,6 +3,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:wrshh/Pages/registration.dart';
 
 import '../components/roundedButton.dart';
+import '../constants.dart';
 import 'login.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -76,14 +77,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             ),
             RoundedButton(
               title: 'Log In',
-              colour: Colors.lightBlueAccent,
+              colour: kInactiveCardColor,
               onPressed: () {
                 Navigator.pushNamed(context, LoginScreen.id);
               },
             ),
             RoundedButton(
               title: 'Register',
-              colour: Colors.blueAccent,
+              colour: kActiveCardColor,
               onPressed: () {
                 Navigator.pushNamed(context, RegistrationScreen.id);
               },
