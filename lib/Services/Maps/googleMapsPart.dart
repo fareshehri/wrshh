@@ -18,15 +18,15 @@ const double pinVisiblePosition = 20;
 const double pinInvisiblePosition = -250;
 
 
-class GoogleMaps extends StatefulWidget {
-  const GoogleMaps({super.key});
+class MyGoogleMaps extends StatefulWidget {
+  const MyGoogleMaps({super.key});
 
   @override
   _GoogleMapsState createState() => _GoogleMapsState();
 }
 
 
-class _GoogleMapsState extends State<GoogleMaps> {
+class _GoogleMapsState extends State<MyGoogleMaps> {
 
   /// Google Map Package Controller
   // late final Completer<GoogleMapController> _controller = Completer();

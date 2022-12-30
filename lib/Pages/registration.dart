@@ -1,4 +1,8 @@
+// import 'dart:html';
+
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../Models/user.dart';
 import '../Services/Auth/auth.dart';
@@ -9,6 +13,8 @@ import '../components/roundedButton.dart';
 import '../components/validators.dart';
 import '../constants.dart';
 import 'Home.dart';
+
+import 'dart:io';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -36,7 +42,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late String name;
   late String workshop;
 
+  late File _pickedImage;
+  bool _load = false;
 
+  Future<File?> _cropImage({required File imageFile}) async {
+    CroppedFile? croppedImage = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ],
+    );
+    if (croppedImage == null) return null;
+    return File(croppedImage.path);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +66,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
+        iconTheme: const IconThemeData(color: kDarkColor, size: 24),
       ),
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
@@ -55,11 +74,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
-
             key: _formKey,
             child: ListView(
               children: <Widget>[
-
                 Flex(
                     direction: Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -84,43 +101,42 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     )),
                 Expanded(
                     child: Row(
-
-                      children: [
-                        Expanded(
-                          child: ReusableCard(
-                            onPress: () {
-                              setState(() {
-                                selectedType = accType.client;
-                              });
-                            },
-                            colour: selectedType == accType.client
-                                ? kActiveCardColor
-                                : kInactiveCardColor,
-                            cardChild: IconContent(
-                              // client icon
-                              icon: IconData(0xeb93, fontFamily: 'MaterialIcons'),
-                              label: 'Client',
-                            ),
-                          ),
+                  children: [
+                    Expanded(
+                      child: ReusableCard(
+                        onPress: () {
+                          setState(() {
+                            selectedType = accType.client;
+                          });
+                        },
+                        colour: selectedType == accType.client
+                            ? kDarkColor
+                            : kLightColor,
+                        cardChild: IconContent(
+                          // client icon
+                          icon: IconData(0xeb93, fontFamily: 'MaterialIcons'),
+                          label: 'Client',
                         ),
-                        Expanded(
-                          child: ReusableCard(
-                            onPress: () {
-                              setState(() {
-                                selectedType = accType.workshop;
-                              });
-                            },
-                            colour: selectedType == accType.workshop
-                                ? kActiveCardColor
-                                : kInactiveCardColor,
-                            cardChild: IconContent(
-                              icon: IconData(0xe83a, fontFamily: 'MaterialIcons'),
-                              label: 'Workshop',
-                            ),
-                          ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ReusableCard(
+                        onPress: () {
+                          setState(() {
+                            selectedType = accType.workshop;
+                          });
+                        },
+                        colour: selectedType == accType.workshop
+                            ? kDarkColor
+                            : kLightColor,
+                        cardChild: IconContent(
+                          icon: IconData(0xe83a, fontFamily: 'MaterialIcons'),
+                          label: 'Workshop',
                         ),
-                      ],
-                    )),
+                      ),
+                    ),
+                  ],
+                )),
                 // Row(
                 //   children: [
                 //     Expanded(
@@ -167,6 +183,39 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 //   ],
                 // ),
                 gap,
+                Visibility(
+                  visible: accType.workshop == selectedType,
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: kDarkColor,
+                        backgroundImage: _load ? FileImage(_pickedImage) : null,
+                      ),
+                      TextButton.icon(
+                          style: TextButton.styleFrom(primary: kDarkColor),
+                          onPressed: () async {
+                            final picker = ImagePicker();
+                            final pickedImage = await picker.getImage(
+                                source: ImageSource.gallery);
+                            final pickedImageFile = File(pickedImage!.path);
+                            _load = true;
+                            final cropped = await _cropImage(
+                              imageFile: pickedImageFile,
+                            );
+                            setState(() {
+                              _pickedImage = cropped!;
+                            });
+                          },
+                          icon: const Icon(Icons.image),
+                          label: _load
+                              ? const Text('Change your logo')
+                              : const Text('Upload your logo')),
+                      gap,
+                    ],
+                  ),
+                ),
+
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your email'),
@@ -252,9 +301,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 RoundedButton(
                   title: 'Register',
-                  colour: kInactiveCardColor,
-
+                  colour: kLightColor,
                   onPressed: () async {
+                    if (!_load && accType.workshop == selectedType) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please upload your logo'),
+                        ),
+                      );
+                      return;
+                    }
                     if (_formKey.currentState!.validate()) {
                       setState(() {
                         showSpinner = true;
@@ -286,7 +342,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             email: email,
                             password: password,
                             phoneNumber: phoneNumber,
-                            name: name);
+                            name: name,
+
+                        );
 
                         showSpinner = false;
                         Navigator.of(
@@ -296,6 +354,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           builder: (BuildContext context) => googleMapMyLoc(
                             userInfo: newUser,
                             workshopName: workshop,
+                            logo: _pickedImage,
                           ),
                         ));
                       }

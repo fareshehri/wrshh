@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.lightBlue[300], size: 24),
+        iconTheme: const IconThemeData(color: kDarkColor, size: 24),
       ),
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 gap,
                 RoundedButton(
                   title: 'Log In',
-                  colour: kInactiveCardColor,
+                  colour: kLightColor,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {

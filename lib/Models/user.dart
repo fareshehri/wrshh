@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class AppUser {
   late String email;
   late String password;
@@ -52,10 +54,11 @@ class Workshop {
   late String? uid;
   late String name;
   late String location;
+  late File logo;
 
   Workshop({
-    required this.uid,
     required this.name,
     required this.location,
+    required this.logo,
   });
 }

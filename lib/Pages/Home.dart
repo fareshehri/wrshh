@@ -62,7 +62,7 @@ DateTime selectedDate = DateTime.now();
                 height: MediaQuery.of(context).size.height-MediaQuery.of(context).padding.top -kToolbarHeight,
                 width: MediaQuery.of(context).size.width*0.9,
                 child: ListView(padding: const EdgeInsets.all(8),children: [                
-                SizedBox(child: Image.asset('images/wallpaper3.jpg',fit: BoxFit.contain,)),
+                SizedBox(child: Image.asset('assets/images/wallpaper3.jpg',fit: BoxFit.contain,)),
                 // const SizedBox(height: 1,),
                 // SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
                 
@@ -84,7 +84,7 @@ DateTime selectedDate = DateTime.now();
 }
 
             if(_selectedIndex ==1){
-            return const GoogleMaps();
+            return const MyGoogleMaps();
             }
 
               else{

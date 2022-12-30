@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../Models/user.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -99,15 +101,32 @@ class AuthService {
     _auth.signOut();
   }
 
-  void addWorkshop(Workshop workshop) {
+  Future<void> addWorkshop(Workshop workshop, String email) async {
     _firestore.collection('workshops').add(
       {
-        'uid': workshop.uid,
+        'adminEmail': email,
         'workshopName': workshop.name,
         'location': workshop.location,
         'overAllRate': 0,
       },
     );
+
+   try {
+      final ref = FirebaseStorage.instance.ref().child('workshopLogo').child(email);
+      await ref.putFile(workshop.logo);
+      final url = await ref.getDownloadURL();
+      _firestore.collection('workshops').where('adminEmail', isEqualTo: email).get().then((value) {
+        value.docs.forEach((element) {
+          _firestore.collection('workshops').doc(element.id).update(
+            {
+              'logo': url,
+            },
+          );
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
 }

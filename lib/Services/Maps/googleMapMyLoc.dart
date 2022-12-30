@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,19 +13,22 @@ import '../Auth/auth.dart';
 class googleMapMyLoc extends StatefulWidget {
   late WorkshopUser userInfo;
   late String workshopName;
-  googleMapMyLoc({required this.userInfo, required this.workshopName});
+  late File logo;
+  googleMapMyLoc({required this.userInfo, required this.workshopName, required this.logo});
 
   @override
   _googleMapsMyLocState createState() => _googleMapsMyLocState(
         userInfo: userInfo,
         workshopName: workshopName,
+        logo: logo,
       );
 }
 
 class _googleMapsMyLocState extends State<googleMapMyLoc> {
   late WorkshopUser userInfo;
   late String workshopName;
-  _googleMapsMyLocState({required this.userInfo, required this.workshopName});
+  late File logo;
+  _googleMapsMyLocState({required this.userInfo, required this.workshopName, required this.logo});
 
   /// Google Map Package Controller
   late final Completer<GoogleMapController> _controller = Completer();
@@ -117,12 +121,12 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                                   .signUpUser(userInfo);
                                               if (user?.user?.uid != null) {
                                                 Workshop workshop = Workshop(
-                                                  uid: user?.user?.uid,
                                                   name: workshopName,
                                                   location: LOCA,
+                                                  logo: logo,
                                                 );
                                                 AuthService()
-                                                    .addWorkshop(workshop);
+                                                    .addWorkshop(workshop, userInfo.email);
                                               }
 
                                               Navigator.pushNamed(
