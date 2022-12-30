@@ -67,12 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onChanged: (value) {
                     email = value;
                   },
-                  validator: (value) {
-                    if (value!.trim().isEmpty || !emailValidator.hasMatch(value))  {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
+                  validator: emailValidator,
                 ),
                 gap,
                 TextFormField(
@@ -83,12 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onChanged: (value) {
                     password = value;
                   },
-                  validator: (value) {
-                    if (value!.trim().isEmpty || value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
+                  validator: passwordValidator,
                 ),
                 gap,
                 RoundedButton(

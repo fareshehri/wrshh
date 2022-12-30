@@ -1,20 +1,17 @@
-// import 'dart:html';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../Models/user.dart';
 import '../Services/Auth/auth.dart';
 import '../Services/Maps/googleMapMyLoc.dart';
+import '../components/avatar_upload.dart';
 import '../components/icon_content.dart';
 import '../components/reusable_card.dart';
 import '../components/roundedButton.dart';
 import '../components/validators.dart';
 import '../constants.dart';
 import 'Home.dart';
-
-import 'dart:io';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -44,17 +41,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   late File _pickedImage;
   bool _load = false;
-
-  Future<File?> _cropImage({required File imageFile}) async {
-    CroppedFile? croppedImage = await ImageCropper().cropImage(
-      sourcePath: imageFile.path,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-      ],
-    );
-    if (croppedImage == null) return null;
-    return File(croppedImage.path);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,10 +77,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                       ),
                     ]),
-                SizedBox(
+                const SizedBox(
                   height: 48.0,
                 ),
-                Text('Select your account type',
+                const Text('Select your account type',
                     style: TextStyle(
                       fontSize: 18.0,
                       color: Colors.black,
@@ -187,30 +173,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   visible: accType.workshop == selectedType,
                   child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: kDarkColor,
-                        backgroundImage: _load ? FileImage(_pickedImage) : null,
-                      ),
-                      TextButton.icon(
-                          style: TextButton.styleFrom(primary: kDarkColor),
-                          onPressed: () async {
-                            final picker = ImagePicker();
-                            final pickedImage = await picker.getImage(
-                                source: ImageSource.gallery);
-                            final pickedImageFile = File(pickedImage!.path);
+                      AvatarPhoto(
+                        onImageSelected: (image) {
+                          setState(() {
                             _load = true;
-                            final cropped = await _cropImage(
-                              imageFile: pickedImageFile,
-                            );
-                            setState(() {
-                              _pickedImage = cropped!;
-                            });
-                          },
-                          icon: const Icon(Icons.image),
-                          label: _load
-                              ? const Text('Change your logo')
-                              : const Text('Upload your logo')),
+                            _pickedImage = image;
+                          });
+                        },
+                      ),
                       gap,
                     ],
                   ),
@@ -224,13 +194,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   onChanged: (value) {
                     email = value;
                   },
-                  validator: (value) {
-                    if (value!.trim().isEmpty ||
-                        !emailValidator.hasMatch(value)) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
+                  validator: emailValidator,
                 ),
                 gap,
                 TextFormField(
@@ -241,12 +205,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   onChanged: (value) {
                     password = value;
                   },
-                  validator: (value) {
-                    if (value!.trim().isEmpty || value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    }
-                    return null;
-                  },
+                  validator: passwordValidator,
                 ),
                 gap,
                 TextFormField(
@@ -256,13 +215,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   onChanged: (value) {
                     name = value;
                   },
-                  validator: (value) {
-                    if (value!.trim().isEmpty ||
-                        !nameValidator.hasMatch(value)) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
+                  validator: nameValidator,
                 ),
                 gap,
                 TextFormField(
@@ -272,13 +225,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   onChanged: (value) {
                     phoneNumber = value;
                   },
-                  validator: (value) {
-                    if (value!.trim().isEmpty ||
-                        !phoneValidator.hasMatch(value)) {
-                      return 'Please enter a valid phone number start with +966';
-                    }
-                    return null;
-                  },
+                  validator: phoneNumberValidator,
                 ),
                 gap,
                 Visibility(
@@ -290,13 +237,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     onChanged: (value) {
                       workshop = value;
                     },
-                    validator: (value) {
-                      if (value!.trim().isEmpty ||
-                          !nameValidator.hasMatch(value)) {
-                        return 'Please enter your workshop name';
-                      }
-                      return null;
-                    },
+                    validator: workshopNameValidator,
                   ),
                 ),
                 RoundedButton(
@@ -318,10 +259,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       var newUser;
                       if (accType.client == selectedType) {
                         newUser = ClientUser(
-                            email: email,
-                            password: password,
-                            phoneNumber: phoneNumber,
-                            name: name);
+                          email: email,
+                          password: password,
+                          phoneNumber: phoneNumber,
+                          name: name,
+                        );
                         try {
                           var user = await AuthService().signUpUser(newUser);
                           if (user?.user?.uid != null) {
@@ -330,7 +272,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Something went wrong')),
+                              content: Text(
+                                  'Something went wrong, Email may be already in use'),
+                            ),
                           );
                         } finally {
                           setState(() {
@@ -339,13 +283,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         }
                       } else if (accType.workshop == selectedType) {
                         newUser = WorkshopUser(
-                            email: email,
-                            password: password,
-                            phoneNumber: phoneNumber,
-                            name: name,
-
+                          email: email,
+                          password: password,
+                          phoneNumber: phoneNumber,
+                          name: name,
                         );
-
                         showSpinner = false;
                         Navigator.of(
                           context,

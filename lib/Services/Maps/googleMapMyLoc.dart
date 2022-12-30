@@ -105,7 +105,7 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                           CrossAxisAlignment.stretch,
                                       children: [
                                         /// First Line text
-                                        Text('${loc.toString()}',
+                                        Text(loc.toString(),
                                             style: TextStyle(
                                                 color: Colors.grey[700],
                                                 fontWeight: FontWeight.bold,
@@ -119,7 +119,7 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                             try {
                                               var user = await AuthService()
                                                   .signUpUser(userInfo);
-                                              if (user?.user?.uid != null) {
+                                              if (user.user?.uid != null) {
                                                 Workshop workshop = Workshop(
                                                   name: workshopName,
                                                   location: LOCA,
@@ -132,7 +132,12 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                               Navigator.pushNamed(
                                                   context, W_home.id);
                                             } catch (e) {
-                                              print(e);
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Something went wrong, Email may be already in use'),
+                                                ),
+                                              );
                                             }
                                           },
                                         ),
