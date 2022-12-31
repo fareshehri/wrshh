@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/Pages/Home.dart';
 import 'package:wrshh/Pages/welcome.dart';
+import 'package:wrshh/constants.dart';
 import 'Pages/W_home.dart';
 import 'firebase_options.dart';
 
@@ -21,6 +22,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   runApp(MaterialApp(
+    theme: ThemeData(
+      primarySwatch: Colors.pink,
+    ),
     initialRoute: Wrapper.id,
     routes: {
       Wrapper.id: (context) => Wrapper(),
