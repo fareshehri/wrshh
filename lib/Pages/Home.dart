@@ -67,7 +67,7 @@ DateTime selectedDate = DateTime.now();
                 // SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
                 
                 Form(key: _formKey,child: Column(children: <Widget>[
-                  TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
+                  TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
