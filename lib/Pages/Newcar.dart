@@ -18,26 +18,33 @@ class Newcar extends StatefulWidget {
 class _NewcarState extends State<Newcar> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
+  //get data
   var name;
   var carsvin;
   var email;
   var maker;
   var car;
   var year;
+  
+  //set values
   var ob;
   var oc;
   var _selectedB;
   var _selectedC;
   var _vin;
   var _currentSelectedYear =2023;
+  
+  //set views
   var viscar = true;
   var visin = false;
   bool gotPath = false;
-  bool gotCar = false;
+
+  
   //final selection to fix other
   var  finb;
   var finc;
 
+//Get data from firestore
 Future _getData() async {
     final User user = await _auth.currentUser!;
     final client = await _firestore.collection('clients').doc(user!.email).get();
@@ -45,45 +52,44 @@ Future _getData() async {
       name = client['name'];
       carsvin=client['vin'];
       email=user!.email;
-      gotCar = true;
       
     });
-      await _getCar();
-  }
-  Future _getCar() async {
+      await _getCar();}
+//Get data from firestore
+Future _getCar() async {
+    if(carsvin!=""){
     final vin = await _firestore.collection('vin').doc(carsvin).get();
     setState(() {
-      //no vin?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! fix it 
-      if(carsvin==""){
-      _selectedB='Chevrolet';
-      _selectedC='Groove';
-      gotPath = true;
-      }
-      else{
       maker = vin['carManufacturer'];
       car=vin['carModel'];
       year=int.parse(vin['carYear']);
       ob=vin['otherBrand'];
       oc=vin['otherCar'];
-      print('object');
-      print(car+' hello '+maker);
       _selectedB = maker;
       _selectedC = car;
+      finb=maker;
+      finc=car;
       _vin=carsvin;
       _currentSelectedYear=year;
       gotPath = true;
       if(car=='Other'){
-          var viscar = false;
-          var visin = true;
+          viscar = false;
+          visin = true;
       }
-      }
-      
+    });
+    }
+    else{
+    setState(() {
+      _selectedB='Chevrolet';
+      _selectedC='Groove';
+      gotPath = true;
       
     });
   }
 
+  }
 
-
+ //car manufacturers in saudi arabia
  var cars ={
     "Toyota":["Yaris","Corolla","Camry","Avalon","Aurion","Supra","86","Yaris Sport","Prius","Raize","Rush","Corolla Cross","RAV4","FJ Cruiser","Fortuner","Highlander","Prado","Land Cruiser Wagon","C-HR","Land Cruiser pickup","Sequoia","Innova","Avanza","Previa","Granvia","Liteace","Hiace","Hilux","Land Cruiser 70","Dyna","Coaster",],    "Nissan":['ni'],
     "Mazda":['3','6','CX3','CX5','CX9'],
@@ -118,11 +124,12 @@ Future _getData() async {
 
 
 };
-
+  //car manufacturers in saudi arabia
   //   "Rolls Royce","Maserati","Ssang Yong","Baic","Infiniti","Maxus","Subaru","Ferrari","Cadillac","Dongfeng","Isuzu","Jac","Lamborghini","Jaguar","Mini","Exeed","Chrysler","Bugatti","Jeep","Lifan",
   //   "Foton","Bentley","Land Rover","Jetour","Volvo","Porsche","Lincoln","Aston Martin","Hongqi",
 
-  //car info
+  
+  //car info validation
   final _formKey = GlobalKey<FormState>();
     
 @override
@@ -135,9 +142,10 @@ void initState() {
   @override
   Widget build(BuildContext context) {
 
-  
+  //dropdown fill 
   List<int> year = [for (var i = 1960; i <= 2023; i++) i];
       
+//wait for values from firestore
       if (!gotPath){
     return Scaffold(
       body: Center(
@@ -145,12 +153,14 @@ void initState() {
       ),
     );
   }
+
+//when values are stored
   else{
-  print(carsvin);
-  print(maker);
-  print(car);
+
+  //set inital dropdown values
   var _selectbrand = cars.keys;
   var _selectcar = cars[_selectedB];
+
     return Scaffold(
      appBar: AppBar(title: Text('Add/Change Car'),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),)
      ,
@@ -165,44 +175,48 @@ void initState() {
 
         Container(
           child: Form(key: _formKey,child: Column(children: <Widget>[
-          
           //select brand
           DropdownButton(value: _selectedB,items: _selectbrand.map((map) => DropdownMenuItem(child: Text(map),value: map),).toList(), 
           onChanged: (val) {setState(() {
+            //set first dropdown
             _selectedB=val.toString();
+            //set final based on first dropdown
             finb=_selectedB;
+            //set second dropdown
             _selectedC=cars[_selectedB]!.first;
+            //set final based on second dropdown
             finc=_selectedC;
-            //if(_selectedC!=null){_selectedC = null;}
-            if(_selectedB=="Other"){viscar=false;visin=true; _selectedB=val.toString();}
-            else{
-            viscar=true;
-            visin=false;}
-          });}
+            //change views
+            if(_selectedB=="Other"){viscar=false;visin=true; _selectedB=val.toString();}else{viscar=true;visin=false;}});}
           ),
           
           //select car
+          //if car brand is chosen
           Visibility(
             visible: viscar,
             child: DropdownButton(value: _selectedC,items: _selectcar!.map((map) => DropdownMenuItem(child: Text(map),value: map),).toList(), 
             onChanged: (val) {setState(() {
+              //set second dropdown
               _selectedC=val.toString();
+              //set final based on second dropdown
               finc=_selectedC;
-              //if(_selectedB!=null){_selectedC = val.toString();}
               }
               );
               }
             ),
           ),
 
+          //if Other is chosen
           Visibility(visible: visin,
           child: Container(
             child: Column(children: [
                 SizedBox(height:30 ,),
                 Text("Manufacturer"),
+                //set other brand value
                 TextFormField(onChanged: (value) => ob=value,initialValue: ob),
                 SizedBox(height:30 ,),
                 Text("Car"),
+                //set other car value
                 TextFormField(onChanged: (value) => oc=value,initialValue: oc)
               ],),
           )),
@@ -220,17 +234,13 @@ void initState() {
                   ////
                   SizedBox(height: 50,),
                   Text('Vin'),
+                  //get stored vin number ( carsvin ) and updated when changed with new vin number ( _vin )
                   TextFormField(initialValue: carsvin,onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      print(finb);
-                      print(finc);
-                      print(_currentSelectedYear);
-                      print(_vin);
-                      print('===================');
-                      print(name);
-                      print(carsvin);
+                      //if brand is chosen clear ob
+                      if(finb!='Other'){ob="";oc="";}
                       Map<String,String> saved={
                         'carManufacturer': finb,
                         'carModel': finc,
@@ -246,8 +256,10 @@ void initState() {
 
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),);}},
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')),);
+                        Future.delayed(Duration(seconds: 2),() => Navigator.pop(context),);
+                        
+                          }},
                         icon: Icon(Icons.save), label: Text('Save'),)
         
                 ],
