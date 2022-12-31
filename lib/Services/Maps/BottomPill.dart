@@ -5,9 +5,11 @@ class BottomPill extends StatelessWidget {
   const BottomPill({
     Key? key,
     required this.pinPillPosition,
+    required this.workshopInfo,
   }) : super(key: key);
 
   final double pinPillPosition;
+  final Map<String, dynamic> workshopInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,8 @@ class BottomPill extends StatelessWidget {
     );
   }
 
+
+
   /// upper lower pill
   Container upperLowerPill() {
     return Container(
@@ -66,7 +70,8 @@ class BottomPill extends StatelessWidget {
             children: [
               /// Picture part shape
               ClipOval(
-                  child: Image.asset('images/FFFF.jpg',
+                  child: Image.network(
+                    workshopInfo['logo'],
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
@@ -81,7 +86,7 @@ class BottomPill extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// First Line text
-                  Text('Something blah blah',
+                  Text(workshopInfo['workshopName'],
                       style: TextStyle(
                           color: Colors.grey[700],
                           fontWeight: FontWeight.bold,

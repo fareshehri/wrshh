@@ -108,11 +108,14 @@ class AuthService {
         'workshopName': workshop.name,
         'location': workshop.location,
         'overAllRate': 0,
+        'logo': 'https://firebasestorage.googleapis.com/v0/b/wrshhx.appspot.com/o/workshopLogo%2Fwaleed5%40gmail.co?alt=media&token=cff86bc2-1f59-4fe2-a5e8-51591705f78d',
       },
     );
 
    try {
       final ref = FirebaseStorage.instance.ref().child('workshopLogo').child(email);
+
+
       await ref.putFile(workshop.logo);
       final url = await ref.getDownloadURL();
       _firestore.collection('workshops').where('adminEmail', isEqualTo: email).get().then((value) {

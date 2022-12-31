@@ -37,43 +37,53 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
   /// Primarily Hide Pins
   double pinPillPosition = pinInvisiblePosition;
 
+  // save all workshop information on this map
+  Map<String, dynamic> workshopInfo = {'workshopName': '', 'adminEmail': '', 'logo': '', 'overAllRate': 0};
+
+  void showPinsOnMap11() async{
+
+    FirebaseFirestore.instance.collection('workshops').snapshots().listen((snapshot) {
+
+
+      var count = 0;
+      for (var document in snapshot.docs) {
+        String email = document['adminEmail'];
+        String loc = document['location'] as String;
+        List Loc = loc.split(',');
+        double lat = double.parse(Loc[1]);
+        double lng = double.parse(Loc[0]);
+        workshopInfo[email] = document.data();
+        setState(() {
+          _markers.add(Marker(
+            markerId: MarkerId(count.toString()),
+            position: LatLng(lat, lng),
+            infoWindow: InfoWindow(title: document['workshopName'],
+                snippet: document['location']),
+            icon: BitmapDescriptor.defaultMarker,
+            onTap: () {
+              setState(()  {
+                workshopInfo =  document.data();
+                print(workshopInfo);
+                pinPillPosition = pinVisiblePosition;
+
+                _controller.animateCamera(
+                    CameraUpdate.newLatLngZoom(LatLng(lat, lng), 18));
+              });
+            },
+          ));
+        });
+
+
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
+    showPinsOnMap11();
 
-    FirebaseFirestore.instance.collection('workshops').snapshots().listen((snapshot) {
-      setState(() {
-        _markers.clear();
-        for (var document in snapshot.docs) {
-
-          String loc = document['location'] as String;
-          String name = document['workshopName'];
-          List Loc = loc.split(',');
-
-          _markers.add(
-            Marker(
-              markerId: MarkerId(name),
-              position: LatLng(Loc[0],Loc[1]),
-              draggable: false,
-              onTap: () {
-                setState(() {
-                  /// Show pin info
-                  pinPillPosition = pinVisiblePosition;
-
-                  _controller.animateCamera(
-                      CameraUpdate.newLatLngZoom(LatLng(Loc[0], Loc[1]), 18)
-                  );
-                });
-              }
-            )
-          );
-          print("test");
-          print("test");
-        }
-      });
-    });
   }
 
 
@@ -120,73 +130,10 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
           const upperPill(),
 
           /// Bottom pill
-          BottomPill(pinPillPosition: pinPillPosition)
+          BottomPill(pinPillPosition: pinPillPosition, workshopInfo: workshopInfo),
         ],
       ),
     );
-  }
-
-  /// Registered Workshops pins
-  Future<void> showPinsOnMap() async {
-
-
-    /// Pin #1
-    setState(() {
-      _markers.add( Marker(
-          markerId: const MarkerId("marker1"),
-          position: const LatLng(24.700789, 46.654955),
-          draggable: false,
-          onTap: () {
-            setState(() {
-              /// Show pin info
-              pinPillPosition = pinVisiblePosition;
-              /// Zoom when tapped
-              _controller.animateCamera(
-                  CameraUpdate.newLatLngZoom(LatLng(24.700789, 46.654955), 18)
-              );
-            });
-          }
-      ),);
-
-    });
-
-    /// Pin #2
-    setState(() {
-      _markers.add( Marker(
-          markerId: const MarkerId("marker2"),
-          position: const LatLng(24.700935, 46.654500),
-          draggable: false,
-          onTap: () {
-            setState(() {
-              /// Show pin info
-              pinPillPosition = pinVisiblePosition;
-              /// Zoom when tapped
-              _controller.animateCamera(
-                  CameraUpdate.newLatLngZoom(LatLng(24.700935, 46.654500), 18)
-              );
-            });
-          }
-      ),);
-    });
-
-    /// Pin #3
-    setState(() {
-      _markers.add( Marker(
-          markerId: const MarkerId("marker3"),
-          position: const LatLng(24.704790, 46.806561),
-          draggable: false,
-          onTap: () {
-            setState(() {
-              /// Show pin info
-              pinPillPosition = pinVisiblePosition;
-              /// Zoom when tapped
-              _controller.animateCamera(
-                  CameraUpdate.newLatLngZoom(LatLng(24.704790, 46.806561), 18)
-              );
-            });
-          }
-      ),);
-    });
   }
 
 }
