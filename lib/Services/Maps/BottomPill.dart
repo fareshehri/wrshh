@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wrshh/Services/Auth/db.dart';
+import '../../Pages/client_book.dart';
 import 'bookPage.dart';
 
 class BottomPill extends StatelessWidget {
@@ -41,11 +43,13 @@ class BottomPill extends StatelessWidget {
         child: Column(
           children: [
 
-            /// upper lower pill
-            upperLowerPill(),
+            NewDes(),
 
-            /// lower lower pill
-            lowerLowerPill(),
+            // /// upper lower pill
+            // upperLowerPill(),
+            //
+            // /// lower lower pill
+            // lowerLowerPill(),
 
             ///Book button pill
             bookButtonPill(context)
@@ -55,7 +59,45 @@ class BottomPill extends StatelessWidget {
     );
   }
 
-
+  Row NewDes(){
+    return Row(
+      children: [
+        Stack(
+          /// "Rendered" area is only the stack?
+          clipBehavior: Clip.none,
+          children: [
+            /// Picture part shape
+            ClipOval(
+                child: Image.network(workshopInfo['logo'],
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                )
+            ),
+          ],
+        ),
+        SizedBox(width: 10,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(workshopInfo['workshopName'],
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600
+              ),
+            ),
+            SizedBox(height: 5,),
+            Text(workshopInfo['overAllRate'].toString(),
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400
+              ),
+            ),
+          ],
+        ),
+      ]
+    );
+  }
 
   /// upper lower pill
   Container upperLowerPill() {
@@ -70,10 +112,9 @@ class BottomPill extends StatelessWidget {
             children: [
               /// Picture part shape
               ClipOval(
-                  child: Image.network(
-                    workshopInfo['logo'],
-                    width: 60,
-                    height: 60,
+                  child: Image.network(workshopInfo['logo'],
+                    width: 80,
+                    height: 80,
                     fit: BoxFit.cover,
                   )
               ),
@@ -90,13 +131,9 @@ class BottomPill extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.grey[700],
                           fontWeight: FontWeight.bold,
-                          fontSize: 15
+                          fontSize: 24
                       )
                   ),
-                  /// Second Line text
-                  Text("indeed blah blah"),
-                  /// Third Line text
-                  Text("yes yes")
                 ],
               )
           )
@@ -163,9 +200,10 @@ class BottomPill extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ElevatedButton(
-                          onPressed: (){
+                          onPressed: ()async{
                             /// Navigate to the bookPage() function
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const bookPage()));
+                            List appointments = await getAppointmentsFromDB(workshopInfo['adminEmail']);
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ClientBooking(appointments: appointments,)));
                           },
                           /// Button Style
                           style: ElevatedButton.styleFrom(
