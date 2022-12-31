@@ -53,6 +53,7 @@ Future _getData() async {
   Future _getCar() async {
     final vin = await _firestore.collection('vin').doc(carsvin).get();
     setState(() {
+      //no vin?!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! fix it 
       if(carsvin==""){
       _selectedB='Chevrolet';
       _selectedC='Groove';
