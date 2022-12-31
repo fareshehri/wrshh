@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:time_range/time_range.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class WorkingHours extends StatefulWidget {
   const WorkingHours({Key? key}) : super(key: key);
@@ -24,12 +27,25 @@ class _WorkingHours extends State<WorkingHours> {
     const TimeOfDay(hour: 16, minute: 00),
   );
 
-  TimeRangeResult? _timeRange;
+
+  late TimeRangeResult _timeRange;
+
+  late User user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  void call() async {
+    final User user = _auth.currentUser!;
+    final hours = await _firestore.collection('workshops').doc(user.email).get();
+    _timeRange = TimeRangeResult(
+       (hours['startTime'] as TimeOfDay),
+       (hours['finishTime'] as TimeOfDay)
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    _timeRange = _defaultTimeRange;
+    call();
   }
 
   @override
@@ -59,13 +75,21 @@ class _WorkingHours extends State<WorkingHours> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Selected Range: ${_timeRange!.start.format(context)} - ${_timeRange!.end.format(context)}',
+                      'Selected Range: ${_timeRange.start.format(context)} - ${_timeRange.end.format(context)}',
                       style: const TextStyle(fontSize: 20, color: dark),
                     ),
                     const SizedBox(height: 20),
                     MaterialButton(
-                      onPressed: () =>
-                          setState(() => _timeRange = _defaultTimeRange),
+                      onPressed: () {
+                          setState(() {
+                            _timeRange = _defaultTimeRange;
+                            FirebaseFirestore.instance.collection('workshops').doc(user.email).update({
+                              'startTime': "TimeOfDay(hour: ${_timeRange.start.hour}, minute: ${_timeRange.start.minute})",
+                              'finishTime': "TimeOfDay(hour: ${_timeRange.end.hour}, minute: ${_timeRange.end.minute})"
+                            });
+                          }
+                          );
+                      },
                       color: orange,
                       child: const Text('Default'),
                     )
@@ -117,12 +141,18 @@ class _WorkingHours extends State<WorkingHours> {
               activeBorderColor: dark,
               backgroundColor: Colors.transparent,
               activeBackgroundColor: dark,
-              firstTime: const TimeOfDay(hour: 8, minute: 00),
-              lastTime: const TimeOfDay(hour: 23, minute: 30),
+              firstTime: _timeRange.start,
+              lastTime: _timeRange.end,
               initialRange: _timeRange,
               timeStep: 30,
               timeBlock: 30,
-              onRangeCompleted: (range) => setState(() => _timeRange = range),
+              onRangeCompleted: (range) {
+                _timeRange = range!;
+                FirebaseFirestore.instance.collection('workshops').doc(user.email).update({
+                  'startTime': "TimeOfDay(hour: ${_timeRange.start.hour}, minute: ${_timeRange.start.minute})",
+                  'finishTime': "TimeOfDay(hour: ${_timeRange.end.hour}, minute: ${_timeRange.end.minute})"
+                });
+              },
               onFirstTimeSelected: (startHour) {},
             ),
 

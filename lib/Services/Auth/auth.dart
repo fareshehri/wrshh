@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import '../../Models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -101,6 +102,12 @@ class AuthService {
     _auth.signOut();
   }
 
+  final defaultServices =
+      '{\'name\': \'Check up\', \'price\': 0},'
+      '{\'name\': \'Oil change\',\'price\': 120},';
+  final startTime = 'TimeOfDay(hour: 8, minute: 00)';
+  final finishTime = 'TimeOfDay(hour: 16, minute: 00)';
+
   Future<void> addWorkshop(Workshop workshop, String email) async {
     _firestore.collection('workshops').add(
       {
@@ -108,6 +115,10 @@ class AuthService {
         'workshopName': workshop.name,
         'location': workshop.location,
         'overAllRate': 0,
+        'services': defaultServices,
+        'capacity': 0,
+        'startTime': startTime,
+        'finishTime': finishTime
       },
     );
 

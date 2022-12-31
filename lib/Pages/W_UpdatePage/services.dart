@@ -1,4 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Services extends StatefulWidget {
@@ -64,15 +66,26 @@ class UpdateSch extends StatefulWidget {
 class UpdateScheduleSec extends State<UpdateSch> {
 
   // The data for the objects
-  List<Map<String, dynamic>> _objects = [
-    {'name': 'Object 1', 'price': 100},
-    {'name': 'Object 2', 'price': 200},
-    {'name': 'Object 3', 'price': 300},
-  ];
+  late List<Map<String, dynamic>> _objects;
 
   // The controller for the text field
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+
+  late User user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  void call() async {
+    final User user = _auth.currentUser!;
+    final ser = await _firestore.collection('workshops').doc(user.email).get();
+
+    _objects = ser['services'] as List<Map<String, dynamic>>;
+  }
+
+  @override
+  void initState() {
+    call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +147,11 @@ class UpdateScheduleSec extends State<UpdateSch> {
                             setState(() {
                               _objects[index]['name'] = _nameController.text;
                               _objects[index]['price'] = int.parse(_priceController.text);
+
+                              FirebaseFirestore.instance.collection('workshops').doc(user.email).update({
+                                'services': _objects as String
+                              });
+
                             });
                             // Close the modal bottom sheet
                             Navigator.pop(context);
@@ -144,15 +162,19 @@ class UpdateScheduleSec extends State<UpdateSch> {
                     );
                   },
                 );
-              } else if (value == 'delete') {
+              }
+              else if (value == 'delete') {
                 // Remove the selected object from the list
                 setState(() {
                   _objects.removeAt(index);
+
+                  FirebaseFirestore.instance.collection('workshops').doc(user.email).update({
+                    'services': _objects as String
+                  });
                 });
               }
             },
           ),
-
         );
       },
     ),
@@ -193,6 +215,10 @@ class UpdateScheduleSec extends State<UpdateSch> {
                           _objects.add({
                             'name': _nameController.text,
                             'price': _priceController.text,
+                          });
+
+                          FirebaseFirestore.instance.collection('workshops').doc(user.email).update({
+                            'services': _objects as String
                           });
                         });
                         // Clear the text fields

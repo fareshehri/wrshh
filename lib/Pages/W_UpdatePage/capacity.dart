@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Capacity extends StatefulWidget {
@@ -20,10 +22,20 @@ class _Capacity extends State<Capacity> {
   late int capacity;
   late List<DropdownMenuItem<int>> _items;
 
+  User? user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  void call() async {
+    final User user = _auth.currentUser!;
+    final cap = await _firestore.collection('workshops').doc(user.email).get();
+
+    capacity = cap['capacity'] as int;
+  }
+
   @override
   void initState() {
+    call();
     super.initState();
-    capacity = 1;
     _items = List.generate(20, (index) {
       return DropdownMenuItem(
         value: index + 1,
@@ -96,6 +108,11 @@ class _Capacity extends State<Capacity> {
                 children: [
                   ElevatedButton(
                     onPressed: (){
+
+                      FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
+                        'capacity': capacity
+                      });
+
                       Navigator.pop(context);
                     },
                     /// Button Style
