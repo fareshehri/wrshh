@@ -235,11 +235,19 @@ void initState() {
                   SizedBox(height: 50,),
                   Text('Vin'),
                   //get stored vin number ( carsvin ) and updated when changed with new vin number ( _vin )
-                  TextFormField(initialValue: carsvin,onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
-                  ElevatedButton.icon(onPressed: () {
+                  TextFormField(initialValue: carsvin,onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {
+                    if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}
+                    return null;
+                    },),
+                  
+                  ElevatedButton.icon(onPressed: () async {
+                    final x = await FirebaseFirestore.instance.collection('vin').doc(_vin).get();
+                    if(x!=null && x['carModel']!=finc||x['carManufacturer']!=finb||x['otherBrand']!=ob||x['otherCar']!=oc ){
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The vin is already registered and the data is not matching')),);
+                      }
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      //if brand is chosen clear ob
+                      //if brand is chosen clear ob                   
                       if(finb!='Other'){ob="";oc="";}
                       Map<String,String> saved={
                         'carManufacturer': finb,
