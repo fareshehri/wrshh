@@ -138,12 +138,45 @@ void initState() {
     super.initState();
       _getData();
   }
+  
 
   @override
   Widget build(BuildContext context) {
 
+    Widget cancelButton = TextButton(child: Text("No"),onPressed:  () {Navigator.pop(context);},);
+    Widget continueButton = TextButton(child: Text("Yes"),onPressed:  () {
+      //add Car
+      if (_formKey.currentState!.validate()) {
+      //if brand is chosen clear ob                   
+      if(finb!='Other'){ob="";oc="";}
+      Map<String,String> saved={
+      'carManufacturer': finb,
+      'carModel': finc,
+      'carYear': _currentSelectedYear.toString(),
+      'otherBrand': ob,
+      'otherCar': oc,
+      };
+      FirebaseFirestore.instance.collection('vin').doc(_vin).set(saved);
+      FirebaseFirestore.instance.collection('clients').doc(email).update({
+        'vin':_vin
+        });
+        // If the form is valid, display a snackbar. In the real world,
+        // you'd often call a server or save the information in a database.
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')),);
+        Navigator.pop(context);
+        Future.delayed(Duration(seconds: 2),() => Navigator.pop(context),);}
+},);
+    AlertDialog alert = AlertDialog(title: Text("Confirmation"),
+    content: Text("Is the vehicle information correct?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],);
+                      
+
   //dropdown fill 
   List<int> year = [for (var i = 1960; i <= 2023; i++) i];
+  
       
 //wait for values from firestore
       if (!gotPath){
@@ -241,12 +274,15 @@ void initState() {
                     },),
                   
                   ElevatedButton.icon(onPressed: () async {
-                    final x = await FirebaseFirestore.instance.collection('vin').doc(_vin).get();
+                    //in try we want to change the car to registered car 
+                    //in catch we will add a new car to database
+                    try {
+                      final x = await FirebaseFirestore.instance.collection('vin').doc(_vin).get();
                     if(x!=null && x['carModel']!=finc||x['carManufacturer']!=finb||x['otherBrand']!=ob||x['otherCar']!=oc ){
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The vin is already registered and the data is not matching')),);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The vin is already registered and the data is not matching or please contact us')),);
                       }
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
+                      else{
+                        if (_formKey.currentState!.validate()) {
                       //if brand is chosen clear ob                   
                       if(finb!='Other'){ob="";oc="";}
                       Map<String,String> saved={
@@ -260,14 +296,23 @@ void initState() {
                       FirebaseFirestore.instance.collection('clients').doc(email).update({
                         'vin':_vin
                       });
-                      
-
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')),);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Car Changed')),);
                         Future.delayed(Duration(seconds: 2),() => Navigator.pop(context),);
                         
-                          }},
+                          }
+
+                      }
+                    } catch (e) {
+                      //show add car confirmation
+                      showDialog(context: context,builder: (BuildContext context) {return alert;},
+  );
+                                        
+                    }
+                    
+                    // Validate returns true if the form is valid, or false otherwise.
+                    },
                         icon: Icon(Icons.save), label: Text('Save'),)
         
                 ],
