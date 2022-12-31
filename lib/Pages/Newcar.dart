@@ -21,6 +21,22 @@ class _NewcarState extends State<Newcar> {
   var name;
   var carsvin;
   var email;
+  var maker;
+  var car;
+  var year;
+  var ob;
+  var oc;
+  var _selectedB;
+  var _selectedC;
+  var _vin;
+  var _currentSelectedYear =2023;
+  var viscar = true;
+  var visin = false;
+  bool gotPath = false;
+  bool gotCar = false;
+  //final selection to fix other
+  var  finb;
+  var finc;
 
 Future _getData() async {
     final User user = await _auth.currentUser!;
@@ -29,15 +45,44 @@ Future _getData() async {
       name = client['name'];
       carsvin=client['vin'];
       email=user!.email;
+      gotCar = true;
+      
+    });
+      await _getCar();
+  }
+  Future _getCar() async {
+    final vin = await _firestore.collection('vin').doc(carsvin).get();
+    setState(() {
+      if(carsvin==""){
+      _selectedB='Chevrolet';
+      _selectedC='Groove';
+      gotPath = true;
+      }
+      else{
+      maker = vin['carManufacturer'];
+      car=vin['carModel'];
+      year=int.parse(vin['carYear']);
+      ob=vin['otherBrand'];
+      oc=vin['otherCar'];
+      print('object');
+      print(car+' hello '+maker);
+      _selectedB = maker;
+      _selectedC = car;
+      _vin=carsvin;
+      _currentSelectedYear=year;
+      gotPath = true;
+      if(car=='Other'){
+          var viscar = false;
+          var visin = true;
+      }
+      }
+      
+      
     });
   }
 
-  var _selectedB = 'Chevrolet';
-  var _selectedC = 'Groove';
-  var _vin;
-  var _currentSelectedYear;
-  var viscar = true;
-  var visin = false;
+
+
  var cars ={
     "Toyota":["Yaris","Corolla","Camry","Avalon","Aurion","Supra","86","Yaris Sport","Prius","Raize","Rush","Corolla Cross","RAV4","FJ Cruiser","Fortuner","Highlander","Prado","Land Cruiser Wagon","C-HR","Land Cruiser pickup","Sequoia","Innova","Avanza","Previa","Granvia","Liteace","Hiace","Hilux","Land Cruiser 70","Dyna","Coaster",],    "Nissan":['ni'],
     "Mazda":['3','6','CX3','CX5','CX9'],
@@ -79,25 +124,41 @@ Future _getData() async {
   //car info
   final _formKey = GlobalKey<FormState>();
     
+@override
+void initState() {
+    // TODO: implement initState
+    super.initState();
+      _getData();
+  }
 
   @override
   Widget build(BuildContext context) {
-  _getData();
-  var _selectbrand = cars.keys;
-  var _selectcar = cars[_selectedB];
+
   
-  int? _currentSelectedYear=2023;
   List<int> year = [for (var i = 1960; i <= 2023; i++) i];
       
+      if (!gotPath){
     return Scaffold(
-     appBar: AppBar(title: Text('Add New Car'),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),)
+      body: Center(
+          child: CircularProgressIndicator(),
+      ),
+    );
+  }
+  else{
+  print(carsvin);
+  print(maker);
+  print(car);
+  var _selectbrand = cars.keys;
+  var _selectcar = cars[_selectedB];
+    return Scaffold(
+     appBar: AppBar(title: Text('Add/Change Car'),centerTitle: true,backgroundColor: Colors.transparent,foregroundColor: Colors.black,elevation: 0,iconTheme:IconThemeData(color: Colors.lightBlue[300],size: 24),)
      ,
      
      body: Container(margin: EdgeInsets.fromLTRB(25,50,25,50),
        child: ListView(children: [
         Container(
           child: Column(children: [
-            Text('Hello ($name) Here is Your Registered cars ($carsvin) ')
+            Text('Hello ($name) Here is Your Registered car ($carsvin) ')
           ],),
         ),
 
@@ -108,7 +169,9 @@ Future _getData() async {
           DropdownButton(value: _selectedB,items: _selectbrand.map((map) => DropdownMenuItem(child: Text(map),value: map),).toList(), 
           onChanged: (val) {setState(() {
             _selectedB=val.toString();
+            finb=_selectedB;
             _selectedC=cars[_selectedB]!.first;
+            finc=_selectedC;
             //if(_selectedC!=null){_selectedC = null;}
             if(_selectedB=="Other"){viscar=false;visin=true; _selectedB=val.toString();}
             else{
@@ -123,6 +186,7 @@ Future _getData() async {
             child: DropdownButton(value: _selectedC,items: _selectcar!.map((map) => DropdownMenuItem(child: Text(map),value: map),).toList(), 
             onChanged: (val) {setState(() {
               _selectedC=val.toString();
+              finc=_selectedC;
               //if(_selectedB!=null){_selectedC = val.toString();}
               }
               );
@@ -135,10 +199,10 @@ Future _getData() async {
             child: Column(children: [
                 SizedBox(height:30 ,),
                 Text("Manufacturer"),
-                TextField(onChanged: (value) => _selectedB=value,),
+                TextFormField(onChanged: (value) => ob=value,initialValue: ob),
                 SizedBox(height:30 ,),
                 Text("Car"),
-                TextField(onChanged: (value) => _selectedC=value,)
+                TextFormField(onChanged: (value) => oc=value,initialValue: oc)
               ],),
           )),
 
@@ -155,26 +219,29 @@ Future _getData() async {
                   ////
                   SizedBox(height: 50,),
                   Text('Vin'),
-                  TextFormField(onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
+                  TextFormField(initialValue: carsvin,onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
                   ElevatedButton.icon(onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      print(_selectedB);
-                      print(_selectedC);
+                      print(finb);
+                      print(finc);
                       print(_currentSelectedYear);
                       print(_vin);
                       print('===================');
                       print(name);
                       print(carsvin);
                       Map<String,String> saved={
-                        'carManufacturer': _selectedB,
-                        'carModel': _selectedC,
+                        'carManufacturer': finb,
+                        'carModel': finc,
                         'carYear': _currentSelectedYear.toString(),
+                        'otherBrand': ob,
+                        'otherCar': oc,
                       };
                       FirebaseFirestore.instance.collection('vin').doc(_vin).set(saved);
                       FirebaseFirestore.instance.collection('clients').doc(email).update({
                         'vin':_vin
                       });
+                      
 
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
@@ -189,6 +256,6 @@ Future _getData() async {
      ))
      );
     
-    
+  }
   }
   }
