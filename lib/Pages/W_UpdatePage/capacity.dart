@@ -1,7 +1,4 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:stepo/stepo.dart';
 
 class Capacity extends StatefulWidget {
   const Capacity({Key? key}) : super(key: key);
@@ -20,12 +17,19 @@ class _Capacity extends State<Capacity> {
 
   var bbcolor= [Colors.transparent,Colors.transparent,Colors.transparent,Colors.transparent];
 
-  // CHANGE HERE FOR FIREBASE CALL
-  int? capacity;
+  late int capacity;
+  late List<DropdownMenuItem<int>> _items;
 
   @override
   void initState() {
     super.initState();
+    capacity = 1;
+    _items = List.generate(20, (index) {
+      return DropdownMenuItem(
+        value: index + 1,
+        child: Text('${index + 1}'),
+      );
+    });
   }
 
   @override
@@ -70,12 +74,14 @@ class _Capacity extends State<Capacity> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Stepo(
-                    key: UniqueKey(),
-                    initialCounter: capacity,
-                    animationDuration: const Duration(milliseconds: 100),
-                    onIncrementClicked: (int c) => capacity = c,
-                    onDecrementClicked: (int c) => capacity = c,
+                  DropdownButton(
+                    value: capacity,
+                    items: _items,
+                    onChanged: (value) {
+                      setState(() {
+                        capacity = value as int;
+                      });
+                    }
                   )
                 ],
               ),
@@ -95,7 +101,6 @@ class _Capacity extends State<Capacity> {
                     /// Button Style
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.only(left: 13.0, right: 13),
-                      minimumSize: const Size(100, 50),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0)
                       ),
