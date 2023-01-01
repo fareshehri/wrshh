@@ -18,16 +18,20 @@ class BottomPill extends StatelessWidget {
     return AnimatedPositioned(
       /// Pin Tap Animation speed
       duration: const Duration(milliseconds: 250),
+
       /// Comes for a transition
       curve: Curves.easeInOut,
+
       /// Location on the device screen
-      left:0,
-      right:0,
+      left: 0,
+      right: 0,
+
       /// Transition from the bottom
       bottom: pinPillPosition,
       child: Container(
-        margin: EdgeInsets.only(top: 20, bottom:5, left:14, right:14),
+        margin: EdgeInsets.only(top: 20, bottom: 5, left: 14, right: 14),
         padding: EdgeInsets.all(15),
+
         /// Unnecessary details
         decoration: BoxDecoration(
             color: Colors.white,
@@ -36,13 +40,10 @@ class BottomPill extends StatelessWidget {
               BoxShadow(
                   color: Colors.black.withOpacity(0.2),
                   blurRadius: 12,
-                  offset: Offset.zero
-              )
-            ]
-        ),
+                  offset: Offset.zero)
+            ]),
         child: Column(
           children: [
-
             NewDes(),
 
             // /// upper lower pill
@@ -59,50 +60,55 @@ class BottomPill extends StatelessWidget {
     );
   }
 
-  Row NewDes(){
-    return Row(
-      children: [
-        Stack(
-          /// "Rendered" area is only the stack?
-          clipBehavior: Clip.none,
-          children: [
-            /// Picture part shape
-            ClipOval(
-                child: Image.network(workshopInfo['logo'],
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                )
-            ),
-          ],
-        ),
-        SizedBox(width: 10,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(workshopInfo['workshopName'],
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600
-              ),
-            ),
-            SizedBox(height: 5,),
-            Text(workshopInfo['overAllRate'].toString(),
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400
-              ),
-            ),
-          ],
-        ),
-      ]
-    );
+  Row NewDes() {
+    return Row(children: [
+      Stack(
+        /// "Rendered" area is only the stack?
+        clipBehavior: Clip.none,
+        children: [
+          /// Picture part shape
+          ClipOval(
+              child: Image.network(
+            workshopInfo['logo'],
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/images/Logo.png',
+                width: 80,
+                height: 80,
+              );
+            },
+            width: 80,
+            height: 80,
+            fit: BoxFit.cover,
+          )),
+        ],
+      ),
+      SizedBox(
+        width: 10,
+      ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            workshopInfo['workshopName'],
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            workshopInfo['overAllRate'].toString(),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          ),
+        ],
+      ),
+    ]);
   }
 
   /// upper lower pill
   Container upperLowerPill() {
     return Container(
-      color:Colors.white,
+      color: Colors.white,
       child: Row(
         children: [
           /// Logo Code Part
@@ -112,31 +118,29 @@ class BottomPill extends StatelessWidget {
             children: [
               /// Picture part shape
               ClipOval(
-                  child: Image.network(workshopInfo['logo'],
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                  )
-              ),
+                  child: Image.network(
+                workshopInfo['logo'],
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              )),
             ],
           ),
+
           /// Area next to Logo part
           SizedBox(width: 20),
           Expanded(
-              child: Column (
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// First Line text
-                  Text(workshopInfo['workshopName'],
-                      style: TextStyle(
-                          color: Colors.grey[700],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24
-                      )
-                  ),
-                ],
-              )
-          )
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// First Line text
+              Text(workshopInfo['workshopName'],
+                  style: TextStyle(
+                      color: Colors.grey[700],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24)),
+            ],
+          ))
         ],
       ),
     );
@@ -165,6 +169,7 @@ class BottomPill extends StatelessWidget {
                   size: 30,
                 ),
               ),
+
               /// Text code
               const SizedBox(width: 20),
               Column(
@@ -172,8 +177,8 @@ class BottomPill extends StatelessWidget {
                 children: const [
                   /// First Line
                   Text("no way jose",
-                      style: TextStyle(fontWeight: FontWeight.bold)
-                  ),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+
                   /// Second Line
                   Text("Recommended for ford vehicles..")
                 ],
@@ -200,27 +205,32 @@ class BottomPill extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ElevatedButton(
-                          onPressed: ()async{
+                          onPressed: () async {
                             /// Navigate to the bookPage() function
-                            List appointments = await getAppointmentsFromDB(workshopInfo['adminEmail']);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ClientBooking(appointments: appointments,)));
+                            List appointments = await getAppointmentsFromDB(
+                                workshopInfo['adminEmail']);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ClientBooking(
+                                      appointments: appointments,
+                                    )));
                           },
+
                           /// Button Style
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(11.0),
                             minimumSize: const Size(100, 50),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0)
-                            ),
+                                borderRadius: BorderRadius.circular(18.0)),
                           ),
+
                           /// Text on Button
-                          child: const Text("Book", style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold )),
+                          child: const Text("Book",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
                         )
                       ],
-                    )
-                ),
+                    )),
               ),
             ],
           )
@@ -228,5 +238,4 @@ class BottomPill extends StatelessWidget {
       ),
     );
   }
-
 }
