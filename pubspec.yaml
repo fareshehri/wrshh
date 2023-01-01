@@ -14,7 +14,6 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   sizer: ^2.0.15
-  flutter_calendar_carousel: ^2.4.1
   google_maps_flutter: ^2.2.2
   google_maps_flutter_web: ^0.4.0+3
   animated_text_kit: ^4.2.2
@@ -28,7 +27,7 @@ dependencies:
   image_picker: ^0.8.6
   image_cropper: ^3.0.1
   firebase_storage: ^11.0.10
-  calendar_appbar: ^0.0.6
+  calendar_timeline: ^1.1.0
 
 dev_dependencies:
   flutter_test:

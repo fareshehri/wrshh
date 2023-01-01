@@ -34,7 +34,8 @@ Future<List> getAppointmentsFromDB(String email) async {
   List appointments = [];
   _firestore.collection('Appointment').where('workshopID', isEqualTo: email).get().then((value) {
     value.docs.forEach((element) {
-      appointments.add(element.data());
+      appointments.add(element);
+      print(element.id);
         });
       });
   return appointments;
