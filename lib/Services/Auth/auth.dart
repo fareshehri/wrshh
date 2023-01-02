@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:time_range/time_range.dart';
 
 import '../../Models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -19,9 +20,9 @@ class AuthService {
   }
 
   Future<AppUser> getUser() async {
-    final User user = await _auth.currentUser!;
-    final client = await _firestore.collection('clients').doc(user!.email).get();
-    final workshop = await _firestore.collection('workshopAdmin').doc(user!.email).get();
+    final User user = _auth.currentUser!;
+    final client = await _firestore.collection('clients').doc(user.email).get();
+    final workshop = await _firestore.collection('workshopAdmin').doc(user.email).get();
     if(client.exists){
       return ClientUser(
         email: client['email'],
@@ -57,7 +58,7 @@ class AuthService {
   Future<String> getUserType() async {
     final user = _auth.currentUser;
     final client = await _firestore.collection('clients').doc(user!.email).get();
-    final workshop = await _firestore.collection('workshopAdmin').doc(user!.email).get();
+    final workshop = await _firestore.collection('workshopAdmin').doc(user.email).get();
     return client.exists ? 'ClientUser' : workshop.exists ? 'WorkshopUser' : 'none';
   }
 
@@ -103,10 +104,7 @@ class AuthService {
   }
 
   final defaultServices =
-      '{\'name\': \'Check up\', \'price\': 0},'
-      '{\'name\': \'Oil change\',\'price\': 120},';
-  final startTime = 'TimeOfDay(hour: 8, minute: 00)';
-  final finishTime = 'TimeOfDay(hour: 16, minute: 00)';
+      '[{\'name\': \'Check up\', \'price\': 0},]';
 
   Future<void> addWorkshop(Workshop workshop, String email) async {
     _firestore.collection('workshops').add(
@@ -116,9 +114,11 @@ class AuthService {
         'location': workshop.location,
         'overAllRate': 0,
         'services': defaultServices,
-        'capacity': 0,
-        'startTime': startTime,
-        'finishTime': finishTime
+        'capacity': 1,
+        'startTimeH': 8,
+        'startTimeM': 0,
+        'finishTimeH': 16,
+        'finishTimeM': 0
       },
     );
 
@@ -127,17 +127,52 @@ class AuthService {
       await ref.putFile(workshop.logo);
       final url = await ref.getDownloadURL();
       _firestore.collection('workshops').where('adminEmail', isEqualTo: email).get().then((value) {
-        value.docs.forEach((element) {
+        for (var element in value.docs) {
           _firestore.collection('workshops').doc(element.id).update(
             {
               'logo': url,
             },
           );
-        });
+        }
       });
     } catch (e) {
       print(e);
     }
+  }
+
+
+  Future<void> updateWorkingHours(TimeRangeResult R) async {
+    FirebaseFirestore.instance.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').update({
+      'startTimeH': R.start.hour,
+      'startTimeM': R.start.minute,
+      'finishTimeH': R.end.hour,
+      'finishTimeM': R.end.minute
+    });
+  }
+  Future<TimeRangeResult> getWorkingHours() async {
+
+    final time = await _firestore.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').get();
+      int sth = time['startTimeH'];
+      int stm = time['startTimeM'];
+      int fth = time['finishTimeH'];
+      int ftm = time['finishTimeM'];
+
+      TimeRangeResult timeRange = TimeRangeResult(
+        TimeOfDay(hour: sth, minute: stm),
+        TimeOfDay(hour: fth, minute: ftm)
+      );
+
+    return timeRange;
+  }
+
+  Future<void> updateCapacity(int c) async {
+    FirebaseFirestore.instance.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').update({
+      'capacity': c
+    });
+  }
+  Future<int> getCapacity() async {
+    final cap = await _firestore.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').get();
+    return cap['capacity'] as int;
   }
 
 }
