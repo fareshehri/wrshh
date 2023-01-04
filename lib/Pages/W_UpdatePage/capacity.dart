@@ -21,7 +21,9 @@ class _Capacity extends State<Capacity> {
 
   Future call() async {
     capacity = await AuthService().getCapacity();
-    gotPath = true;
+    setState(() {
+      gotPath = true;
+    });
   }
 
   @override
@@ -54,6 +56,7 @@ class _Capacity extends State<Capacity> {
     else {
       return Scaffold(
         backgroundColor: Colors.white,
+
         appBar: AppBar(
           title: const Text("Capacity"),
           centerTitle: true,
@@ -84,7 +87,6 @@ class _Capacity extends State<Capacity> {
                   ],
                 ),
               ),
-
 
               /// TimeRange Wheel
               const SizedBox(height: 20),

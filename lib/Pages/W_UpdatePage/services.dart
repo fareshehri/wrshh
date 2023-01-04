@@ -1,110 +1,45 @@
-
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../Services/Auth/auth.dart';
 
 class Services extends StatefulWidget {
    const Services({Key? key}) : super(key: key);
-
   @override
   State<StatefulWidget> createState() {
     return _Services();
   }
-
 }
 
 class _Services extends State<Services> {
 
-  // static const dark = Color(0xFF333A47);
-  // static const double leftPadding = 9;
-
   var bbcolor= [Colors.transparent,Colors.transparent,Colors.transparent,Colors.transparent];
-
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title:const Text("Services"),
-        centerTitle: true,
-        backgroundColor:Colors.transparent,
-        foregroundColor:Colors.black,
-        elevation: 0,
-        iconTheme:IconThemeData(
-            color: Colors.lightBlue[300],size: 24
-        ),
-      ),
-
-      body: const UpdateSch()
-    );
-  }
-}
-
-
-class UpdateSch extends StatefulWidget {
-   const UpdateSch({Key? key}) : super(key: key);
-
-  @override
-  State<UpdateSch> createState() => UpdateScheduleSec();
-
-}
-
-class UpdateScheduleSec extends State<UpdateSch> {
-
-  bool gotPath = false;
-
-  // The data for the objects
-  late List<Map<String, dynamic>> _objects;
 
   // The controller for the text field
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
 
-  late User user;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
-  var s;
+  // The data for the objects
+  late List<Map<String, String>> _objects;
+  bool gotPath = false;
+  late List<Map<String, String>> xx = [];
+
   Future call() async {
-    final User user = _auth.currentUser!;
-    final ser = await _firestore.collection('workshops').doc('1XWv9DLGRETIgbzzhGzO').get();
+    final serv = await AuthService().getServices();
     setState(() {
-      print(ser['services']);
-      s = ser['services'] as List<Map<String, dynamic>>;
-      // temp = ser['services'] as Map<String, dynamic>;
-      print(s);
-      // _objects.add(s as Map<String, dynamic>);
-      _objects = s;
-      print(s);
-      // var a = '["one", "two", "three", "four"]';
-      // var ab = json.decode(temp).cast<String>().toList();
-      // print(ab);
-      // print(ab[1]);
+      List ser = serv['ser'] as List;
+      List pri = serv['pri'] as List;
+
+      for (int i=0; i< ser.length; i++){
+        Map<String, String> temp = {ser[i].toString():pri[i].toString()};
+        xx.add(temp);
+        _objects = xx;
+      }
+      gotPath = true;
     });
-    // _objects = ser['services'] as List<Map<String, dynamic>>;
-    // final ser = await _firestore.collection('workshops').where(
-    //     'adminEmail', isEqualTo: user.email).get().then((value) {
-    //   value.docs.forEach((element) {
-    //     s = _firestore.collection('workshops').doc(element.id).get();
-    //     _objects = s['services'] as List<Map<String, dynamic>>;
-    //   });
-    //   //.doc(user.email).get();
-    //
-    //   // _objects = s['services'] as List<Map<String, dynamic>>;
-    // });
-    gotPath = true;
   }
 
   @override
   void initState() {
+    super.initState();
     call();
   }
 
@@ -119,13 +54,25 @@ class UpdateScheduleSec extends State<UpdateSch> {
     }
     else {
       return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text("Services"),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          iconTheme: IconThemeData(
+              color: Colors.lightBlue[300], size: 24
+          ),
+        ),
+
         body: ListView.builder(
           itemCount: _objects.length,
           itemBuilder: (BuildContext context, int index) {
-            Map<String, dynamic> object = _objects[index];
+            Map<String, String> object = _objects[index];
             return ListTile(
-              title: Text(object['name']),
-              subtitle: Text(object['price'].toString()),
+              title: Text(object.keys.join(', ')),
+              subtitle: Text(object.values.join(', ')),
               trailing: PopupMenuButton(
                 itemBuilder: (BuildContext context) =>
                 [
@@ -146,8 +93,8 @@ class UpdateScheduleSec extends State<UpdateSch> {
                       context: context,
                       builder: (BuildContext context) {
                         // Set the initial value of the text fields to the current name and price
-                        _nameController.text = object['name'];
-                        _priceController.text = object['price'].toString();
+                        _nameController.text =object.keys.join(', ');
+                        _priceController.text = object.values.join(', ');
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -175,15 +122,24 @@ class UpdateScheduleSec extends State<UpdateSch> {
                               onPressed: () {
                                 // Update the name and price of the selected object
                                 setState(() {
-                                  _objects[index]['name'] =
-                                      _nameController.text;
-                                  _objects[index]['price'] =
-                                      int.parse(_priceController.text);
+                                  List keys = _objects[index].keys.toList();
+                                  List values = _objects[index].values.toList();
 
-                                  FirebaseFirestore.instance.collection(
-                                      'workshops').doc(user.email).update({
-                                    'services': _objects as String
-                                  });
+                                  keys[0] = _nameController.text;
+                                  values[0] = _priceController.text;
+                                  Map<String, String> temp = {keys[0]:values[0]};
+                                  _objects[index] = temp;
+                                  Map<String, String> temp2 = {};
+                                  for (int i=0; i<_objects.length; i++) {
+                                    temp2.addAll(_objects[i]);
+                                  }
+                                  object = temp2;
+
+                                  List tempSer = object.keys.toList();
+                                  List tempPri = object.values.toList();
+                                  AuthService().updateServices(tempSer, tempPri);
+                                  _nameController.text = '';
+                                  _priceController.text = '';
                                 });
                                 // Close the modal bottom sheet
                                 Navigator.pop(context);
@@ -198,12 +154,16 @@ class UpdateScheduleSec extends State<UpdateSch> {
                   else if (value == 'delete') {
                     // Remove the selected object from the list
                     setState(() {
+                      Map<String, String> temp = {};
                       _objects.removeAt(index);
+                      for (int i=0; i<_objects.length; i++) {
+                        temp = _objects[i];
+                      }
+                      object = temp;
 
-                      FirebaseFirestore.instance.collection('workshops').doc(
-                          user.email).update({
-                        'services': _objects as String
-                      });
+                      List tempSer = object.keys.toList();
+                      List tempPri = object.values.toList();
+                      AuthService().updateServices(tempSer, tempPri);
                     });
                   }
                 },
@@ -214,58 +174,56 @@ class UpdateScheduleSec extends State<UpdateSch> {
         // Add the floating action button
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            _nameController.text = '';
+            _priceController.text = '';
             showModalBottomSheet(
               context: context,
               builder: (BuildContext context) {
-                return Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // The form with the text fields
-                      Form(
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _nameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Name',
-                              ),
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // The form with the text fields
+                    Form(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Name',
                             ),
-                            TextFormField(
-                              controller: _priceController,
-                              decoration: const InputDecoration(
-                                labelText: 'Price',
-                              ),
+                          ),
+                          TextFormField(
+                            controller: _priceController,
+                            decoration: const InputDecoration(
+                              labelText: 'Price',
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      // The save button
-                      ElevatedButton(
-                        onPressed: () {
-                          // Add a new object to the list
-                          setState(() {
-                            _objects.add({
-                              'name': _nameController.text,
-                              'price': _priceController.text,
-                            });
-
-                            FirebaseFirestore.instance.collection('workshops')
-                                .doc(user.email)
-                                .update({
-                              'services': _objects as String
-                            });
-                          });
-                          // Clear the text fields
-                          _nameController.clear();
-                          _priceController.clear();
-                          // Close the modal bottom sheet
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Save'),
-                      ),
-                    ],
-                  ),
+                    ),
+                    // The save button
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add a new object to the list
+                        setState(() {
+                          _objects.add({_nameController.text: _priceController.text});
+                          Map<String, String> object = {};
+                          for (var temp in _objects) {
+                            object.addAll(temp);
+                          }
+                          List tempSer = object.keys.toList();
+                          List tempPri = object.values.toList();
+                          AuthService().updateServices(tempSer, tempPri);
+                        });
+                        // Clear the text fields
+                        _nameController.clear();
+                        _priceController.clear();
+                        // Close the modal bottom sheet
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
                 );
               },
             );

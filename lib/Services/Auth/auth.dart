@@ -103,24 +103,22 @@ class AuthService {
     _auth.signOut();
   }
 
-  final defaultServices =
-      '[{\'name\': \'Check up\', \'price\': 0},]';
-
   Future<void> addWorkshop(Workshop workshop, String email) async {
-    _firestore.collection('workshops').add(
-      {
-        'adminEmail': email,
-        'workshopName': workshop.name,
-        'location': workshop.location,
-        'overAllRate': 0,
-        'services': defaultServices,
-        'capacity': 1,
-        'startTimeH': 8,
-        'startTimeM': 0,
-        'finishTimeH': 16,
-        'finishTimeM': 0
-      },
-    );
+    final List<Map<String, dynamic>> defaultServices = [
+      {'Check up': 'Free'},
+      {'Change oil': '120'}];
+    final defaultWorkingHours = [8, 0, 16, 0];
+    final user = _auth.currentUser;
+    Map<String,dynamic> wp={
+      'adminEmail': email,
+      'workshopName': workshop.name,
+      'location': workshop.location,
+      'overAllRate': 0,
+      'services': defaultServices,
+      'capacity': 1,
+      'workingHours': defaultWorkingHours,
+    };
+    FirebaseFirestore.instance.collection('workshops').doc(user?.email).set(wp);
 
    try {
       final ref = FirebaseStorage.instance.ref().child('workshopLogo').child(email);
@@ -142,37 +140,49 @@ class AuthService {
 
 
   Future<void> updateWorkingHours(TimeRangeResult R) async {
-    FirebaseFirestore.instance.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').update({
-      'startTimeH': R.start.hour,
-      'startTimeM': R.start.minute,
-      'finishTimeH': R.end.hour,
-      'finishTimeM': R.end.minute
+    final user = _auth.currentUser;
+    List hours = [R.start.hour, R.start.minute, R.end.hour, R.end.minute];
+    FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
+      'workingHours': hours
     });
   }
   Future<TimeRangeResult> getWorkingHours() async {
+    final user = _auth.currentUser;
+    final time = await _firestore.collection('workshops').doc(user?.email).get();
+    List hours = time['workingHours'];
 
-    final time = await _firestore.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').get();
-      int sth = time['startTimeH'];
-      int stm = time['startTimeM'];
-      int fth = time['finishTimeH'];
-      int ftm = time['finishTimeM'];
-
-      TimeRangeResult timeRange = TimeRangeResult(
-        TimeOfDay(hour: sth, minute: stm),
-        TimeOfDay(hour: fth, minute: ftm)
-      );
+    TimeRangeResult timeRange = TimeRangeResult(
+        TimeOfDay(hour: hours[0], minute: hours[1]),
+        TimeOfDay(hour: hours[2], minute: hours[3])
+    );
 
     return timeRange;
   }
 
   Future<void> updateCapacity(int c) async {
-    FirebaseFirestore.instance.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').update({
+    final user = _auth.currentUser;
+    FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
       'capacity': c
     });
   }
   Future<int> getCapacity() async {
-    final cap = await _firestore.collection('workshops').doc('aAo2kkYXxx5WIF66wSBt').get();
+    final user = _auth.currentUser;
+    final cap = await _firestore.collection('workshops').doc(user?.email).get();
     return cap['capacity'] as int;
   }
 
+  Future<DocumentSnapshot<Map<String, dynamic>>> getServices() async {
+    final user = _auth.currentUser;
+    final ser = await _firestore.collection('workshops').doc(user?.email).get();
+
+    return ser;
+
+}
+  Future<void> updateServices(List services, List prices) async {
+    final user = _auth.currentUser;
+    FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
+      'ser': services,
+      'pri': prices
+    });
+  }
 }

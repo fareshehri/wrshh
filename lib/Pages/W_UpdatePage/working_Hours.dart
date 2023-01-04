@@ -30,17 +30,16 @@ class _WorkingHours extends State<WorkingHours> {
   late TimeRangeResult _timeRange;
   bool gotPath = false;
 
-  Future<void> call() async {
+  Future call() async {
     _timeRange = await AuthService().getWorkingHours();
-    print(_timeRange);
-    gotPath = true;
+    setState(() {
+      gotPath = true;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    // AuthService().getWorkingHours(_timeRange, gotPath);
-    // _timeRange = AuthService().getWorkingHours() as TimeRangeResult;
     call();
   }
 

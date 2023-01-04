@@ -28,6 +28,8 @@ dependencies:
   image_cropper: ^3.0.1
   firebase_storage: ^11.0.10
   calendar_timeline: ^1.1.0
+  calendar_carousel: ^0.1.0-nullsafety.2
+  time_picker: ^0.0.2
 
 dev_dependencies:
   flutter_test:
