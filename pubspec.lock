@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  calendar_carousel:
+    dependency: "direct main"
+    description:
+      name: calendar_carousel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0-nullsafety.2"
   calendar_timeline:
     dependency: "direct main"
     description:
@@ -518,6 +525,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
+  time_picker:
+    dependency: "direct main"
+    description:
+      name: time_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   time_range:
     dependency: "direct main"
     description:

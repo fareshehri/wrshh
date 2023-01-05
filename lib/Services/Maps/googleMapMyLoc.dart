@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
 
 import '../../Models/user.dart';
-import '../../Pages/W_home.dart';
+import '../../Pages/workshop_Home.dart';
 import '../../components/roundedButton.dart';
 import '../Auth/auth.dart';
 
@@ -130,7 +130,7 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                               }
 
                                               Navigator.pushNamed(
-                                                  context, W_home.id);
+                                                  context, WHome.id);
                                             } catch (e) {
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 const SnackBar(

@@ -104,19 +104,23 @@ class AuthService {
   }
 
   Future<void> addWorkshop(Workshop workshop, String email) async {
-    final List<Map<String, dynamic>> defaultServices = [
-      {'Check up': 'Free'},
-      {'Change oil': '120'}];
     final defaultWorkingHours = [8, 0, 16, 0];
+    final defaultServices = ['Check up', 'Oil change'];
+    final defaultPrices = ['Free', '120'];
+    final List defaultBreakDates = [DateTime(2023,4,9).millisecondsSinceEpoch, DateTime(2023,4,10).millisecondsSinceEpoch];
+    final List defaultBreakHours = [DateTime(2023,5,9,19,30).millisecondsSinceEpoch, DateTime(2023,6,9,10).millisecondsSinceEpoch];
     final user = _auth.currentUser;
     Map<String,dynamic> wp={
       'adminEmail': email,
       'workshopName': workshop.name,
       'location': workshop.location,
       'overAllRate': 0,
-      'services': defaultServices,
+      'ser': defaultServices,
+      'pri': defaultPrices,
       'capacity': 1,
       'workingHours': defaultWorkingHours,
+      'breakDates': defaultBreakDates,
+      'breakHours': defaultBreakHours
     };
     FirebaseFirestore.instance.collection('workshops').doc(user?.email).set(wp);
 
@@ -171,18 +175,52 @@ class AuthService {
     return cap['capacity'] as int;
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getServices() async {
-    final user = _auth.currentUser;
-    final ser = await _firestore.collection('workshops').doc(user?.email).get();
-
-    return ser;
-
-}
   Future<void> updateServices(List services, List prices) async {
     final user = _auth.currentUser;
     FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
       'ser': services,
       'pri': prices
     });
+  }
+  Future<DocumentSnapshot<Map<String, dynamic>>> getServices() async {
+    final user = _auth.currentUser;
+    final ser = await _firestore.collection('workshops').doc(user?.email).get();
+    return ser;
+
+}
+
+  Future<void> updateBreakDates(List<DateTime> breakDates) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final user = _auth.currentUser;
+    List tem = [];
+    for (int i=0; i < breakDates.length; i++) {
+      tem.add(breakDates[i].millisecondsSinceEpoch);
+    }
+    FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
+      'breakDates': tem
+    });
+  }
+  Future<List<dynamic>> getBreakDates() async {
+    final user = _auth.currentUser;
+    final time = await _firestore.collection('workshops').doc(user?.email).get();
+    return time['breakDates'] as List<dynamic>;
+  }
+
+  Future<void> updateBreakHours(List<DateTime> breakHours) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final user = _auth.currentUser;
+    List tem = [];
+    for (int i=0; i < breakHours.length; i++) {
+      tem.add(breakHours[i].millisecondsSinceEpoch);
+    }
+
+    FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
+      'breakHours': tem
+    });
+  }
+  Future<List> getBreakHours() async {
+    final user = _auth.currentUser;
+    final time = await _firestore.collection('workshops').doc(user?.email).get();
+    return time['breakHours'];
   }
 }
