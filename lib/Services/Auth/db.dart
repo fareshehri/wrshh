@@ -32,25 +32,53 @@ final _firestore = FirebaseFirestore.instance;
 // retrieve appointments from firestore where adminEmail == email
 Future<List> getAppointmentsFromDB(String email) async {
   List appointments = [];
-  _firestore.collection('Appointment').where('workshopID', isEqualTo: email).get().then((value) {
+  _firestore
+      .collection('Appointment')
+      .where('workshopID', isEqualTo: email)
+      .get()
+      .then((value) {
     value.docs.forEach((element) {
       appointments.add(element);
-      print(element.id);
-        });
-      });
+    });
+  });
   return appointments;
-  }
+}
 
-  // final appointmentsDB = await _firestore.collection('Appointments').where('workshopID', isEqualTo: email).get();
-  //
-  // print('appointmentsDB: $appointmentsDB.docs');
-  // var count = 0;
-  // for (var appointment in appointmentsDB.docs) {
-  //   count++;
-  //   appointments.add(appointment.data());
-  //   print('appointments: $appointments');
-  // }
-  // print('count: $count');
-  // print('appointments: $appointments');
-  // return appointments;
+// final appointmentsDB = await _firestore.collection('Appointments').where('workshopID', isEqualTo: email).get();
+//
+// print('appointmentsDB: $appointmentsDB.docs');
+// var count = 0;
+// for (var appointment in appointmentsDB.docs) {
+//   count++;
+//   appointments.add(appointment.data());
+//   print('appointments: $appointments');
 // }
+// print('count: $count');
+// print('appointments: $appointments');
+// return appointments;
+// }
+
+void bookAppointment(String id) {
+  _firestore.collection('Appointment').doc(id).update({
+    'booked': true,
+  });
+}
+
+Future<List> getBookedAppointmentsFromDB(String email) async {
+  List appointments = [];
+  print('email: $email');
+  final Appointmentss = await _firestore.collection('Appointment').get();
+  for (var appointment in Appointmentss.docs) {
+    if (appointment.data()['booked'] == true) {
+      appointments.add(appointment);
+    }
+  }
+  // _firestore.collection('Appointment').where('clientID', isEqualTo: email).get().then((value) {
+  //   value.docs.forEach((element) {
+  //     appointments.add(element);
+  //   });
+  // });
+
+  print('appointments: $appointments');
+  return appointments;
+}

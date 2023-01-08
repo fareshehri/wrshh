@@ -37,7 +37,7 @@ class BookingSlot extends StatelessWidget {
       return bookedSlotColor ?? Colors.red[800]!;
     } else {
       return isSelected
-          ? selectedSlotColor ?? Colors.pink
+          ? selectedSlotColor ?? Colors.grey
           : availableSlotColor ?? Colors.green[800]!;
     }
   }
