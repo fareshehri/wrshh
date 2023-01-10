@@ -1,61 +1,325 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:time_range/time_range.dart';
+import 'package:wrshh/components/booking_slot.dart';
 
-import '../../Services/Auth/auth.dart';
+import '../../Services/Auth/db.dart';
 
 
-class WorkshopUpdate extends StatelessWidget {
-  WorkshopUpdate({Key? key}) : super(key: key);
+class WorkshopUpdate extends StatefulWidget {
+  const WorkshopUpdate({Key? key}) : super(key: key);
 
-  final titles = ["Services",
-    "Capacity",
-    "Working Hours",
-    "Break Dates",
-    "Break Hours"];
-  final subtitles = [
-    "Update services provided",
-    "Update working capacity",
-    "Update shift time",
-    "Update Break days",
-    "Update break hours"];
-  final icons = [
-    Icons.category_rounded,
-    Icons.reduce_capacity,
-    Icons.punch_clock,
-    Icons.calendar_month,
-    Icons.event_busy];
+  @override
+  _WorkshopUpdateState createState() => _WorkshopUpdateState();
+}
+class _WorkshopUpdateState extends State<WorkshopUpdate> {
+
+  bool gotPath = false;
+  late List<DropdownMenuItem<TimeOfDay>> startTime = [];
+  late List<DropdownMenuItem<TimeOfDay>> finishTime = [];
+  late List<DropdownMenuItem<int>> capacityList = [];
+  late List<DropdownMenuItem<String>> services = [];
+
+  late TimeOfDay st;
+  late TimeOfDay ft;
+  late int capacity;
+  late TimeRangeResult _timeRange;
+  bool isStartTimeValid = true;
+
+  late List<Map<String, String>> _objects;
+  late List<Map<String, String>> xx = [];
+
+  Future call() async {
+    final serv = await getServices();
+    capacity = await getCapacity();
+    _timeRange = await getWorkingHours();
+    setState(() {
+      List ser = serv['ser'] as List;
+      List pri = serv['pri'] as List;
+
+      for (int i=0; i< ser.length; i++){
+        Map<String, String> temp = {ser[i].toString():pri[i].toString()};
+        xx.add(temp);
+        _objects = xx;
+      }
+      gotPath = true;
+      st = _timeRange.start;
+      ft = _timeRange.end;
+    });
+    await initializeLists();
+  }
+
+  Future initializeLists() async {
+
+    startTime = [
+      const DropdownMenuItem(
+        value: TimeOfDay(hour: 00,minute: 12),
+        child: Text('Start Time'),
+      ),
+    ];
+    for (int i = 0; i < 24; i++) {
+      for (int j = 0; j < 2; j++) {
+        final time = TimeOfDay(hour: i, minute: 30 * j);
+        startTime.add(
+          DropdownMenuItem(
+            value: time,
+            child: Text(time.format(context)),
+          ),
+        );
+      }
+    }
+
+    finishTime = [
+      const DropdownMenuItem(
+        value: TimeOfDay(hour: 00,minute: 12),
+        child: Text('Start Time'),
+      ),
+    ];
+    for (int i = 0; i < 24; i++) {
+      for (int j = 0; j < 2; j++) {
+        final time = TimeOfDay(hour: i, minute: 30 * j);
+        finishTime.add(
+          DropdownMenuItem(
+            value: time,
+            child: Text(time.format(context)),
+          ),
+        );
+      }
+    }
+
+    capacityList = [
+       const DropdownMenuItem(
+        value: 0,
+        enabled: false,
+        child: Text('Capacity'),
+      ),
+    ];
+    capacityList.addAll(List.generate(20, (index) {
+      return DropdownMenuItem(
+        value: index + 1,
+        child: Text('${index + 1}'),
+      );
+    }));
+    //
+    // services = [
+    //   const DropdownMenuItem(
+    //     value: "check up + 1",
+    // enabled: false,
+    //     child: Text('Services'),
+    //   ),
+    // ];
+    // services.addAll(List.generate(20, (index) {
+    //   return DropdownMenuItem(
+    //     value: "check up + $index",
+    //     child: Text('$index + 1'),
+    //   );
+    // }));
+
+    for (var ser in _objects) {
+      services.add(
+          DropdownMenuItem(
+            value: '${ser[0]} - ${ser[1]}',
+            child: Text(ser.keys.join(', ')),
+          )
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    call();
+
+  }
+
+  var date = DateTime.now();
+  List selectedList = [false,false,false,false,false,false,false];
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemCount: titles.length, itemBuilder: (context, index) {
-
-      return Card(
-        child: ListTile(
-          title: Text(titles[index]),
-          subtitle: Text(subtitles[index]),
-          leading: Icon(icons[index]),
-          onTap: () {
-            if (index == 0) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Services()));
-            }
-            if (index == 1) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => Capacity()));
-            }
-            if (index == 2) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ShiftHours()));
-            }
-            if (index == 3) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreakDates()));
-            }
-            if (index == 4) {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreakHours()));
-            }
-          },
+    if (!gotPath) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
       );
     }
-    );
+    else {
+      return Expanded(
+        child: Column(
+          children: [
+            //Dates
+            Row(
+              children: [
+                Expanded(
+                    child: ListView.builder(
+                        itemCount: selectedList.length,
+                        itemExtent: 50,
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return BookingSlot(
+                            onTap: () {
+                              setState(() {
+                                selectedList[index] = !selectedList[index];
+                              });
+                            },
+                            isSelected: selectedList[index] ?? false,
+                            isPauseTime: false,
+                            selectedSlotColor: Colors.grey.shade800,
+                            isBooked: false,
+                            child: Center(
+                              child: Text(
+                                DateFormat.yMMMd().format(date),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                        }
+                    )
+                )
+              ],
+            ),
+            //Shift time & Capacity
+            Row(
+              children: [
+                const SizedBox(width: 5.0),
+                //Shift Start Time
+                Expanded(
+                  flex: 2,
+                  child: DropdownButton(
+                      value: st,
+                      items: startTime,
+                      hint: const Text('Start Time'),
+                      onChanged: (value) {
+                        setState(() {
+                            st = value as TimeOfDay;
+                        });
+                      }
+                  ),
+                ),
+                const SizedBox(width: 5.0),
+
+                //Shift Finish Time
+                Expanded(
+                  flex: 2,
+                  child: DropdownButton(
+                      value: ft,
+                      hint: const Text('Finish Time'),
+                      items: finishTime,
+                      onChanged: (value) {
+                        setState(() {
+                            ft = value as TimeOfDay;
+                        });
+                      }
+                  ),
+                ),
+                const SizedBox(width: 10.0),
+
+                //Capacity
+                Expanded(
+                  flex: 5,
+                  child: DropdownButton(
+                      value: capacity,
+                      hint: const Text('Capacity'),
+                      items: capacityList,
+                      onChanged: (value) {
+                        setState(() {
+                          capacity = value as int;
+                        });
+                      }
+                  ),
+                ),
+                const SizedBox(width: 5.0),
+              ],
+            ),
+            //Services + Add button
+            Row(
+              children: [
+                const SizedBox(width: 5.0),
+                //services
+                Expanded(
+                    flex: 5,
+                    child: DropdownButton(
+                        value: 0,
+                        hint: const Text('Services'),
+                        items: capacityList,
+                        onChanged: (value) {
+                          setState(() {
+                            // capacity = value as int;
+                          });
+                        }
+                    )
+                ),
+                const SizedBox(width: 5.0),
+
+                //Add Button
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+
+                      });
+                    },
+                    child: const Icon(Icons.add),
+                  ),
+                ),
+                const SizedBox(width: 5.0),
+              ],
+            ),
+            //Upload Button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 5.0),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      ///Upload Shift Hours
+                      _timeRange = TimeRangeResult(st, ft);
+                      updateWorkingHours(_timeRange);
+
+                      ///Upload Capacity
+                      updateCapacity(capacity);
+                    },
+                    child: const Text('Upload'),
+                  ),
+                ),
+                const SizedBox(width: 5.0),
+              ],
+            )
+          ],
+        ),
+      );
+      // return ListView.builder(itemCount: titles.length, itemBuilder: (context, index) {
+      //
+      //   return Card(
+      //     child: ListTile(
+      //       title: Text(titles[index]),
+      //       subtitle: Text(subtitles[index]),
+      //       leading: Icon(icons[index]),
+      //       onTap: () {
+      //         if (index == 0) {
+      //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => Services()));
+      //         }
+      //         if (index == 1) {
+      //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => Capacity()));
+      //         }
+      //         if (index == 2) {
+      //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => ShiftHours()));
+      //         }
+      //         if (index == 3) {
+      //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreakDates()));
+      //         }
+      //         if (index == 4) {
+      //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => BreakHours()));
+      //         }
+      //       },
+      //     ),
+      //   );
+      // }
+      // );
+    }
   }
 }
 
@@ -80,7 +344,7 @@ class _Services extends State<Services> {
   late List<Map<String, String>> xx = [];
 
   Future call() async {
-    final serv = await AuthService().getServices();
+    final serv = await getServices();
     setState(() {
       List ser = serv['ser'] as List;
       List pri = serv['pri'] as List;
@@ -103,7 +367,7 @@ class _Services extends State<Services> {
   @override
   Widget build(BuildContext context) {
     if (!gotPath) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -194,7 +458,7 @@ class _Services extends State<Services> {
 
                                   List tempSer = object.keys.toList();
                                   List tempPri = object.values.toList();
-                                  AuthService().updateServices(tempSer, tempPri);
+                                  updateServices(tempSer, tempPri);
                                   _nameController.text = '';
                                   _priceController.text = '';
                                 });
@@ -220,7 +484,7 @@ class _Services extends State<Services> {
 
                       List tempSer = object.keys.toList();
                       List tempPri = object.values.toList();
-                      AuthService().updateServices(tempSer, tempPri);
+                      updateServices(tempSer, tempPri);
                     });
                   }
                 },
@@ -270,7 +534,7 @@ class _Services extends State<Services> {
                           }
                           List tempSer = object.keys.toList();
                           List tempPri = object.values.toList();
-                          AuthService().updateServices(tempSer, tempPri);
+                          updateServices(tempSer, tempPri);
                         });
                         // Clear the text fields
                         _nameController.clear();
@@ -310,7 +574,7 @@ class _Capacity extends State<Capacity> {
   bool gotPath = false;
 
   Future call() async {
-    capacity = await AuthService().getCapacity();
+    capacity = await getCapacity();
     setState(() {
       gotPath = true;
     });
@@ -408,7 +672,7 @@ class _Capacity extends State<Capacity> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          AuthService().updateCapacity(capacity);
+                          updateCapacity(capacity);
                         });
 
                         Navigator.pop(context);
@@ -462,7 +726,7 @@ class _ShiftHours extends State<ShiftHours> {
   bool gotPath = false;
 
   Future call() async {
-    _timeRange = await AuthService().getWorkingHours();
+    _timeRange = await getWorkingHours();
     setState(() {
       gotPath = true;
     });
@@ -595,7 +859,7 @@ class _ShiftHours extends State<ShiftHours> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          AuthService().updateWorkingHours(_timeRange);
+                          updateWorkingHours(_timeRange);
                         });
                         Navigator.pop(context);
                       },
@@ -643,7 +907,7 @@ class _BreakDates extends State<BreakDates> {
   final _formatter = DateFormat('MMM d, yyyy');
 
   Future call() async {
-    List breaks = await AuthService().getBreakDates();
+    List breaks = await getBreakDates();
     setState(() {
       for (int i = 0; i < breaks.length; i++) {
         DateTime temp = DateTime.fromMillisecondsSinceEpoch(breaks[i]);
@@ -706,7 +970,7 @@ class _BreakDates extends State<BreakDates> {
                             } else if (value == 'delete') {
                               setState(() {
                                 _breakDates.removeAt(index);
-                                AuthService().updateBreakDates(_breakDates);
+                                updateBreakDates(_breakDates);
                               });
                             }
                           },
@@ -714,12 +978,10 @@ class _BreakDates extends State<BreakDates> {
                     );
                   }),
             ),
-            Container(
-              child: ListTile(
-                title: const Text("Add Break Date"),
-                trailing: const Icon(Icons.add),
-                onTap: _addBreakDate,
-              ),
+            ListTile(
+              title: const Text("Add Break Date"),
+              trailing: const Icon(Icons.add),
+              onTap: _addBreakDate,
             ),
           ],
         ),
@@ -738,7 +1000,7 @@ class _BreakDates extends State<BreakDates> {
     if (date != null) {
       setState(() {
         _breakDates.add(date);
-        AuthService().updateBreakDates(_breakDates);
+        updateBreakDates(_breakDates);
       });
     }
   }
@@ -755,7 +1017,7 @@ class _BreakDates extends State<BreakDates> {
       setState(() {
         _breakDates.remove(breakDate);
         _breakDates.add(date);
-        AuthService().updateBreakDates(_breakDates);
+        updateBreakDates(_breakDates);
       });
     }
   }
@@ -780,7 +1042,7 @@ class _BreakHours extends State<BreakHours> {
   late final List<DateTime> _breakDates = [];
 
   Future call() async {
-    List breaks = await AuthService().getBreakHours();
+    List breaks = await getBreakHours();
     setState(() {
       for (int i = 0; i < breaks.length; i++) {
         DateTime temp = DateTime.fromMillisecondsSinceEpoch(breaks[i]);
@@ -846,7 +1108,7 @@ class _BreakHours extends State<BreakHours> {
                             } else if (value == 'delete') {
                               setState(() {
                                 _breakDates.removeAt(index);
-                                AuthService().updateBreakHours(_breakDates);
+                                updateBreakHours(_breakDates);
                               });
                             }
                           },
@@ -892,7 +1154,7 @@ class _BreakHours extends State<BreakHours> {
           time.minute,
         );
         _breakDates.add(breakDate);
-        AuthService().updateBreakHours(_breakDates);
+        updateBreakHours(_breakDates);
       });
     }
   }
@@ -924,7 +1186,7 @@ class _BreakHours extends State<BreakHours> {
         final int index = _breakDates.indexOf(breakDate);
         _breakDates.removeAt(index);
         _breakDates.insert(index, updatedBreakDate);
-        AuthService().updateBreakHours(_breakDates);
+        updateBreakHours(_breakDates);
       });
     }
   }
@@ -940,7 +1202,7 @@ class _BreakHours extends State<BreakHours> {
     if (date != null) {
       setState(() {
         _breakDates.add(date);
-        AuthService().updateBreakDates(_breakDates);
+        updateBreakDates(_breakDates);
       });
     }
   }
