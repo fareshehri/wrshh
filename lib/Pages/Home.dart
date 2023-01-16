@@ -3,11 +3,14 @@
 import 'package:booking_calendar/booking_calendar.dart';
 import 'package:wrshh/Pages/welcome.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
+import 'package:wrshh/Services/Auth/db.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
 import 'package:wrshh/Pages/Account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
+
+import 'client_appointments.dart';
 
 
 class Home extends StatefulWidget {
@@ -87,9 +90,9 @@ DateTime selectedDate = DateTime.now();
             return const MyGoogleMaps();
             }
 
-              else{
-              //Account Page?
-              return BookPage();
+              else {
+
+              return ClientAppointments();
               //   ListView(children: const [
               //   BookPage()
               //   SizedBox(height: 50,),

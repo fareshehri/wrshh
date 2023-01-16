@@ -6,7 +6,7 @@ import '../components/roundedButton.dart';
 import '../components/validators.dart';
 import '../constants.dart';
 import 'Home.dart';
-import 'W_home.dart';
+import 'workshop_Home.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (userType == 'ClientUser'){
                             Navigator.pushNamed(context, Home.id);
                           } else if (userType == 'WorkshopUser'){
-                            Navigator.pushNamed(context, W_home.id);
+                            Navigator.pushNamed(context, WHome.id);
                           }
                         }
                       } catch (e) {

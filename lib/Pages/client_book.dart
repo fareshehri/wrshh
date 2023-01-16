@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/components/booking_slot.dart';
 import 'package:intl/intl.dart';
+import 'package:wrshh/components/roundedButton.dart';
+import 'package:wrshh/constants.dart';
 import '../Services/Auth/db.dart';
 import '../components/Calendar_Timeline.dart';
 
@@ -20,15 +22,6 @@ class _ClientBookingState extends State<ClientBooking> {
   _ClientBookingState({required this.appointments});
 
   DateTime selectedDate = DateTime.now();
-  @override
-  void initState() {
-    // TODO: implement initState
-    setState(() {
-      selectedDate = DateTime.now();
-
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +36,12 @@ class _ClientBookingState extends State<ClientBooking> {
           color: Colors.pink,
           child: CalendarTimeline(
             initialDate: selectedDate,
-            firstDate: DateTime.now(),
+            firstDate: DateTime(2023, 1, 1),
             lastDate: DateTime.now().add(Duration(days: 60)),
             onDateSelected: (date) {
               // setState(() {
-                selectedDate = date;
-                (context as Element).reassemble();
+              selectedDate = date;
+              (context as Element).reassemble();
               // });
             },
             leftMargin: 20,
@@ -62,30 +55,122 @@ class _ClientBookingState extends State<ClientBooking> {
           ),
         ),
         SizedBox(
-          height: 20,
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Colors.green[800],
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text('Available'),
+            SizedBox(
+              width: 10,
+            ),
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Colors.red[800],
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text('Booked'),
+            SizedBox(
+              width: 10,
+            ),
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Colors.grey,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text('Selected'),
+          ],
+        ),
+        SizedBox(
+          height: 10,
         ),
         Container(
           child: Expanded(
             child: buildAppointmentList(appointments),
           ),
-        )
+        ),
+        RoundedButton(
+          title: 'Book',
+          colour: kDarkColor,
+          onPressed: () {
+            print(selectedList);
+            if (selectedList.isNotEmpty) {
+              selectedList.forEach((key, value) {
+                bookAppointment(key);
+              });
+              Navigator.pop(context);
+            }
+            else {
+              print('No appointment selected');
+            }
+          },
+        ),
       ]),
     );
   }
 
   Container buildAppointmentList(List appointments) {
     List dayAppointments = [];
+    Map allDayAppointments = {};
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedNow = formatter.format(selectedDate!);
+    // appointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
     for (var i = 0; i < appointments.length; i++) {
       var appointmentDate = DateTime.fromMillisecondsSinceEpoch(
           appointments[i]['datetime'].seconds * 1000);
       String formattedAppointmentDate = formatter.format(appointmentDate);
       if (formattedAppointmentDate == formattedNow) {
-        dayAppointments.add(appointments[i]);
-      }
-    dayAppointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
+        var timestamp = appointments[i]['datetime'];
+        var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+        if (allDayAppointments.containsKey(date)) {
+          allDayAppointments[date].add(appointments[i]);
+        } else {
+          allDayAppointments[date] = [appointments[i]];
+        }
+        }
     }
+    for (appointments in allDayAppointments.values) {
+      var availableIndex = [];
+      var bookedCounter = 0;
+      for (var i = 0; i < appointments.length; i++) {
+        if (appointments[i]['booked'] == true) {
+          bookedCounter++;
+        } else {
+          availableIndex.add(i);
+        }
+      }
+      if (bookedCounter == appointments.length) {
+        dayAppointments.add(appointments[0]);
+      }
+      else{
+        dayAppointments.add(appointments[availableIndex[0]]);
+      }
+
+    }
+    if (dayAppointments.isEmpty) {
+      return Container(
+        child: Center(
+          child: Text('No appointments available',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.grey,
+              )),
+        ),
+      );
+    }
+
+    dayAppointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
     return Container(
       child: Column(
         children: [

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:wrshh/Pages/Home.dart';
 import 'package:wrshh/Pages/welcome.dart';
 import 'package:wrshh/constants.dart';
-import 'Pages/W_home.dart';
+import 'Pages/workshop_Home.dart';
 import 'firebase_options.dart';
 
 import 'Pages/login.dart';
@@ -31,7 +31,7 @@ void main() async {
       LoginScreen.id: (context) => LoginScreen(),
       RegistrationScreen.id: (context) => RegistrationScreen(),
       Home.id: (context) => Home(),
-      W_home.id: (context) => W_home(),
+      WHome.id: (context) => WHome(),
     },
     home: Wrapper(),
   ));
