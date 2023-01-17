@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/Pages/Home.dart';
+import 'package:wrshh/Pages/Report.dart';
 import 'package:wrshh/Pages/welcome.dart';
 import 'package:wrshh/constants.dart';
 import 'Pages/workshop_Home.dart';
@@ -54,6 +55,7 @@ class _WrapperState extends State<Wrapper> {
         builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
           if (snapshot.hasData) {
             return const Home();
+            //return ReportPage(vin: '4324234234',Wid: 'zxc',);
           } else {
             return WelcomeScreen();
           }
