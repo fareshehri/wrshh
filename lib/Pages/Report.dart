@@ -1,9 +1,12 @@
-// ignore_for_file: prefer_const_constructors
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:async';
+
 final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
 class ReportPage extends StatefulWidget {
@@ -19,9 +22,10 @@ class ReportPageState extends State<ReportPage> {
   String selectedDate = formatter.format(DateTime.now());
   //DateTime selectedDate = DateTime.now();
   final myController = TextEditingController(text:formatter.format(DateTime.now()));
-
+var file;
   
   bool gotPath = true;
+  bool gotExt = true;
 
   
   void initState() {
@@ -29,10 +33,29 @@ class ReportPageState extends State<ReportPage> {
     super.initState();
 
   }
+  FilePickerResult? result;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    
-    
+        Widget cancelButton = TextButton(child: Text("No"),onPressed:  () {Navigator.pop(context);},);
+    Widget continueButton = TextButton(child: Text("Yes"),onPressed:  () {
+                          // If the form is valid, display a snackbar. In the real world,
+                      // you'd often call a server or save the information in a database.
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report uploaded successfully')),);
+                        Future.delayed(Duration(seconds: 1),() => Navigator.pop(context),);
+                        
+      
+      
+    });
+      
+
+    AlertDialog alert = AlertDialog(title: Text("Confirmation"),
+    content: Text("Is the maintenance information correct?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],);
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -66,7 +89,7 @@ class ReportPageState extends State<ReportPage> {
      body: Container(margin: EdgeInsets.fromLTRB(25,50,25,50),
        child: ListView(children: [
         Container(
-          child: Form(child: Column(children: <Widget>[
+          child: Form(key: _formKey,child: Column(children: <Widget>[
               TextFormField(readOnly: true,initialValue: vin,textAlign: TextAlign.center,textAlignVertical: TextAlignVertical.center,decoration: InputDecoration(floatingLabelAlignment: FloatingLabelAlignment.center,label: Text('Vin Number'),border: OutlineInputBorder(),contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 2)),),
               const SizedBox(height: 20,),
 
@@ -77,14 +100,59 @@ class ReportPageState extends State<ReportPage> {
 
 
               const Text('Details'),
-              TextFormField(readOnly: true,initialValue: vin,textAlign: TextAlign.center,textAlignVertical: TextAlignVertical.center,decoration: InputDecoration(border: OutlineInputBorder(),hintText: vin,contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 2)),),
+              TextFormField(maxLines: 6,decoration: InputDecoration(border: OutlineInputBorder(),hintText: 'Enter Maintenance Details'),validator: (value) {
+                    if (value == null || value.isEmpty ) {return 'Please enter Maintenance Details';}
+                    return null;
+                    },),
               const SizedBox(height: 20,),
 
               const Text('Upload'),
-              TextFormField(readOnly: true,initialValue: vin,textAlign: TextAlign.center,textAlignVertical: TextAlignVertical.center,decoration: InputDecoration(border: OutlineInputBorder(),hintText: vin,contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 2)),),
+              //TextFormField(readOnly: true,initialValue: vin,textAlign: TextAlign.center,textAlignVertical: TextAlignVertical.center,decoration: InputDecoration(border: OutlineInputBorder(),hintText: vin,contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 2)),),
+              ElevatedButton(onPressed: () async{
+                result = await FilePicker.platform.pickFiles(allowMultiple: false ,type: FileType.custom,allowedExtensions: ['pdf','doc','docx']);
+                      if (result == null) {
+                          print("No file selected");
+                        } else {
+                        PlatformFile file = result!.files.first;
+                        if(file.extension=='pdf'||file.extension=='docx'||file.extension=='doc'){
+                          gotExt=true;
+                          print(file.name);
+                          //do something here to upload to firestore
+                          setState(() {
+                            
+                        });
+                          }
+                        else{
+                          gotExt=false;
+                          print("Incorrect Extension");
+                        }
+                        }
+              }, child: const Text("File Picker"),),
+              
               const SizedBox(height: 20,),
-            
+              const SizedBox(height: 20,),
+              ElevatedButton.icon(onPressed: () async {
+                    //in try we want to change the car to registered car 
+                    //in catch we will add a new car to database
+                    try {
+                      //final x = await FirebaseFirestore.instance.collection('vin').doc(_vin).get();
+                    if(gotExt==false){
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The file Extension is incorrect')),);
+                      }
+                      else{
+                        if (_formKey.currentState!.validate()) {
+                      showDialog(context: context,builder: (BuildContext context) {return alert;},
+                      );}
+                      }
+                    } catch (e) {
+                        print(e);
+                    }
+                    },
+                        icon: Icon(Icons.save), label: Text('Save'),)
+                    
+                    
                     ])
+                    
           ),
         )
        ])

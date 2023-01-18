@@ -145,7 +145,7 @@ void initState() {
 
     Widget cancelButton = TextButton(child: Text("No"),onPressed:  () {Navigator.pop(context);},);
     Widget continueButton = TextButton(child: Text("Yes"),onPressed:  () {
-      //add Car
+      //add to db
       if (_formKey.currentState!.validate()) {
       //if brand is chosen clear ob                   
       if(finb!='Other'){ob="";oc="";}
@@ -162,8 +162,8 @@ void initState() {
         });
         // If the form is valid, display a snackbar. In the real world,
         // you'd often call a server or save the information in a database.
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')),);
         Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Processing Data')),);
         Future.delayed(Duration(seconds: 2),() => Navigator.pop(context),);}
 },);
     AlertDialog alert = AlertDialog(title: Text("Confirmation"),
