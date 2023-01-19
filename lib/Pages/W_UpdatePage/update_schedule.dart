@@ -40,7 +40,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
 
     var date = DateTime(now.year, now.month+1, 0).toString();
   print(DateTime.daysPerWeek);
-    print(now.subtract(Duration(days: now.weekday - 1)));
+    print(Duration(days: now.weekday));
   }
 
   Container buildDaysCard(day) {

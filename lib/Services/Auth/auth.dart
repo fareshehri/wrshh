@@ -114,12 +114,12 @@ class AuthService {
       'workshopName': workshop.name,
       'location': workshop.location,
       'overAllRate': 0,
-      'ser': defaultServices,
-      'pri': defaultPrices,
-      'capacity': 1,
-      'workingHours': defaultWorkingHours,
-      'breakDates': defaultBreakDates,
-      'breakHours': defaultBreakHours
+      // 'ser': defaultServices,
+      // 'pri': defaultPrices,
+      // 'capacity': 1,
+      // 'workingHours': defaultWorkingHours,
+      // 'breakDates': defaultBreakDates,
+      // 'breakHours': defaultBreakHours
     };
     FirebaseFirestore.instance.collection('workshops').doc(user?.email).set(wp);
 

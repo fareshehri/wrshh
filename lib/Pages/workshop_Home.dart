@@ -11,6 +11,7 @@ import '../Services/Auth/auth.dart';
 // import 'W_UpdatePage/working_Dates.dart';
 // import 'W_UpdatePage/working_Hours.dart';
 import 'W_UpdatePage/WorkShop_Updates.dart';
+import 'W_UpdatePage/update_schedule.dart';
 
 class WHome extends StatefulWidget {
   static const String id = 'Workshop_Home';
@@ -169,7 +170,7 @@ class _WHomeState extends State<WHome> {
                 ),
               );
             } else {
-              return WorkshopUpdate();
+              return UpdateSchedule();
             }
           },
         )),

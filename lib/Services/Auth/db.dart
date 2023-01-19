@@ -62,32 +62,52 @@ Future<List> getAppointmentsFromDB(String email) async {
 // return appointments;
 // }
 
+
+
+
+
+// get workshop name from firestore where workshopID == workshopID
+Future<String> getWorkshopNameFromDB(String workshopID) async {
+  String workshopName = '';
+  await _firestore
+      .collection('workshops')
+      .doc(workshopID)
+      .get()
+      .then((value) => workshopName = value.data()!['workshopName']);
+  return workshopName;
+}
+
+
 void bookAppointment(String id) {
   _firestore.collection('Appointment').doc(id).update({
     'booked': true,
   });
 }
 
-Future<List> getBookedAppointmentsFromDB(String email) async {
-  List appointments = [];
-  print('email: $email');
+Future<Map> getBookedAppointmentsFromDB(String email) async {
+  Map appointments = {};
   final Appointmentss = await _firestore.collection('Appointment').get();
   for (var appointment in Appointmentss.docs) {
     if (appointment.data()['booked'] == true) {
-      appointments.add(appointment);
+      var workshopName = await getWorkshopNameFromDB(appointment.data()['workshopID']);
+      // if workshopName is not in appointments.keys add it
+      if (!appointments.keys.contains(workshopName)) {
+        appointments[workshopName] = [];
+      }
+      // add the appointment to the list of appointments
+      appointments[workshopName].add(appointment.data());
     }
   }
-  // _firestore.collection('Appointment').where('clientID', isEqualTo: email).get().then((value) {
-  //   value.docs.forEach((element) {
-  //     appointments.add(element);
-  //   });
-  // });
-
   print('appointments: $appointments');
   return appointments;
 }
 
 //
+void addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int capacity, List days, String workshopID) {
+
+
+}
+
 
 Future<void> updateWorkingHours(TimeRangeResult R) async {
   final user = _auth.currentUser;

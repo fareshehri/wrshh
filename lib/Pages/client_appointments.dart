@@ -4,13 +4,13 @@ import '../Services/Auth/db.dart';
 import '../components/card.dart';
 
 class ClientAppointments extends StatefulWidget {
-
   @override
   State<ClientAppointments> createState() => _ClientAppointmentsState();
 }
 
 class _ClientAppointmentsState extends State<ClientAppointments> {
-late List appointments = [];
+  late Map appointments = {};
+  late List workshops = [];
 
   @override
   void initState() {
@@ -27,11 +27,10 @@ late List appointments = [];
   _asyncMethod() async {
     var appointmentsDB = await getBookedAppointmentsFromDB('email');
 
-      setState(() {
-        appointments = appointmentsDB;
-      });
+    setState(() {
+      appointments = appointmentsDB;
+    });
     // (context as Element).reassemble();
-
   }
 
   @override
@@ -44,20 +43,34 @@ late List appointments = [];
     );
   }
 
-  List<Widget> buildAppointmentsCards(List appointments)  {
+  List<Widget> buildAppointmentsCards(Map appointments) {
     List<Widget> cards = [];
-// loop over appointments and create a card for each appointment
-    for (var i = 0; i < appointments.length;  i++){
-      var timestamp = appointments[i]['datetime'];
-      var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
-      cards.add(AppointmentsCard(
-        itemTitle: appointments[i]['booked'].toString(),
-        itemSubtitle: date.toString(),
-      ));
-      cards.add(SizedBox(height: 10,));
 
+    // loop through the appointments and create a card for each one
+    for (var appointment in appointments.keys) {
+      for (var workshop in appointments[appointment]) {
+        cards.add(
+          AppointmentsCard(
+            itemTitle: appointment,
+            itemSubtitle: workshop['booked'].toString(),
+          ),
+        );
+        cards.add(SizedBox(height: 10,));
+      }
     }
 
+// loop over appointments and create a card for each appointment
+//
+//     for (var i = 0; i < appointments.length;  i++){
+//       var timestamp = appointments[i]['datetime'];
+//       var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+//       cards.add(AppointmentsCard(
+//         itemTitle: appointments,
+//         itemSubtitle: date.toString(),
+//       ));
+//       cards.add(SizedBox(height: 10,));
+//
+//     }
 
     return cards;
   }
