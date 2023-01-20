@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:booking_calendar/booking_calendar.dart';
+import 'package:wrshh/Pages/Report.dart';
 import 'package:wrshh/Pages/welcome.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 import 'package:wrshh/Services/Auth/db.dart';
@@ -79,7 +80,15 @@ DateTime selectedDate = DateTime.now();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Processing Data')),);}},
                         icon: const Icon(Icons.search_rounded,), label: const Text('Search'),)
-        
+        // Delete This please
+        ,const SizedBox(height: 20,),
+const SizedBox(height: 20,),
+              const Text('Testing Delete IT')
+                ,ElevatedButton(onPressed: () {
+                  setState(() {
+                    Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const ReportPage(Wid: 'SS',vin: '56777777777777777',)));
+                  });
+                }, child: Icon(Icons.abc))
                 ],
       ),
       )
