@@ -1,7 +1,8 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:time_range/time_range.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -102,31 +103,39 @@ Future<Map> getBookedAppointmentsFromDB(String email) async {
   return appointments;
 }
 
-//
-void addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int capacity, List days, String workshopID) {
 
-
-}
-
-
-Future<void> updateWorkingHours(TimeRangeResult R) async {
+void addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int capacity, List dates) {
   final user = _auth.currentUser;
-  List hours = [R.start.hour, R.start.minute, R.end.hour, R.end.minute];
-  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'workingHours': hours
-  });
+
+  for (int i=0; i < dates.length; i++) { /// Go over selected days
+    for (int j=0; j <= capacity; j++) { /// Repeat addition for capacity size
+      dates[i] = DateTime(dates[i].year, dates[i].month, dates[i].day, startTime.hour, startTime.minute);
+      // dates[i].withMinute(startTime.minute);
+      // print(dates[i].runtimeType);
+      Map<String,dynamic> wp={
+        'workshopID': user?.email,
+        'booked': false,
+        'datetime': dates[i]
+      };
+      FirebaseFirestore.instance.collection('Appointment').add(wp);
+    }
+  }
 }
-Future<TimeRangeResult> getWorkingHours() async {
+
+
+Future<LinkedHashMap<String,dynamic>> getDatesHours() async {
   final user = _auth.currentUser;
   final time = await _firestore.collection('workshops').doc(user?.email).get();
-  List hours = time['workingHours'];
+  var hours = time['Hours'];
 
-  TimeRangeResult timeRange = TimeRangeResult(
-      TimeOfDay(hour: hours[0], minute: hours[1]),
-      TimeOfDay(hour: hours[2], minute: hours[3])
-  );
+  return hours;
 
-  return timeRange;
+}
+Future<void> updateDatesHours(LinkedHashMap<String,dynamic> datesHours) async {
+  final user = _auth.currentUser;
+  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
+    'Hours': datesHours
+  });
 }
 
 Future<void> updateCapacity(int c) async {
@@ -148,44 +157,15 @@ Future<void> updateServices(List services, List prices) async {
     'pri': prices
   });
 }
-Future<DocumentSnapshot<Map<String, dynamic>>> getServices() async {
-  final user = _auth.currentUser;
-  final ser = await _firestore.collection('workshops').doc(user?.email).get();
-  return ser;
+Future<LinkedHashMap<String,dynamic>> getServices() async {
 
-}
-
-Future<void> updateBreakDates(List<DateTime> breakDates) async {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final user = _auth.currentUser;
-  List tem = [];
-  for (int i=0; i < breakDates.length; i++) {
-    tem.add(breakDates[i].millisecondsSinceEpoch);
-  }
-  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'breakDates': tem
-  });
-}
-Future<List<dynamic>> getBreakDates() async {
   final user = _auth.currentUser;
   final time = await _firestore.collection('workshops').doc(user?.email).get();
-  return time['breakDates'] as List<dynamic>;
+  var services = time['services'];
+  // print(services.runtimeType);
+  // print(services['price'][0]);
+
+  return services;
+
 }
 
-Future<void> updateBreakHours(List<DateTime> breakHours) async {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final user = _auth.currentUser;
-  List tem = [];
-  for (int i=0; i < breakHours.length; i++) {
-    tem.add(breakHours[i].millisecondsSinceEpoch);
-  }
-
-  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'breakHours': tem
-  });
-}
-Future<List> getBreakHours() async {
-  final user = _auth.currentUser;
-  final time = await _firestore.collection('workshops').doc(user?.email).get();
-  return time['breakHours'];
-}
