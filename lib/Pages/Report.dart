@@ -71,16 +71,15 @@ class ReportPageState extends State<ReportPage> {
       
       final url = await ref.getDownloadURL();
       print('Saving the Url');
-      _firestore.collection('vin').doc(vin).get().then((value) {
           _firestore.collection('vin').doc(vin).update(
             {
               'history': url,
             },
-          );
+          ).onError((error, stackTrace) => null);
         
-      });
        print('Done');
     }
+
     } catch (e) {
       print(e);
     }
