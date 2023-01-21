@@ -42,11 +42,17 @@ Future _getData() async {
     });
   }
   final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getData();
+  }
   
   @override
   Widget build(BuildContext context) {
 
-_getData();
+
 
 
 if (!gotPath){
