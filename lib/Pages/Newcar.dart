@@ -27,8 +27,8 @@ class _NewcarState extends State<Newcar> {
   var year;
   
   //set values
-  var ob;
-  var oc;
+  var ob="";
+  var oc="";
   var _selectedB;
   var _selectedC;
   var _vin;
@@ -279,7 +279,9 @@ void initState() {
                     //in catch we will add a new car to database
                     try {
                       final x = await FirebaseFirestore.instance.collection('vin').doc(_vin).get();
-                    if(x!=null && x['carModel']!=finc||x['carManufacturer']!=finb||x['otherBrand']!=ob||x['otherCar']!=oc ){
+                      print(x['otherBrand']=="");
+                      print(x['otherCar']==oc);
+                    if(x!=null && x['carModel']!=finc||x['carManufacturer']!=finb||x['otherBrand']!=ob||x['otherCar']!=oc){
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The vin is already registered and the data is not matching or please contact us')),);
                       }
                       else{
@@ -293,7 +295,7 @@ void initState() {
                         'otherBrand': ob,
                         'otherCar': oc,
                       };
-                      FirebaseFirestore.instance.collection('vin').doc(_vin).set(saved);
+                      FirebaseFirestore.instance.collection('vin').doc(_vin).update(saved);
                       FirebaseFirestore.instance.collection('clients').doc(email).update({
                         'vin':_vin
                       });
