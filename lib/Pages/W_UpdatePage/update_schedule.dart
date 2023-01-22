@@ -22,22 +22,13 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
   late int capacity = 0; /// Capacity
   late LinkedHashMap<String,dynamic> datesHours; ///Contains Days and Shift hours
   late List<DateTime> dates = []; /// Check Day of the week, and assign based on it
-  late LinkedHashMap<String,dynamic> services; /// Services DB Variable
-  late LinkedHashMap<String,dynamic> tempServices;
-  List selectedServices = []; // Not yet
-  String startingService = ''; // Not yet
-
-  // The controller for the text field
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
+  late Map<DateTime,TimeOfDay> selectedDates = {}; // Not yet
 
   /// Retrieve All information from DB
   Future call() async {
-    services = await getServices(); /// Retrieve Services [with prices]
     capacity = await getCapacity(); /// Retrieve Capacity
     datesHours = await getDatesHours(); /// Retrieve Days and Shift hours
 
-    if (!mounted) return;//To catch errors
     setState(() {
       gotPath = true; /// Allow the page to continue, after retrieving from DB
       for (var day in days) {
@@ -49,8 +40,6 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
       }
       /// Assign selected days from DB to selected Days cards reference
       populateDaysNames();
-      startingService = '${services['service'][0]} - ${services['price'][0]} SAR';
-      tempServices = services;
     });
   }
 
@@ -65,7 +54,6 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
     catch (e) {
       print(e);
     }
-
 
   }
 
@@ -163,10 +151,38 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
         datesHours[day][4] = 0;
       }
     }
+
     updateCapacity(capacity);
     updateDatesHours(datesHours);
-    services = tempServices;
-    updateServices(services);
+
+    // addAppointmentsTable(startTime, endTime, capacity, dates, datesHours);
+
+    // for (var day in days) {
+    //   for (var selDay in selectedDays.keys){
+    //     if (datesHours[day][0] && (day == selDay)){
+    //       print(selectedDates[selectedDays[selDay]].runtimeType);
+    //       // = TimeOfDay(hour: startTime.hour, minute: startTime.minute);
+    //     }
+    //   }
+    // }
+    //   print(selectedDates);
+
+    // var tempList = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    // for (int i = 0; i < dates.length; i++) {
+    //   for (int j=0; j < datesHours.length; j++) {
+    //     for (var key in datesHours.keys){
+    //       if (datesHours[tempList[j]][0] && (key == getDayName(dates[i]))) {
+    //         DateTime dateTimeTemp = DateTime(dates[i].year, dates[i].month, dates[i].day, startTime.hour, startTime.minute);
+    //         print(dateTimeTemp);
+    //         // count = capacity - count;
+    //         for (int c = 0; c < capacity; c++) {
+    //           print(key);
+    //         }
+    //         // return;
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   ///Create a method to convert TimeOfDay to String using the format HH:MM AM/PM
@@ -224,115 +240,6 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
       default:
         return 'Invalid Day';
     }
-  }
-
-  /// Populate Services dropdown list
-  List<DropdownMenuItem<String>> servicesDropDown() {
-    List<DropdownMenuItem<String>> dropdownItems = [];
-    List<String> serpri = [];
-    for (int i=0; i < tempServices['service'].length; i++) {
-      var temp = 'SAR';
-      serpri.add('${tempServices['service'][i]} - ${tempServices['price'][i]} $temp');
-    }
-
-    for (int j = 0; j < serpri.length; j++) {
-      var temp = serpri[j];
-      var newItem = DropdownMenuItem(
-          value: temp,
-          child:  Row(
-            children: [
-              Text(temp),
-              PopupMenuButton(
-                onSelected: (value) {
-                  var temp2 = temp.split('-');
-                  var temp3 = temp2[1].replaceAll(' ', '-').split('-');
-                  // var temp4 = temp3
-                  if (value == 'edit') {
-                    // Show the modal bottom sheet to edit the object
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        // Set the initial value of the text fields to the current name and price
-                        _nameController.text =temp2[0].trim();
-                        _priceController.text = temp3[1].trim();
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // The form with the text fields
-                            Form(
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    controller: _nameController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Name',
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    controller: _priceController,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Price',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // The save button
-                            ElevatedButton(
-                              onPressed: () {
-                                // Update the name and price of the selected object
-                                setState(() {
-                                  for (int i=0; i < tempServices['service'].length; i++) {
-                                    if (tempServices['service'][i] == temp2[0].trim())
-                                    {
-                                      tempServices['service'][i] = _nameController.text;
-                                      tempServices['price'][i] = _priceController.text;
-                                    }
-                                  }
-                                  serpri[j] = '${services['service'][j]} - ${services['price'][j]} $temp';
-                                  startingService = '${services['service'][0]} - ${services['price'][0]} SAR';
-                                  _nameController.text = '';
-                                  _priceController.text = '';
-                                });
-                                // Close the modal bottom sheet
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Save'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                  else if (value == 'delete') {
-                    // handle the delete option
-                    setState(() {
-                      tempServices['service'].remove(temp2[0].trim());
-                      tempServices['price'].remove(int.parse(temp3[1].trim()));
-                      startingService = '${services['service'][0]} - ${services['price'][0]} SAR';
-                    });
-                  }
-                },
-                itemBuilder: (BuildContext context) {
-                  return [
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Text('Edit'),
-                    ),
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Text('Delete'),
-                    ),
-                  ];
-                },
-              ),
-            ],
-          ),
-      );
-      dropdownItems.add(newItem);
-    }
-
-    return dropdownItems;
   }
 
   /// Populate Shift time dropdown lists
@@ -456,84 +363,6 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                 ),
               ],
             ),
-            /// Services part
-            Row(
-              children: [
-                const Text('Services:',
-                    style: TextStyle(
-                      fontSize: 18,
-                    )), ///Declaration
-                const SizedBox(
-                  width: 10,
-                ),///Gap
-                DropdownButton(
-                  value: startingService,
-                  items: servicesDropDown(),
-                  onChanged: (value) {
-                    setState(() {
-                      startingService = value as String;
-                    });
-                  },
-                ),
-                const SizedBox(
-                  width: 10,
-                ),///Gap
-                //Add Button
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Column (
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // The form with the text fields
-                              Form(
-                                child: Column(
-                                  children: [
-                                    TextFormField(
-                                      controller: _nameController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Service Name'
-                                      ),
-                                    ),
-                                    TextFormField(
-                                      controller: _priceController,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Price'
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              // The Save Button
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    tempServices['service'].add(_nameController.text);
-                                    tempServices['price'].add(_priceController.text);
-                                  });
-                                  _nameController.clear();
-                                  _priceController.clear();
-                                  // Close the modal bottom sheet
-                                  Navigator.pop(context);
-                                },
-                                child: const Icon(Icons.add),
-                              )
-                            ],
-                          );
-                        }
-                      );
-                    });
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),///Gap
-              ],
-            ),
             /// Update Button part
             RoundedButton(
                 title: 'Update',
@@ -551,8 +380,11 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                   }
                   else {
                     checkAll();
-
-                    addAppointmentsTable(startTime, endTime, capacity, dates);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Update Done!'),
+                        )
+                    );
                   }
                 }),
           ],

@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/Account.dart';
 import 'package:wrshh/Pages/welcome.dart';
-import 'package:wrshh/Services/Auth/db.dart';
-import 'package:wrshh/components/buildCards.dart';
 
 import '../Services/Auth/auth.dart';
 // import 'W_UpdatePage/break_Hours.dart';
@@ -12,7 +10,7 @@ import '../Services/Auth/auth.dart';
 // import 'W_UpdatePage/services.dart';
 // import 'W_UpdatePage/working_Dates.dart';
 // import 'W_UpdatePage/working_Hours.dart';
-import '../components/Calendar_Timeline.dart';
+import '../Services/workhop_Services.dart';
 import 'W_UpdatePage/update_schedule.dart';
 
 class WHome extends StatefulWidget {
@@ -26,7 +24,6 @@ class WHome extends StatefulWidget {
 class _WHomeState extends State<WHome> {
   //vin
   final _formKey = GlobalKey<FormState>();
-  late Map appointments = {};
   //styles
   var tc = [
     Colors.red[400],
@@ -65,14 +62,14 @@ class _WHomeState extends State<WHome> {
             ListTile(
               hoverColor: tc[_selectedIndex],
               leading: const Icon(Icons.manage_accounts),
-              title: const Text('Account'),
+              title: const Text('Services'),
               onTap: () {
                 setState(() {
                   Navigator.of(
                     context,
                     rootNavigator: true,
                   ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const Account(),
+                    builder: (BuildContext context) => const Services(),
                   ));
                 });
               },
@@ -98,7 +95,6 @@ class _WHomeState extends State<WHome> {
         //AB:
         //appBar: AppBar(title: Text('Home'),centerTitle: true,backgroundColor:bbcolor[_selectedIndex],) ,
         appBar: AppBar(
-
           systemOverlayStyle: SystemUiOverlayStyle(
               systemNavigationBarColor: buttoncolor[_selectedIndex]),
           actionsIconTheme:
@@ -120,59 +116,18 @@ class _WHomeState extends State<WHome> {
           builder: (context, snapshot) {
             if (_selectedIndex == 0) {
               //Main PAGE after listview try padding: EdgeInsets.all(8)
-              var test = buildAppointmentsCards(appointments, 'Workshop');
-              return Column(
-                  children: [
-                    Container(
-                      height: 120,
-                      color: Colors.pink,
-                      child: CalendarTimeline(
-                        initialDate: selectedDate,
-                        firstDate: DateTime.now().subtract(Duration(days: 30)),
-                        lastDate: DateTime.now().add(Duration(days: 60)),
-                        onDateSelected: (date) async {
-                          // setState(() {
-                          selectedDate = date;
-                          // (context as Element).reassemble();
-                          var appointmentsDB = await getWorkshopAppointmetnsByDate(date);
-
-                          setState(() {
-                            appointments = appointmentsDB;
-                          });
-                          // });
-                        },
-                        leftMargin: 20,
-                        monthColor: Colors.white,
-                        dayColor: Colors.white,
-                        activeDayColor: Colors.pink,
-                        activeBackgroundDayColor: Colors.white,
-                        dotsColor: Color(0xFF333A47),
-                        selectableDayPredicate: (date) => date.day != 23,
-                        locale: 'en_ISO',
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 20,
-                    ),
-                    if (appointments.length == 0)
-                      Text(
-                        'No Appointments',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListView.builder(
-                          itemCount: appointments.length,
-                          itemBuilder: (context, index) {
-                            return test[index];
-                          },
-                        ),
-                      ),
-                    ),
-
-                  ],
+              return SizedBox(
+                height: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    kToolbarHeight,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ListView(padding: const EdgeInsets.all(8), children: [
+                  SizedBox(
+                      child: Image.asset(
+                    'assets/images/wallpaper3.jpg',
+                    fit: BoxFit.contain,
+                  )),
+                ]),
               );
             }
 
