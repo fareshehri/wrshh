@@ -36,7 +36,8 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
     services = await getServices(); /// Retrieve Services [with prices]
     capacity = await getCapacity(); /// Retrieve Capacity
     datesHours = await getDatesHours(); /// Retrieve Days and Shift hours
-
+    
+    if (!mounted) return;
     setState(() {
       gotPath = true; /// Allow the page to continue, after retrieving from DB
       for (var day in days) {
