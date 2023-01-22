@@ -221,7 +221,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         );
                         try {
                           var user = await AuthService().signUpUser(newUser);
-                          if (user?.user?.uid != null) {
+                          if (user.user?.uid != null) {
                             Navigator.pushNamed(context, Home.id);
                           }
                         } catch (e) {

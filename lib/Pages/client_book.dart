@@ -124,7 +124,7 @@ class _ClientBookingState extends State<ClientBooking> {
     List dayAppointments = [];
     Map allDayAppointments = {};
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String formattedNow = formatter.format(selectedDate!);
+    final String formattedNow = formatter.format(selectedDate);
     // appointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
     for (var i = 0; i < appointments.length; i++) {
       var appointmentDate = DateTime.fromMillisecondsSinceEpoch(

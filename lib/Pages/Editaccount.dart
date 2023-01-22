@@ -32,10 +32,10 @@ class _EditaccountState extends State<Editaccount> {
   
 Future _getData() async {
     final User user = await _auth.currentUser!;
-    final client = await _firestore.collection('clients').doc(user!.email).get();
+    final client = await _firestore.collection('clients').doc(user.email).get();
     setState(() {
       name = client['name'];
-      emaill=user!.email;
+      emaill=user.email;
       phone=client['phoneNumber'];
       city=client['city'];
       gotPath = true;

@@ -47,11 +47,11 @@ class _NewcarState extends State<Newcar> {
 //Get data from firestore
 Future _getData() async {
     final User user = await _auth.currentUser!;
-    final client = await _firestore.collection('clients').doc(user!.email).get();
+    final client = await _firestore.collection('clients').doc(user.email).get();
     setState(() {
       name = client['name'];
       carsvin=client['vin'];
-      email=user!.email;
+      email=user.email;
       
     });
       await _getCar();}
