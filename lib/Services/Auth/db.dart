@@ -220,7 +220,7 @@ getWorkshopLogoFromDB(String workshopID) async {
       .collection('workshops')
       .doc(workshopID)
       .get()
-      .then((value) => workshopLogo = value.data()!['workshopLogo']);
+      .then((value) => workshopLogo = value.data()!['logo']);
   return workshopLogo;
 }
 
