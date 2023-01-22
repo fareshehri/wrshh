@@ -8,116 +8,140 @@ import '../Services/Auth/db.dart';
 import '../components/Calendar_Timeline.dart';
 
 class ClientBooking extends StatefulWidget {
-  final List appointments;
-  ClientBooking({required this.appointments});
+  final workshopInfo;
+  ClientBooking({required this.workshopInfo});
 
   @override
   State<ClientBooking> createState() =>
-      _ClientBookingState(appointments: appointments);
+      _ClientBookingState(workshopInfo: workshopInfo);
 }
 
 class _ClientBookingState extends State<ClientBooking> {
-  List appointments;
+  final workshopInfo;
+  late List appointments;
+  bool gotPath = false;
   Map selectedList = {};
-  _ClientBookingState({required this.appointments});
+  _ClientBookingState({required this.workshopInfo});
 
   DateTime selectedDate = DateTime.now();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    _asyncMethod();
+    super.initState();
+  }
+
+  _asyncMethod() async {
+    var appointmentsDB =
+        await getAppointmentsFromDB(workshopInfo['workshopID']);
+    setState(() {
+      appointments = appointmentsDB;
+      gotPath = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Book Appointment'),
-        shadowColor: Colors.transparent,
-      ),
-      body: Column(children: [
-        Container(
-          height: 120,
-          color: Colors.pink,
-          child: CalendarTimeline(
-            initialDate: selectedDate,
-            firstDate: DateTime(2023, 1, 1),
-            lastDate: DateTime.now().add(Duration(days: 60)),
-            onDateSelected: (date) {
-              // setState(() {
-              selectedDate = date;
-              (context as Element).reassemble();
-              // });
+    if (!gotPath) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Book Appointment'),
+          shadowColor: Colors.transparent,
+        ),
+        body: Column(children: [
+          Container(
+            height: 120,
+            color: Colors.pink,
+            child: CalendarTimeline(
+              initialDate: selectedDate,
+              firstDate: DateTime(2023, 1, 1),
+              lastDate: DateTime.now().add(Duration(days: 60)),
+              onDateSelected: (date) {
+                // setState(() {
+                selectedDate = date;
+                (context as Element).reassemble();
+                // });
+              },
+              leftMargin: 20,
+              monthColor: Colors.white,
+              dayColor: Colors.white,
+              activeDayColor: Colors.pink,
+              activeBackgroundDayColor: Colors.white,
+              dotsColor: Color(0xFF333A47),
+              selectableDayPredicate: (date) => date.day != 23,
+              locale: 'en_ISO',
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 10,
+                backgroundColor: Colors.green[800],
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text('Available'),
+              SizedBox(
+                width: 10,
+              ),
+              CircleAvatar(
+                radius: 10,
+                backgroundColor: Colors.red[800],
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text('Booked'),
+              SizedBox(
+                width: 10,
+              ),
+              CircleAvatar(
+                radius: 10,
+                backgroundColor: Colors.grey,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text('Selected'),
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            child: Expanded(
+              child: buildAppointmentList(appointments),
+            ),
+          ),
+          RoundedButton(
+            title: 'Book',
+            colour: kDarkColor,
+            onPressed: () {
+              if (selectedList.isNotEmpty) {
+                selectedList.forEach((key, value) {
+                  bookAppointment(key);
+                });
+                Navigator.pop(context);
+              } else {
+                print('No appointment selected');
+              }
             },
-            leftMargin: 20,
-            monthColor: Colors.white,
-            dayColor: Colors.white,
-            activeDayColor: Colors.pink,
-            activeBackgroundDayColor: Colors.white,
-            dotsColor: Color(0xFF333A47),
-            selectableDayPredicate: (date) => date.day != 23,
-            locale: 'en_ISO',
           ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 10,
-              backgroundColor: Colors.green[800],
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Text('Available'),
-            SizedBox(
-              width: 10,
-            ),
-            CircleAvatar(
-              radius: 10,
-              backgroundColor: Colors.red[800],
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Text('Booked'),
-            SizedBox(
-              width: 10,
-            ),
-            CircleAvatar(
-              radius: 10,
-              backgroundColor: Colors.grey,
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Text('Selected'),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Container(
-          child: Expanded(
-            child: buildAppointmentList(appointments),
-          ),
-        ),
-        RoundedButton(
-          title: 'Book',
-          colour: kDarkColor,
-          onPressed: () {
-            print(selectedList);
-            if (selectedList.isNotEmpty) {
-              selectedList.forEach((key, value) {
-                bookAppointment(key);
-              });
-              Navigator.pop(context);
-            }
-            else {
-              print('No appointment selected');
-            }
-          },
-        ),
-      ]),
-    );
+        ]),
+      );
+    }
   }
 
   Container buildAppointmentList(List appointments) {
@@ -132,19 +156,20 @@ class _ClientBookingState extends State<ClientBooking> {
       String formattedAppointmentDate = formatter.format(appointmentDate);
       if (formattedAppointmentDate == formattedNow) {
         var timestamp = appointments[i]['datetime'];
-        var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+        var date =
+            DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
         if (allDayAppointments.containsKey(date)) {
           allDayAppointments[date].add(appointments[i]);
         } else {
           allDayAppointments[date] = [appointments[i]];
         }
-        }
+      }
     }
     for (appointments in allDayAppointments.values) {
       var availableIndex = [];
       var bookedCounter = 0;
       for (var i = 0; i < appointments.length; i++) {
-        if (appointments[i]['booked'] == true) {
+        if (appointments[i]['status'] != 'available') {
           bookedCounter++;
         } else {
           availableIndex.add(i);
@@ -152,11 +177,9 @@ class _ClientBookingState extends State<ClientBooking> {
       }
       if (bookedCounter == appointments.length) {
         dayAppointments.add(appointments[0]);
-      }
-      else{
+      } else {
         dayAppointments.add(appointments[availableIndex[0]]);
       }
-
     }
     if (dayAppointments.isEmpty) {
       return Container(
@@ -192,7 +215,8 @@ class _ClientBookingState extends State<ClientBooking> {
   }
 
   Container buildAppointmentCard(appointment) {
-    bool booked = appointment['booked'];
+    print(appointment);
+    String status = appointment['status'];
     var timestamp = appointment['datetime'];
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
 
@@ -204,7 +228,7 @@ class _ClientBookingState extends State<ClientBooking> {
             selectedList[appointment.id] = true;
           });
         },
-        isBooked: booked,
+        isBooked: status == 'available' ? false : true,
         isSelected: selectedList[appointment.id] ?? false,
         isPauseTime: false,
         child: Center(

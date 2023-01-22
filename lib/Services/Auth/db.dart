@@ -36,19 +36,20 @@ Future<Map<String, dynamic>> getWorkshopsFromDB() async {
 
 }
 
-
-// retrieve appointments from firestore where adminEmail == email
-Future<List> getAppointmentsFromDB(String email) async {
+Future<List> getAppointmentsFromDB(String workshopID) async {
   List appointments = [];
-  _firestore
-      .collection('Appointment')
-      .where('workshopID', isEqualTo: email)
-      .get()
-      .then((value) {
-    value.docs.forEach((element) {
-      appointments.add(element);
-    });
+  final appointmentsDB = await _firestore.collection('Appointments')
+      .where('workshopID', isEqualTo: workshopID)
+      .get().then((value) {
+  value.docs.forEach((element) {
+  appointments.add(element);
   });
+  });
+
+
+  // for (var appointment in appointmentsDB.docs) {
+  //   appointments.add(appointment.data());
+  // }
   return appointments;
 }
 
@@ -77,9 +78,23 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
   return workshopName;
 }
 
-void bookAppointment(String id) {
-  _firestore.collection('Appointment').doc(id).update({
-    'booked': true,
+getVINFromUserId(String? userID) async {
+  String vin = '';
+  await _firestore
+      .collection('clients')
+      .doc(userID)
+      .get()
+      .then((value) => vin = value.data()!['vin']);
+  return vin;
+}
+
+
+void bookAppointment(String id) async{
+  var vin = await getVINFromUserId(_auth.currentUser!.email);
+  _firestore.collection('Appointments').doc(id).update({
+    'clientID': _auth.currentUser!.email,
+    'VIN': vin,
+    'status': 'booked',
   });
 }
 
@@ -90,11 +105,9 @@ Future<Map> getBookedAppointmentsFromDB(String email) async {
     if (appointment.data()['booked'] == true) {
       var workshopName =
           await getWorkshopNameFromDB(appointment.data()['workshopID']);
-// if workshopName is not in appointments.keys add it
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
       }
-// add the appointment to the list of appointments
       appointments[workshopName].add(appointment.data());
     }
   }
@@ -275,4 +288,24 @@ getWorkshopAppointmetnsByDate(DateTime date) async {
   print('appointments $appointments');
   return appointments;
 
+}
+
+
+addAppointments(String id) async{
+  for (int i = 0; i < 10; i++) {
+
+    FirebaseFirestore.instance.collection('Appointments').add(
+        {
+          'VIN': '',
+          'clientID': '',
+          'workshopID': id,
+          'datetime': DateTime.now(),
+          'status': 'available',
+          'rate': 0,
+          'reportURL': '',
+          'price': 0,
+          'service': '',
+        }
+    );
+  }
 }

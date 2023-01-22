@@ -206,12 +206,12 @@ class BottomPill extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
+                            print(workshopInfo['workshopID']);
+                            // addAppointments(workshopInfo['workshopID']);
                             /// Navigate to the bookPage() function
-                            List appointments = await getAppointmentsFromDB(
-                                workshopInfo['adminEmail']);
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => ClientBooking(
-                                      appointments: appointments,
+                                  workshopInfo: workshopInfo,
                                     )));
                           },
 

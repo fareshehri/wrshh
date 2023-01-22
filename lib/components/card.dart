@@ -347,24 +347,9 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            // add rating to database
                             if (rate != 0) {
                               rateAppointment(widget.appointment!.appointmentID,
                                   widget.appointment!.workshopID, rate);
-                              // Appointment appointment = Appointment(
-                              //   appointmentID: '1',
-                              //   workshopID: 'oeRu9JWbfQFDkZRzH4d6',
-                              //   clientID: 'client@gmail.com',
-                              //   datetime: widget.appointment!.datetime,
-                              //   status: 'open',
-                              //   service: 'Oil Change',
-                              //   price: 100,
-                              //   reportURL: 'https://www.google.com',
-                              //   VIN: '1G1ZB5ST1GF123456',
-                              //   rate: 0,
-                              // );
-                              //
-                              // updateSchedule(appointment);
                               Navigator.pop(context);
                             }
                           },

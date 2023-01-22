@@ -39,6 +39,7 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
   double pinPillPosition = pinInvisiblePosition;
 
   Map<String, dynamic> workshopInfo = {
+    'workshopID': '',
     'workshopName': '',
     'overAllRate': 0,
     'logo': '',
@@ -71,7 +72,12 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
               onTap: () {
                 setState(() {
                   /// Show pin info
-                  workshopInfo = workshops[workshop];
+                  workshopInfo['workshopID'] = workshop;
+                  workshopInfo['workshopName'] = name;
+                  workshopInfo['overAllRate'] = workshops[workshop]['overAllRate'];
+                  workshopInfo['logo'] = workshops[workshop]['logo'];
+                  workshopInfo['adminEmail'] = workshops[workshop]['adminEmail'];
+
                   pinPillPosition = pinVisiblePosition;
 
                   _controller.animateCamera(
