@@ -26,13 +26,16 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 // }
 //
 // // retive woskshops data from the database
-// Future<void> getWorkshops() async {
-//   final workshops = await _firestore.collection('workshops').get();
-//   for (var workshop in workshops.docs) {
-//     print(workshop.data());
-//   }
-// }
-//
+Future<Map<String, dynamic>> getWorkshopsFromDB() async {
+  Map<String, dynamic> workshopsData = {};
+  final workshops = await _firestore.collection('workshops').get();
+  for (var workshop in workshops.docs) {
+    workshopsData[workshop.id] = workshop.data();
+  }
+  return workshopsData;
+
+}
+
 
 // retrieve appointments from firestore where adminEmail == email
 Future<List> getAppointmentsFromDB(String email) async {
@@ -226,3 +229,5 @@ getWorkshopLogoFromDB(String workshopID) async {
 
 // Future<List> getWorkshopAppointmentsFromDB(String workshopID) async {
 //   List appointments = [];
+
+

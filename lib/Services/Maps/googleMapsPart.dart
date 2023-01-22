@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../Auth/db.dart';
 import 'upperPill.dart';
 import 'BottomPill.dart';
 
@@ -47,16 +48,18 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
   @override
   void initState() {
     super.initState();
+    _asyncMethod();
 
-    FirebaseFirestore.instance
-        .collection('workshops')
-        .snapshots()
-        .listen((snapshot) {
-      setState(() {
+  }
+
+  _asyncMethod() async {
+    var workshops = await getWorkshopsFromDB();
+
         _markers.clear();
-        for (var document in snapshot.docs) {
-          String loc = document['location'] as String;
-          String name = document['workshopName'];
+
+        for (var workshop in workshops.keys) {
+          String loc = workshops[workshop]['location'] as String;
+          String name = workshops[workshop]['workshopName'];
           List Loc = loc.split(',');
           double lat = double.parse(Loc[1]);
           double long = double.parse(Loc[0]);
@@ -68,8 +71,7 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
               onTap: () {
                 setState(() {
                   /// Show pin info
-                  workshopInfo = document.data();
-                  print(workshopInfo);
+                  workshopInfo = workshops[workshop];
                   pinPillPosition = pinVisiblePosition;
 
                   _controller.animateCamera(
@@ -77,8 +79,7 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
                 });
               }));
         }
-      });
-    });
+        setState(() {});
   }
 
   @override
