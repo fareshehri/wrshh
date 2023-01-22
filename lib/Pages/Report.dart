@@ -160,13 +160,13 @@ class ReportPageState extends State<ReportPage> {
               const Text('Upload'),
               //TextFormField(readOnly: true,initialValue: vin,textAlign: TextAlign.center,textAlignVertical: TextAlignVertical.center,decoration: InputDecoration(border: OutlineInputBorder(),hintText: vin,contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 2)),),
               ElevatedButton(onPressed: () async{
-                result = await FilePicker.platform.pickFiles(allowMultiple: false ,type: FileType.custom,allowedExtensions: ['pdf','doc','docx']);
+                result = await FilePicker.platform.pickFiles(allowMultiple: false ,type: FileType.custom,allowedExtensions: ['pdf',]);
                       if (result == null) {
                           print("No file selected");
                           gotFile=false;
                         } else {
                         PlatformFile file = result!.files.single;
-                        if(file.extension=='pdf'||file.extension=='docx'||file.extension=='doc'){
+                        if(file.extension=='pdf'){
                           gotExt=true;
                           print(file.name);
                           //do something here to upload to firestore
@@ -182,6 +182,7 @@ class ReportPageState extends State<ReportPage> {
                           gotExt=false;
                           gotFile=false;
                           print("Incorrect Extension");
+                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The file Extension is incorrect')),);
                         }
                         }
               }, child: const Text("File Picker"),),
