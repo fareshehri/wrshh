@@ -56,9 +56,15 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
   @override
   void initState() {
     super.initState();
-    call();
-    checkDaysDates();
-    checkDays();
+    try{
+      call();
+      checkDaysDates();
+      checkDays();
+    }
+    catch (e) {
+      print(e);
+    }
+
 
   }
 
@@ -74,7 +80,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
 
   /// Check day of the week, and assign allowed days given the day
   void checkDaysDates() {
-    DateTime temp = DateTime.now();
+    DateTime temp = DateTime.now().add(Duration());
 
     // if today is Saturday, get remaining week days(7)
     if (temp.weekday == 6) {
@@ -368,16 +374,14 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
             /// Days with dates builder (caller)
             SizedBox(
               height: 160,
-              child: Expanded(
-                child: GridView.builder(
-                  itemCount: dates.length,
-                  itemBuilder: (context, index) {
-                    return buildDaysCard(days[index], index);
-                  },
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    childAspectRatio: 2,
-                  ),
+              child: GridView.builder(
+                itemCount: dates.length,
+                itemBuilder: (context, index) {
+                  return buildDaysCard(days[index], index);
+                },
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 2,
                 ),
               ),
             ),
@@ -474,57 +478,55 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                   width: 10,
                 ),///Gap
                 //Add Button
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Column (
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // The form with the text fields
-                                Form(
-                                  child: Column(
-                                    children: [
-                                      TextFormField(
-                                        controller: _nameController,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Service Name'
-                                        ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Column (
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // The form with the text fields
+                              Form(
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      controller: _nameController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Service Name'
                                       ),
-                                      TextFormField(
-                                        controller: _priceController,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Price'
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    TextFormField(
+                                      controller: _priceController,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Price'
+                                      ),
+                                    )
+                                  ],
                                 ),
-                                // The Save Button
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      tempServices['service'].add(_nameController.text);
-                                      tempServices['price'].add(_priceController.text);
-                                    });
-                                    _nameController.clear();
-                                    _priceController.clear();
-                                    // Close the modal bottom sheet
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Icon(Icons.add),
-                                )
-                              ],
-                            );
-                          }
-                        );
-                      });
-                    },
-                    child: const Icon(Icons.add),
-                  ),
+                              ),
+                              // The Save Button
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    tempServices['service'].add(_nameController.text);
+                                    tempServices['price'].add(_priceController.text);
+                                  });
+                                  _nameController.clear();
+                                  _priceController.clear();
+                                  // Close the modal bottom sheet
+                                  Navigator.pop(context);
+                                },
+                                child: const Icon(Icons.add),
+                              )
+                            ],
+                          );
+                        }
+                      );
+                    });
+                  },
+                  child: const Icon(Icons.add),
                 ),
                 const SizedBox(
                   width: 10,
@@ -557,5 +559,4 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
       );
     }
   }
-
 }
