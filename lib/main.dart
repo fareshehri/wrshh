@@ -5,6 +5,7 @@ import 'package:wrshh/Pages/Home.dart';
 import 'package:wrshh/Pages/Report.dart';
 import 'package:wrshh/Pages/welcome.dart';
 import 'package:wrshh/constants.dart';
+import 'Pages/admin_home.dart';
 import 'Pages/workshop_Home.dart';
 import 'firebase_options.dart';
 
@@ -33,6 +34,7 @@ void main() async {
       RegistrationScreen.id: (context) => RegistrationScreen(),
       Home.id: (context) => Home(),
       WHome.id: (context) => WHome(),
+      AHome.id: (context) => AHome(),
     },
     home: Wrapper(),
   ));

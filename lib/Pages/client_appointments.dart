@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import 'package:wrshh/Models/appointment.dart';
 import '../Services/Auth/db.dart';
 import '../components/card.dart';
 
@@ -25,10 +26,11 @@ class _ClientAppointmentsState extends State<ClientAppointments> {
   }
 
   _asyncMethod() async {
-    var appointmentsDB = await getBookedAppointmentsFromDB('email');
+    var appointmentsDB = await getUserAppointmentsFromDB();
 
     setState(() {
       appointments = appointmentsDB;
+      print('appointments: $appointments');
     });
     // (context as Element).reassemble();
   }
@@ -47,15 +49,38 @@ class _ClientAppointmentsState extends State<ClientAppointments> {
     List<Widget> cards = [];
 
     // loop through the appointments and create a card for each one
-    for (var appointment in appointments.keys) {
-      for (var workshop in appointments[appointment]) {
+    for (var workshopName in appointments.keys) {
+      print('workshopName: $workshopName');
+      for (var appointment in appointments[workshopName]) {
+        final DateFormat formatter = DateFormat('yyyy-MM-dd');
+        var date = DateTime.fromMillisecondsSinceEpoch(
+            appointment.data()['datetime'].seconds * 1000);
+        final String dateFormatted = formatter.format(date);
         cards.add(
           AppointmentsCard(
-            itemTitle: appointment,
-            itemSubtitle: workshop['booked'].toString(),
+            // logoURL: workshopName.first,
+            itemID: appointment.data()['workshopID'],
+            itemName: workshopName,
+            cardType: 'Client',
+            appointment: Appointment(
+                appointmentID: appointment.id,
+                workshopID: appointment.data()['workshopID'],
+                VIN: '',
+                clientID: '',
+                status: 'available',
+                service: '',
+                price: 0,
+                datetime: dateFormatted,
+                rate: 0,
+                reportURL: '',
+              reportDetails: '',
+            ),
+
           ),
         );
-        cards.add(SizedBox(height: 10,));
+        cards.add(SizedBox(
+          height: 10,
+        ));
       }
     }
 

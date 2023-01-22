@@ -123,51 +123,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                   ],
                 )),
-                // Row(
-                //   children: [
-                //     Expanded(
-                //       child: ListTile(
-                //         title: const Text(
-                //           'Client',
-                //         ),
-                //         trailing: Checkbox(
-                //           activeColor: Colors.lightBlueAccent,
-                //           value: isClient,
-                //           onChanged: (checboxState) {
-                //             setState(() {
-                //               isClient = checboxState!;
-                //               if (isWorkshop) {
-                //                 isWorkshop = !isWorkshop;
-                //               }
-                //             });
-                //           },
-                //         ),
-                //       ),
-                //     ),
-                //     Expanded(
-                //       child: ListTile(
-                //         title: const Text(
-                //           'Workshop',
-                //         ),
-                //         trailing: Checkbox(
-                //           activeColor: Colors.lightBlueAccent,
-                //           value: isWorkshop,
-                //           onChanged: (checboxState) {
-                //             setState(() {
-                //               isWorkshop = checboxState!;
-                //               if (isClient) {
-                //                 isClient = !isClient;
-                //               }
-                //               if (!isWorkshop) {
-                //                 isClient = true;
-                //               }
-                //             });
-                //           },
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
                 gap,
                 Visibility(
                   visible: accType.workshop == selectedType,

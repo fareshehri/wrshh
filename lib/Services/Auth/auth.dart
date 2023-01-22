@@ -59,7 +59,8 @@ class AuthService {
     final user = _auth.currentUser;
     final client = await _firestore.collection('clients').doc(user!.email).get();
     final workshop = await _firestore.collection('workshopAdmin').doc(user.email).get();
-    return client.exists ? 'ClientUser' : workshop.exists ? 'WorkshopUser' : 'none';
+    final admin = await _firestore.collection('admins').doc(user.email).get();
+    return client.exists ? 'ClientUser' : workshop.exists ? 'WorkshopUser' : admin.exists ? 'AdminUser' : 'none';
   }
 
   Future<UserCredential> signUpUser(AppUser user) async {
@@ -128,7 +129,7 @@ class AuthService {
       'services': services,
       'capacity': 1
     };
-    FirebaseFirestore.instance.collection('workshops').doc(user?.email).set(wp);
+    FirebaseFirestore.instance.collection('workshops').doc(user?.uid).set(wp);
 
    try {
       final ref = FirebaseStorage.instance.ref().child('workshopLogo').child(email);

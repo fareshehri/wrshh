@@ -63,10 +63,6 @@ Future<List> getAppointmentsFromDB(String email) async {
 // return appointments;
 // }
 
-
-
-
-
 // get workshop name from firestore where workshopID == workshopID
 Future<String> getWorkshopNameFromDB(String workshopID) async {
   String workshopName = '';
@@ -77,7 +73,6 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
       .then((value) => workshopName = value.data()!['workshopName']);
   return workshopName;
 }
-
 
 void bookAppointment(String id) {
   _firestore.collection('Appointment').doc(id).update({
@@ -90,30 +85,33 @@ Future<Map> getBookedAppointmentsFromDB(String email) async {
   final Appointmentss = await _firestore.collection('Appointment').get();
   for (var appointment in Appointmentss.docs) {
     if (appointment.data()['booked'] == true) {
-      var workshopName = await getWorkshopNameFromDB(appointment.data()['workshopID']);
-      // if workshopName is not in appointments.keys add it
+      var workshopName =
+          await getWorkshopNameFromDB(appointment.data()['workshopID']);
+// if workshopName is not in appointments.keys add it
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
       }
-      // add the appointment to the list of appointments
+// add the appointment to the list of appointments
       appointments[workshopName].add(appointment.data());
     }
   }
-  print('appointments: $appointments');
   return appointments;
 }
 
-
-void addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int capacity, List dates) {
+void addAppointmentsTable(
+    TimeOfDay startTime, TimeOfDay endTime, int capacity, List dates) {
   final user = _auth.currentUser;
 
-  for (int i=0; i < dates.length; i++) { /// Go over selected days
-    for (int j=0; j <= capacity; j++) { /// Repeat addition for capacity size
-      dates[i] = DateTime(dates[i].year, dates[i].month, dates[i].day, startTime.hour, startTime.minute);
-      // dates[i].withMinute(startTime.minute);
-      // print(dates[i].runtimeType);
-      Map<String,dynamic> wp={
-        'workshopID': user?.email,
+  for (int i = 0; i < dates.length; i++) {
+    /// Go over selected days
+    for (int j = 0; j <= capacity; j++) {
+      /// Repeat addition for capacity size
+      dates[i] = DateTime(dates[i].year, dates[i].month, dates[i].day,
+          startTime.hour, startTime.minute);
+// dates[i].withMinute(startTime.minute);
+// print(dates[i].runtimeType);
+      Map<String, dynamic> wp = {
+        'workshopID': user?.uid,
         'booked': false,
         'datetime': dates[i]
       };
@@ -122,49 +120,109 @@ void addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int capacity, 
   }
 }
 
-
-Future<LinkedHashMap<String,dynamic>> getDatesHours() async {
+Future<LinkedHashMap<String, dynamic>> getDatesHours() async {
   final user = _auth.currentUser;
   final time = await _firestore.collection('workshops').doc(user?.email).get();
   var hours = time['Hours'];
 
   return hours;
-
 }
-Future<void> updateDatesHours(LinkedHashMap<String,dynamic> datesHours) async {
+
+Future<void> updateDatesHours(LinkedHashMap<String, dynamic> datesHours) async {
   final user = _auth.currentUser;
-  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'Hours': datesHours
-  });
+  FirebaseFirestore.instance
+      .collection('workshops')
+      .doc(user?.email)
+      .update({'Hours': datesHours});
 }
 
 Future<void> updateCapacity(int c) async {
   final user = _auth.currentUser;
-  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'capacity': c
-  });
+  FirebaseFirestore.instance
+      .collection('workshops')
+      .doc(user?.email)
+      .update({'capacity': c});
 }
+
 Future<int> getCapacity() async {
   final user = _auth.currentUser;
   final cap = await _firestore.collection('workshops').doc(user?.email).get();
   return cap['capacity'] as int;
 }
 
-Future<void> updateServices(LinkedHashMap<String,dynamic> services) async {
+Future<void> updateServices(LinkedHashMap<String, dynamic> services) async {
   final user = _auth.currentUser;
-  FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'services': services
-  });
+  FirebaseFirestore.instance
+      .collection('workshops')
+      .doc(user?.email)
+      .update({'services': services});
 }
-Future<LinkedHashMap<String,dynamic>> getServices() async {
 
+Future<LinkedHashMap<String, dynamic>> getServices() async {
   final user = _auth.currentUser;
   final time = await _firestore.collection('workshops').doc(user?.email).get();
   var services = time['services'];
-  // print(services.runtimeType);
-  // print(services['price'][0]);
+// print(services.runtimeType);
+// print(services['price'][0]);
 
   return services;
-
 }
 
+rateAppointment(String appointmentID, String workshopID, double rating) async {
+  _firestore.collection('Appointments').doc(appointmentID).update({
+    'rate': rating,
+  });
+  var workshop = await _firestore.collection('workshops').doc(workshopID).get();
+  var oldRate = workshop['overAllRate'] as num;
+  var oldNumberOfRates = workshop['numberOfRates'] as int;
+  var newRate = (oldRate * oldNumberOfRates + rating) / (oldNumberOfRates + 1);
+  _firestore.collection('workshops').doc(workshopID).update({
+    'overAllRate': newRate,
+    'numberOfRates': oldNumberOfRates + 1,
+  });
+}
+
+getAppoitmetReport(String appointmentID) async {
+  var appointment =
+      await _firestore.collection('Appointments').doc(appointmentID).get();
+  return appointment['reportURL'];
+}
+
+Future<Map> getUserAppointmentsFromDB() async {
+  final User? user = _auth.currentUser;
+  Map appointments = {};
+  final Appointmentss = await _firestore
+      .collection('Appointments')
+      .where('clientID', isEqualTo: user!.email)
+      .get();
+  for (var appointment in Appointmentss.docs) {
+    var workshopName =
+        await getWorkshopNameFromDB(appointment.data()['workshopID']);
+    // if workshopName is not in appointments.keys add it
+    if (!appointments.keys.contains(workshopName)) {
+      appointments[workshopName] = [];
+    }
+    // add the appointment to the list of appointments
+    appointments[workshopName].add(appointment);
+  }
+  return appointments;
+}
+
+cancelAppointment(String appointmentID) async {
+  _firestore.collection('Appointments').doc(appointmentID).update({
+    'status': 'available',
+  });
+}
+
+getWorkshopLogoFromDB(String workshopID) async {
+  var workshopLogo = '';
+  await _firestore
+      .collection('workshops')
+      .doc(workshopID)
+      .get()
+      .then((value) => workshopLogo = value.data()!['workshopLogo']);
+  return workshopLogo;
+}
+
+// Future<List> getWorkshopAppointmentsFromDB(String workshopID) async {
+//   List appointments = [];
