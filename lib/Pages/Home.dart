@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 
 import 'package:booking_calendar/booking_calendar.dart';
-import 'package:wrshh/Pages/Report.dart';
 import 'package:wrshh/Pages/welcome.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 import 'package:wrshh/Services/Auth/db.dart';
@@ -10,9 +9,8 @@ import 'package:wrshh/Pages/Account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
-
+import '../components/buildCards.dart';
 import 'client_appointments.dart';
-
 
 class Home extends StatefulWidget {
   static const String id = 'Home_screen';
@@ -36,6 +34,8 @@ final _formKey = GlobalKey<FormState>();
 
   var titlename=['Home','Maintainance','Bookings'];
 
+  late Map appointments = {};
+  var vin='';
   static const TextStyle optionStyle =TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
   int _selectedIndex = 0;
 
@@ -71,24 +71,34 @@ DateTime selectedDate = DateTime.now();
                 // SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
                 
                 Form(key: _formKey,child: Column(children: <Widget>[
-                  TextFormField(decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
-                  ElevatedButton.icon(onPressed: () {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      // If the form is valid, display a snackbar. In the real world,
-                      // you'd often call a server or save the information in a database.
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),);}},
+                  TextFormField(
+                    onChanged: (val) {setState(() {vin=val;});},
+                    decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
+                  ElevatedButton.icon(onPressed: () async{
+        // Validate returns true if the form is valid, or false otherwise.
+        if (_formKey.currentState!.validate()) {
+        // If the form is valid, display a snackbar. In the real world,
+        // you'd often call a server or save the information in a database.
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Processing Data')),);
+
+             var appointmentsDB = await getAppointmentsByVIN(vin);
+              setState(() {appointments = appointmentsDB;});
+
+
+        }
+        },
+
+
                         icon: const Icon(Icons.search_rounded,), label: const Text('Search'),)
         // Delete This please
         ,const SizedBox(height: 20,),
-const SizedBox(height: 20,),
-              const Text('Testing Delete IT')
-                ,ElevatedButton(onPressed: () {
-                  setState(() {
-                    Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const ReportPage(Wid: 'SS',vin: '55555555555555555',)));
-                  });
-                }, child: Icon(Icons.abc))
+
+                    Column(
+                      children: buildAppointmentsCards(appointments, 'HistoryVIN'),
+                    ),
+
+
                 ],
       ),
       )

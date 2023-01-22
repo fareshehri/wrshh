@@ -8,6 +8,8 @@ import 'package:wrshh/Pages/Home.dart';
 
 import 'package:wrshh/Services/Auth/db.dart';
 
+import '../Pages/Report.dart';
+
 class AppointmentsCard extends StatefulWidget {
   final String? logoURL;
   final String? itemName;
@@ -162,6 +164,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                   const EdgeInsets.all(16.0),
                                               child: Container(
                                                 child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
                                                     FittedBox(
                                                       fit: BoxFit.fill,
@@ -182,33 +185,38 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                         fit: BoxFit.cover,
                                                       )),
                                                     ),
-                                                    SizedBox(height: 10),
-                                                    FittedBox(
-                                                      fit: BoxFit.fitHeight,
-                                                      child: Text(
-                                                        widget.itemName!,
-                                                        style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                Colors.black),
+                                                    Container(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          SizedBox(height: 10),
+                                                          FittedBox(
+                                                            fit: BoxFit.fitHeight,
+                                                            child: Text(
+                                                              'Workshop Name: ${widget.itemName}',
+                                                              style: kTextStyle,
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          FittedBox(
+                                                            fit: BoxFit.fitHeight,
+                                                            child: Text(
+                                                              'Date & Time: ${widget.appointment!.datetime}',
+                                                              style: kTextStyle,
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          FittedBox(
+                                                            fit: BoxFit.fitHeight,
+                                                            child: Text(
+                                                                'Service & Price: ${widget.appointment!.service} - ${widget.appointment!.price} SR',
+                                                                style: kTextStyle
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    SizedBox(height: 10),
-                                                    FittedBox(
-                                                      fit: BoxFit.fitHeight,
-                                                      child: Text(
-                                                        widget.appointment!
-                                                            .datetime,
-                                                        style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
+                                                    SizedBox(height: 20),
                                                     Row(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -254,8 +262,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
 
   List<Widget> getButtons() {
     List<Widget> buttons = [];
-    if (widget.appointment!.status == 'Client') {}
-    buttons.add(Expanded(
+    var payButton =   Expanded(
       child: ElevatedButton(
         onPressed: () {
           widget.onPay!();
@@ -263,42 +270,43 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
         child: Text('Pay'),
         style: kButtonsStyle,
       ),
-    ));
-    buttons.add(SizedBox(width: 10));
-    buttons.add(Expanded(
+    );
+
+    var cancelButton = Expanded(
         child: ElevatedButton(
-      onPressed: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Confirmation"),
-                content:
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Confirmation"),
+                    content:
                     Text("Are you sure you want to cancel this appointment?"),
-                actions: [
-                  TextButton(
-                    child: Text("No"),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: Text("Yes"),
-                    onPressed: () {
-                      cancelAppointment(widget.appointment!.appointmentID);
-                      Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()));
-                    },
-                  ),
-                ],
-              );
-            });
-      },
-      child: Text('Cancel Booking'),
-      style: kButtonsStyle,
-    )));
-    buttons.add(Expanded(
+                    actions: [
+                      TextButton(
+                        child: Text("No"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Yes"),
+                        onPressed: () {
+                          cancelAppointment(widget.appointment!.appointmentID);
+                          Navigator.pop(context);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Home()));
+                        },
+                      ),
+                    ],
+                  );
+                });
+          },
+          child: Text('Cancel Booking'),
+          style: kButtonsStyle,
+        ));
+
+    var rateButton = Expanded(
       child: ElevatedButton(
         onPressed: () {
           showModalBottomSheet(
@@ -312,7 +320,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     right: 16,
                     bottom: MediaQuery.of(context).viewInsets.bottom + 16),
                 child: Container(
-                    // height: MediaQuery.of(context).size.height * 0.2,
+                  // height: MediaQuery.of(context).size.height * 0.2,
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -372,13 +380,13 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
         child: Text('Rate'),
         style: kButtonsStyle,
       ),
-    ));
-    buttons.add(SizedBox(width: 10));
-    buttons.add(Expanded(
+    );
+
+    var reportButton = Expanded(
       child: ElevatedButton(
         onPressed: () async {
           var reportURL =
-              await getAppoitmetReport(widget.appointment!.appointmentID);
+          await getAppoitmetReport(widget.appointment!.appointmentID);
           if (reportURL != null) {
             print('reportURL: $reportURL');
             Navigator.push(
@@ -413,8 +421,50 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
         child: Text('Show Report'),
         style: kButtonsStyle,
       ),
-    ));
+    );
+
+    var uploadReportButton = Expanded(
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ReportPage(vin: widget.appointment!.VIN, Wid: widget.appointment!.workshopID,
+              ),
+            ),
+          );
+        },
+        child: Text('Upload Report'),
+        style: kButtonsStyle,
+      ),
+    );
+
+
+    if (widget.cardType == 'Bookings') {
+      if (widget.appointment!.status == 'booked') {
+          buttons.add(payButton);
+          buttons.add(SizedBox(width: 10));
+          buttons.add(cancelButton);
+    } else if (widget.appointment!.status == 'finished') {
+        buttons.add(rateButton);
+        buttons.add(SizedBox(width: 10));
+        buttons.add(reportButton);
+      }
+    } else if (widget.cardType == 'HistoryVIN') {
+      buttons.add(reportButton);
+    }
+    else if (widget.cardType == 'Workshop') {
+      buttons.add(uploadReportButton);
+    }
 
     return buttons;
   }
+
+
+  var kTextStyle = TextStyle(
+      fontSize: 20,
+      fontWeight:
+      FontWeight.bold,
+      color:
+      Colors.black);
 }

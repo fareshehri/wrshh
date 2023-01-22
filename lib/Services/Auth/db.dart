@@ -227,7 +227,52 @@ getWorkshopLogoFromDB(String workshopID) async {
   return workshopLogo;
 }
 
-// Future<List> getWorkshopAppointmentsFromDB(String workshopID) async {
-//   List appointments = [];
+getAppointmentsByVIN(String vin) async {
+  Map appointments = {};
+  final Appointmentss = await _firestore
+      .collection('Appointments')
+      .where('VIN', isEqualTo: vin)
+      .where('status', isEqualTo: 'finished')
+      .get();
+  for (var appointment in Appointmentss.docs) {
+    var workshopName =
+    await getWorkshopNameFromDB(appointment.data()['workshopID']);
+    // if workshopName is not in appointments.keys add it
+    if (!appointments.keys.contains(workshopName)) {
+      appointments[workshopName] = [];
+    }
+    // add the appointment to the list of appointments
+    appointments[workshopName].add(appointment);
+  }
+  return appointments;
+
+}
 
 
+getWorkshopAppointmetnsByDate(DateTime date) async {
+  Map appointments = {};
+  final Appointmentss = await _firestore
+      .collection('Appointments')
+      .where('workshopID', isEqualTo: _auth.currentUser!.uid)
+      .get();
+  for (var appointment in Appointmentss.docs) {
+    var appointmentDate = appointment.data()['datetime'].toDate();
+    if (appointmentDate.year == date.year &&
+        appointmentDate.month == date.month &&
+        appointmentDate.day == date.day) {
+      var workshopName =
+      await getWorkshopNameFromDB(appointment.data()['workshopID']);
+      // if workshopName is not in appointments.keys add it
+      if (!appointments.keys.contains(workshopName)) {
+        appointments[workshopName] = [];
+      }
+      // add the appointment to the list of appointments
+      appointments[workshopName].add(appointment);
+    }
+
+  }
+  print(_auth.currentUser!.uid);
+  print('appointments $appointments');
+  return appointments;
+
+}
