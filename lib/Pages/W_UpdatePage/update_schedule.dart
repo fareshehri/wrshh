@@ -22,7 +22,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
   late int capacity = 0; /// Capacity
   late LinkedHashMap<String,dynamic> datesHours; ///Contains Days and Shift hours
   late List<DateTime> dates = []; /// Check Day of the week, and assign based on it
-  late Map<DateTime,TimeOfDay> selectedDates = {}; // Not yet
+  late Map<String,DateTime> selectedDates = {}; // Not yet
 
   /// Retrieve All information from DB
   Future call() async {
@@ -137,52 +137,44 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
   }
   /// Check selected days, and Assign Time, and Disable not selected days
   void checkAll(){
-    for (var day in days) {
-      if (datesHours[day][0] == true) {
-        datesHours[day][1] = startTime.hour;
-        datesHours[day][2] = startTime.minute;
-        datesHours[day][3] = endTime.hour;
-        datesHours[day][4] = endTime.minute;
+    setState(() {
+      for (var day in days) {
+        if (datesHours[day][0] == true) {
+          datesHours[day][1] = startTime.hour;
+          datesHours[day][2] = startTime.minute;
+          datesHours[day][3] = endTime.hour;
+          datesHours[day][4] = endTime.minute;
+        }
+        else {
+          datesHours[day][1] = 0;
+          datesHours[day][2] = 0;
+          datesHours[day][3] = 0;
+          datesHours[day][4] = 0;
+        }
       }
-      else {
-        datesHours[day][1] = 0;
-        datesHours[day][2] = 0;
-        datesHours[day][3] = 0;
-        datesHours[day][4] = 0;
+
+      updateCapacity(capacity);
+      updateDatesHours(datesHours);
+
+      /// HERE
+      selectedDates = {};
+      for (var day in days) {
+        for (var selDay in selectedDays.keys){
+          if (datesHours[day][0] && (day == selDay)){
+            for (int i=0; i < dates.length; i++) {
+              if (datesHours[selDay][0] && selDay == getDayName(dates[i])) {
+                dates[i] = DateTime(dates[i].year,dates[i].month,dates[i].day,startTime.hour,startTime.minute);
+                selectedDates[selDay] = dates[i];
+              }
+            }
+
+          }
+        }
       }
-    }
-
-    updateCapacity(capacity);
-    updateDatesHours(datesHours);
-
-    // addAppointmentsTable(startTime, endTime, capacity, dates, datesHours);
-
-    // for (var day in days) {
-    //   for (var selDay in selectedDays.keys){
-    //     if (datesHours[day][0] && (day == selDay)){
-    //       print(selectedDates[selectedDays[selDay]].runtimeType);
-    //       // = TimeOfDay(hour: startTime.hour, minute: startTime.minute);
-    //     }
-    //   }
-    // }
-    //   print(selectedDates);
-
-    // var tempList = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    // for (int i = 0; i < dates.length; i++) {
-    //   for (int j=0; j < datesHours.length; j++) {
-    //     for (var key in datesHours.keys){
-    //       if (datesHours[tempList[j]][0] && (key == getDayName(dates[i]))) {
-    //         DateTime dateTimeTemp = DateTime(dates[i].year, dates[i].month, dates[i].day, startTime.hour, startTime.minute);
-    //         print(dateTimeTemp);
-    //         // count = capacity - count;
-    //         for (int c = 0; c < capacity; c++) {
-    //           print(key);
-    //         }
-    //         // return;
-    //       }
-    //     }
-    //   }
-    // }
+      getAppointmentTableCount().then((_) {
+      addAppointmentsTable(capacity, selectedDates, datesHours);
+      });
+    });
   }
 
   ///Create a method to convert TimeOfDay to String using the format HH:MM AM/PM

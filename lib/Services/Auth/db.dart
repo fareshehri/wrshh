@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:wrshh/Pages/W_UpdatePage/schedule_data.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -98,39 +98,15 @@ Future<Map> getBookedAppointmentsFromDB(String email) async {
   return appointments;
 }
 
-String getDayName(DateTime date) {
-  int dayOfWeek = date.weekday;
-  switch (dayOfWeek) {
-    case 1:
-      return 'monday';
-    case 2:
-      return 'tuesday';
-    case 3:
-      return 'wednesday';
-    case 4:
-      return 'thursday';
-    case 5:
-      return 'friday';
-    case 6:
-      return 'saturday';
-    case 7:
-      return 'sunday';
-    default:
-      return 'Invalid Day';
-  }
-}
-
-Future<void> addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int capacity, List dates, LinkedHashMap<String,dynamic> datesHours) async{
+Future<void> addAppointmentsTable(int capacity, Map<String,DateTime> selectedDates, LinkedHashMap<String,dynamic> datesHours) async{
   final user = _auth.currentUser;
-  var tempList = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  int count = await getAppointmentTableCount(capacity);
 
   try {
-    for (int i = 0; i < dates.length; i++) {
-      for (int j=0; j < datesHours.length; j++) {
-        for (var key in datesHours.keys) {
-          if (datesHours[tempList[j]][0] && key == getDayName(dates[i])) {
-            DateTime dateTimeTemp = DateTime(dates[i].year, dates[i].month, dates[i].day, startTime.hour, startTime.minute);
+    for (var key in datesHours.keys){
+      for (var isin in selectedDates.keys){
+        for (var day in days){
+          if (datesHours[day][0] && isin==key) {
+            DateTime? dateTimeTemp = selectedDates[isin];
             Map<String, dynamic> wp = {
               'workshopID': user?.email,
               'VIN': '',
@@ -147,7 +123,7 @@ Future<void> addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int ca
             for (int c = 0; c < capacity; c++) {
               FirebaseFirestore.instance.collection('Appointments').doc().set(wp);
             }
-            return;
+            break;
           }
         }
       }
@@ -157,20 +133,18 @@ Future<void> addAppointmentsTable(TimeOfDay startTime, TimeOfDay endTime, int ca
     print('THIS IS THE ERROR: $e');
   }
 }
-Future<int> getAppointmentTableCount(int capacity) async {
+Future<void> getAppointmentTableCount() async {
   final user = _auth.currentUser;
-  int count = 0;
   Query query = _firestore.collection("Appointments").where(
-      "workshopID", isEqualTo: user!.email);
+      "workshopID", isEqualTo: user?.email);
 
   query.get().then((querySnapshot) {
     for (var document in querySnapshot.docs) {
-      // count++;
-      document.reference.delete();
+      if (!document.metadata.hasPendingWrites) {
+        document.reference.delete();
+      }
     }
   });
-
-  return count;
 }
 
 Future<LinkedHashMap<String,dynamic>> getDatesHours() async {
