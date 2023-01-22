@@ -150,11 +150,10 @@ Future<int> getCapacity() async {
   return cap['capacity'] as int;
 }
 
-Future<void> updateServices(List services, List prices) async {
+Future<void> updateServices(LinkedHashMap<String,dynamic> services) async {
   final user = _auth.currentUser;
   FirebaseFirestore.instance.collection('workshops').doc(user?.email).update({
-    'ser': services,
-    'pri': prices
+    'services': services
   });
 }
 Future<LinkedHashMap<String,dynamic>> getServices() async {

@@ -23,8 +23,13 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
   late LinkedHashMap<String,dynamic> datesHours; ///Contains Days and Shift hours
   late List<DateTime> dates = []; /// Check Day of the week, and assign based on it
   late LinkedHashMap<String,dynamic> services; /// Services DB Variable
+  late LinkedHashMap<String,dynamic> tempServices;
   List selectedServices = []; // Not yet
   String startingService = ''; // Not yet
+
+  // The controller for the text field
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   /// Retrieve All information from DB
   Future call() async {
@@ -44,6 +49,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
       /// Assign selected days from DB to selected Days cards reference
       populateDaysNames();
       startingService = '${services['service'][0]} - ${services['price'][0]} SAR';
+      tempServices = services;
     });
   }
 
@@ -152,6 +158,8 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
     }
     updateCapacity(capacity);
     updateDatesHours(datesHours);
+    services = tempServices;
+    updateServices(services);
   }
 
   ///Create a method to convert TimeOfDay to String using the format HH:MM AM/PM
@@ -215,15 +223,104 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
   List<DropdownMenuItem<String>> servicesDropDown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
     List<String> serpri = [];
-    for (int i=0; i < services['service'].length; i++) {
+    for (int i=0; i < tempServices['service'].length; i++) {
       var temp = 'SAR';
-      serpri.add('${services['service'][i]} - ${services['price'][i]} $temp');
+      serpri.add('${tempServices['service'][i]} - ${tempServices['price'][i]} $temp');
     }
 
-    for (var temp in serpri) {
+    for (int j = 0; j < serpri.length; j++) {
+      var temp = serpri[j];
       var newItem = DropdownMenuItem(
           value: temp,
-          child: Text(temp)
+          child:  Row(
+            children: [
+              Text(temp),
+              PopupMenuButton(
+                onSelected: (value) {
+                  var temp2 = temp.split('-');
+                  var temp3 = temp2[1].replaceAll(' ', '-').split('-');
+                  // var temp4 = temp3
+                  if (value == 'edit') {
+                    // Show the modal bottom sheet to edit the object
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // Set the initial value of the text fields to the current name and price
+                        _nameController.text =temp2[0].trim();
+                        _priceController.text = temp3[1].trim();
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // The form with the text fields
+                            Form(
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    controller: _nameController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Name',
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: _priceController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Price',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // The save button
+                            ElevatedButton(
+                              onPressed: () {
+                                // Update the name and price of the selected object
+                                setState(() {
+                                  for (int i=0; i < tempServices['service'].length; i++) {
+                                    if (tempServices['service'][i] == temp2[0].trim())
+                                    {
+                                      tempServices['service'][i] = _nameController.text;
+                                      tempServices['price'][i] = _priceController.text;
+                                    }
+                                  }
+                                  serpri[j] = '${services['service'][j]} - ${services['price'][j]} $temp';
+                                  startingService = '${services['service'][0]} - ${services['price'][0]} SAR';
+                                  _nameController.text = '';
+                                  _priceController.text = '';
+                                });
+                                // Close the modal bottom sheet
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Save'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                  else if (value == 'delete') {
+                    // handle the delete option
+                    setState(() {
+                      tempServices['service'].remove(temp2[0].trim());
+                      tempServices['price'].remove(int.parse(temp3[1].trim()));
+                      startingService = '${services['service'][0]} - ${services['price'][0]} SAR';
+                    });
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Text('Edit'),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Delete'),
+                    ),
+                  ];
+                },
+              ),
+            ],
+          ),
       );
       dropdownItems.add(newItem);
     }
@@ -373,6 +470,65 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                     });
                   },
                 ),
+                const SizedBox(
+                  width: 10,
+                ),///Gap
+                //Add Button
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Column (
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // The form with the text fields
+                                Form(
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        controller: _nameController,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Service Name'
+                                        ),
+                                      ),
+                                      TextFormField(
+                                        controller: _priceController,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Price'
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                // The Save Button
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      tempServices['service'].add(_nameController.text);
+                                      tempServices['price'].add(_priceController.text);
+                                    });
+                                    _nameController.clear();
+                                    _priceController.clear();
+                                    // Close the modal bottom sheet
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Icon(Icons.add),
+                                )
+                              ],
+                            );
+                          }
+                        );
+                      });
+                    },
+                    child: const Icon(Icons.add),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),///Gap
               ],
             ),
             /// Update Button part
@@ -380,13 +536,6 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                 title: 'Update',
                 colour: kDarkColor,
                 onPressed: () {
-                  // if (selectedDays.isEmpty) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text('Please fill all the fields'),
-                  //     ),
-                  //   );
-                  // }
                   if (endTime.hour < startTime.hour ||
                        (endTime.hour == startTime.hour &&
                           endTime.minute < startTime.minute)) {
