@@ -24,7 +24,7 @@ class _HomeState extends State<Home> {
 
 
 
-//vin
+//serial
 final _formKey = GlobalKey<FormState>();
 //styles
   var tc=[Colors.red[400],Colors.green[400],Colors.blue[400],Colors.orange[400]];
@@ -35,7 +35,7 @@ final _formKey = GlobalKey<FormState>();
   var titlename=['Home','Maintainance','Bookings'];
 
   late Map appointments = {};
-  var vin='';
+  var serial='';
   static const TextStyle optionStyle =TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
   int _selectedIndex = 0;
 
@@ -72,8 +72,8 @@ DateTime selectedDate = DateTime.now();
                 
                 Form(key: _formKey,child: Column(children: <Widget>[
                   TextFormField(
-                    onChanged: (val) {setState(() {vin=val;});},
-                    decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(17)],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}return null;},),
+                    onChanged: (val) {setState(() {serial=val;});},
+                    decoration: const InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(9),FilteringTextInputFormatter.digitsOnly],validator: (value) {if (value == null || value.isEmpty ) {return 'Please enter serial Number';}return null;},),
                   ElevatedButton.icon(onPressed: () async{
         // Validate returns true if the form is valid, or false otherwise.
         if (_formKey.currentState!.validate()) {
@@ -82,7 +82,8 @@ DateTime selectedDate = DateTime.now();
         ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),);
 
-             var appointmentsDB = await getAppointmentsByVIN(vin);
+        // FIX Change getAppointmentsByVIN to getAppointmentsBySerial
+             var appointmentsDB = await getAppointmentsByVIN(serial);
               setState(() {appointments = appointmentsDB;});
 
 
@@ -95,7 +96,7 @@ DateTime selectedDate = DateTime.now();
         ,const SizedBox(height: 20,),
 
                     Column(
-                      children: buildAppointmentsCards(appointments, 'HistoryVIN'),
+                      children: buildAppointmentsCards(appointments, 'Historyserial'),
                     ),
 
 

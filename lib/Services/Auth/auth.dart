@@ -74,7 +74,7 @@ class AuthService {
             'phoneNumber': user.phoneNumber,
             'name': user.name,
             'city': user.city,
-            'vin': '',
+            'serial': '',
           },
         );
       } else if (user.userType == 'WorkshopUser') {

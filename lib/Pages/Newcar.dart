@@ -20,7 +20,7 @@ class _NewcarState extends State<Newcar> {
   final _firestore = FirebaseFirestore.instance;
   //get data
   var name;
-  var carsvin;
+  var carsserial;
   var email;
   var maker;
   var car;
@@ -31,7 +31,7 @@ class _NewcarState extends State<Newcar> {
   var oc="";
   var _selectedB;
   var _selectedC;
-  var _vin;
+  var _serial;
   var _currentSelectedYear =2023;
   
   //set views
@@ -50,26 +50,26 @@ Future _getData() async {
     final client = await _firestore.collection('clients').doc(user.email).get();
     setState(() {
       name = client['name'];
-      carsvin=client['vin'];
+      carsserial=client['serial'];
       email=user.email;
       
     });
       await _getCar();}
 //Get data from firestore
 Future _getCar() async {
-    if(carsvin!=""){
-    final vin = await _firestore.collection('vin').doc(carsvin).get();
+    if(carsserial!=""){
+    final serial = await _firestore.collection('serial').doc(carsserial).get();
     setState(() {
-      maker = vin['carManufacturer'];
-      car=vin['carModel'];
-      year=int.parse(vin['carYear']);
-      ob=vin['otherBrand'];
-      oc=vin['otherCar'];
+      maker = serial['carManufacturer'];
+      car=serial['carModel'];
+      year=int.parse(serial['carYear']);
+      ob=serial['otherBrand'];
+      oc=serial['otherCar'];
       _selectedB = maker;
       _selectedC = car;
       finb=maker;
       finc=car;
-      _vin=carsvin;
+      _serial=carsserial;
       _currentSelectedYear=year;
       gotPath = true;
       if(car=='Other'){
@@ -156,9 +156,9 @@ void initState() {
       'otherBrand': ob,
       'otherCar': oc,
       };
-      FirebaseFirestore.instance.collection('vin').doc(_vin).set(saved);
+      FirebaseFirestore.instance.collection('serial').doc(_serial).set(saved);
       FirebaseFirestore.instance.collection('clients').doc(email).update({
-        'vin':_vin
+        'serial':_serial
         });
         // If the form is valid, display a snackbar. In the real world,
         // you'd often call a server or save the information in a database.
@@ -202,7 +202,7 @@ void initState() {
        child: ListView(children: [
         Container(
           child: Column(children: [
-            Text('Hello ($name) Here is Your Registered car ($carsvin) ')
+            Text('Hello ($name) Here is Your Registered car ($carsserial) ')
           ],),
         ),
 
@@ -266,11 +266,11 @@ void initState() {
                   ///////
                   ////
                   SizedBox(height: 50,),
-                  Text('Vin'),
+                  Text('Car Serial Number'),
 
-                  //get stored vin number ( carsvin ) and updated when changed with new vin number ( _vin )
-                  TextFormField(initialValue: carsvin,onChanged: (value) => _vin=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(17)],validator: (value) {
-                    if (value == null || value.isEmpty ) {return 'Please enter VIN Number';}
+                  //get stored serial number ( carsserial ) and updated when changed with new serial number ( _serial )
+                  TextFormField(initialValue: carsserial,onChanged: (value) => _serial=value,decoration: InputDecoration(contentPadding: EdgeInsets.zero),inputFormatters: [LengthLimitingTextInputFormatter(9),FilteringTextInputFormatter.digitsOnly,],validator: (value) {
+                    if (value == null || value.isEmpty ) {return 'Please enter Serial Number';}
                     return null;
                     },),
                   
@@ -278,11 +278,11 @@ void initState() {
                     //in try we want to change the car to registered car 
                     //in catch we will add a new car to database
                     try {
-                      final x = await FirebaseFirestore.instance.collection('vin').doc(_vin).get();
+                      final x = await FirebaseFirestore.instance.collection('serial').doc(_serial).get();
                       print(x['otherBrand']=="");
                       print(x['otherCar']==oc);
                     if(x!=null && x['carModel']!=finc||x['carManufacturer']!=finb||x['otherBrand']!=ob||x['otherCar']!=oc){
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The vin is already registered and the data is not matching or please contact us')),);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The serial is already registered and the data is not matching or please contact us')),);
                       }
                       else{
                         if (_formKey.currentState!.validate()) {
@@ -295,9 +295,9 @@ void initState() {
                         'otherBrand': ob,
                         'otherCar': oc,
                       };
-                      FirebaseFirestore.instance.collection('vin').doc(_vin).update(saved);
+                      FirebaseFirestore.instance.collection('serial').doc(_serial).update(saved);
                       FirebaseFirestore.instance.collection('clients').doc(email).update({
-                        'vin':_vin
+                        'serial':_serial
                       });
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
