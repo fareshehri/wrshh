@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:wrshh/constants.dart';
 import 'package:flutter/services.dart';
 
-import 'workshop_Home.dart';
-import '../../components/roundedButton.dart';
-import '../../Services/Auth/db.dart';
+import '../Pages/workshop_Home.dart';
+import '../components/roundedButton.dart';
+import 'lib/Services/Auth/db.dart';
 
 class Services extends StatefulWidget {
   const Services({Key? key}) : super(key: key);
@@ -27,7 +27,6 @@ class _Services extends State<Services> {
 
   late LinkedHashMap<String,dynamic> services; /// Services DB Variable
   late LinkedHashMap<String,dynamic> tempServices;
-  late int count;
 
   Future call() async {
     services = await getServices();
@@ -35,11 +34,6 @@ class _Services extends State<Services> {
       gotPath = true;
       tempServices = services;
 
-      var temp = tempServices.values.toList();
-      for (List list in temp) {
-        int length = list.length;
-        count = length;
-      }
     });
   }
 
@@ -76,7 +70,7 @@ class _Services extends State<Services> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: count,
+                itemCount: tempServices['service'].length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
@@ -152,8 +146,7 @@ class _Services extends State<Services> {
                           // Remove the selected object from the list
                           setState(() {
                             tempServices['service'].remove(tempServices['service'][index]);
-                            tempServices['price'].remove(int.parse(tempServices['price'][index]));
-                            count--;
+                            tempServices['price'].remove(tempServices['price'][index]);
                           });
                         }
                       },
@@ -167,9 +160,9 @@ class _Services extends State<Services> {
               onPressed: () {
                 checkAll();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Upload Done!'),
-                  )
+                    const SnackBar(
+                      content: Text('Upload Done!'),
+                    )
                 );
                 Navigator.of(
                   context,
@@ -220,14 +213,13 @@ class _Services extends State<Services> {
                         setState(() {
                           tempServices['service'].add(_nameController.text);
                           tempServices['price'].add(_priceController.text);
-                          }
+                        }
                         );
                         // Clear the text fields
-                        _nameController.clear();
-                        _priceController.clear();
+                        _nameController.text = '';
+                        _priceController.text = '';
                         // Close the modal bottom sheet
                         Navigator.pop(context);
-                        count++;
                       },
                       child: const Text('Save'),
                     ),

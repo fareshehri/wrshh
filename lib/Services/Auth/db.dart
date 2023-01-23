@@ -2,9 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-
-import '../../Pages/workshopAdmin/schedule_data.dart';
+import 'package:wrshh/Pages/W_UpdatePage/schedule_data.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -52,7 +50,10 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 Future<void> addAppointmentsTable(int capacity, Map<String, DateTime> selectedDates, LinkedHashMap<String, dynamic> datesHours) async {
   final user = _auth.currentUser;
-  // LinkedHashMap<List<String>,List<Int>> services;
+  LinkedHashMap<String, dynamic> services = {
+    'service': [],
+    'price': [],
+  } as LinkedHashMap<String, dynamic>;
 
   try {
     for (var key in datesHours.keys) {
@@ -65,14 +66,12 @@ Future<void> addAppointmentsTable(int capacity, Map<String, DateTime> selectedDa
               'VIN': '',
               'clientID': '',
               'status': 'available',
-              'service': '',
-              'price': 0,
+              'services': services,
               'datetime': dateTimeTemp,
               'rate': 0,
               'reportURL': '',
               'reportDetails': '',
             };
-            // count = capacity - count;
             for (int c = 0; c < capacity; c++) {
               FirebaseFirestore.instance
                   .collection('Appointments')
@@ -218,7 +217,7 @@ Future<Map> getBookedAppointmentsFromDB(String email) async {
   for (var appointment in Appointmentss.docs) {
     if (appointment.data()['booked'] == true) {
       var workshopName =
-          await getWorkshopNameFromDB(appointment.data()['workshopID']);
+      await getWorkshopNameFromDB(appointment.data()['workshopID']);
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
       }
@@ -244,7 +243,7 @@ rateAppointment(String appointmentID, String workshopID, double rating) async {
 
 getAppoitmetReport(String appointmentID) async {
   var appointment =
-      await _firestore.collection('Appointments').doc(appointmentID).get();
+  await _firestore.collection('Appointments').doc(appointmentID).get();
   return appointment['reportURL'];
 }
 
@@ -257,7 +256,7 @@ Future<Map> getUserAppointmentsFromDB() async {
       .get();
   for (var appointment in Appointmentss.docs) {
     var workshopName =
-        await getWorkshopNameFromDB(appointment.data()['workshopID']);
+    await getWorkshopNameFromDB(appointment.data()['workshopID']);
     // if workshopName is not in appointments.keys add it
     if (!appointments.keys.contains(workshopName)) {
       appointments[workshopName] = [];
@@ -271,9 +270,6 @@ Future<Map> getUserAppointmentsFromDB() async {
 cancelAppointment(String appointmentID) async {
   _firestore.collection('Appointments').doc(appointmentID).update({
     'status': 'available',
-    'clientID': '',
-    'VIN': '',
-
   });
 }
 
@@ -296,7 +292,7 @@ getAppointmentsByVIN(String vin) async {
       .get();
   for (var appointment in Appointmentss.docs) {
     var workshopName =
-        await getWorkshopNameFromDB(appointment.data()['workshopID']);
+    await getWorkshopNameFromDB(appointment.data()['workshopID']);
     // if workshopName is not in appointments.keys add it
     if (!appointments.keys.contains(workshopName)) {
       appointments[workshopName] = [];
@@ -319,7 +315,7 @@ getWorkshopAppointmetnsByDate(DateTime date) async {
         appointmentDate.month == date.month &&
         appointmentDate.day == date.day) {
       var workshopName =
-          await getWorkshopNameFromDB(appointment.data()['workshopID']);
+      await getWorkshopNameFromDB(appointment.data()['workshopID']);
       // if workshopName is not in appointments.keys add it
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
