@@ -269,6 +269,9 @@ Future<Map> getUserAppointmentsFromDB() async {
 cancelAppointment(String appointmentID) async {
   _firestore.collection('Appointments').doc(appointmentID).update({
     'status': 'available',
+    'clientID': '',
+    'VIN': '',
+
   });
 }
 
