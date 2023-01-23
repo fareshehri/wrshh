@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../Services/Auth/db.dart';
-import '../components/buildCards.dart';
+import '../../Services/Auth/db.dart';
+import '../../components/buildCards.dart';
 
 class ClientAppointments extends StatefulWidget {
   @override

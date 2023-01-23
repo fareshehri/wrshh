@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:wrshh/constants.dart';
 import 'package:flutter/services.dart';
 
-import '../Pages/workshop_Home.dart';
-import '../components/roundedButton.dart';
-import 'Auth/db.dart';
+import 'workshop_Home.dart';
+import '../../components/roundedButton.dart';
+import '../../Services/Auth/db.dart';
 
 class Services extends StatefulWidget {
   const Services({Key? key}) : super(key: key);

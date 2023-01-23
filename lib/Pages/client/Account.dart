@@ -1,8 +1,10 @@
 // ignore_for_file: file_names
 
-import 'package:wrshh/Pages/Editaccount.dart';
-import 'package:wrshh/Pages/Newcar.dart';
+
+import 'package:wrshh/Pages/client/Newcar.dart';
 import 'package:flutter/material.dart';
+
+import 'Editaccount.dart';
 
 
 

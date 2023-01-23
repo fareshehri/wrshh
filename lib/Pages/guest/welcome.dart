@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:wrshh/Pages/registration.dart';
+import 'package:wrshh/Pages/guest/registration.dart';
 
-import '../components/roundedButton.dart';
-import '../constants.dart';
+import '../../components/roundedButton.dart';
+import '../../constants.dart';
 import 'login.dart';
 
 class WelcomeScreen extends StatefulWidget {
