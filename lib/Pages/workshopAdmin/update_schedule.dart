@@ -287,53 +287,56 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
               ),
             ),
             /// Start & End Time parts
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                /// Start Time Part
-                Row(
-                  children: [
-                    const Text('Start Time:',
-                        style: TextStyle(
-                          fontSize: 18,
-                        )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      menuMaxHeight: 300,
-                      value: startTime,
-                      items: timeDropdown(),
-                      onChanged: (value) {
-                        setState(() {
-                          startTime = value as TimeOfDay;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                /// End Time Part
-                Row(
-                  children: [
-                    const Text('End Time:',
-                        style: TextStyle(
-                          fontSize: 18,
-                        )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      value: endTime,
-                      items: timeDropdown(),
-                      onChanged: (value) {
-                        setState(() {
-                          endTime = value as TimeOfDay;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  /// Start Time Part
+                  Row(
+                    children: [
+                      const Text('Start Time:',
+                          style: TextStyle(
+                            fontSize: 18,
+                          )),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton(
+                        menuMaxHeight: 300,
+                        value: startTime,
+                        items: timeDropdown(),
+                        onChanged: (value) {
+                          setState(() {
+                            startTime = value as TimeOfDay;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  /// End Time Part
+                  Row(
+                    children: [
+                      const Text('End Time:',
+                          style: TextStyle(
+                            fontSize: 18,
+                          )),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton(
+                        value: endTime,
+                        items: timeDropdown(),
+                        onChanged: (value) {
+                          setState(() {
+                            endTime = value as TimeOfDay;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             /// Capacity part
             Row(

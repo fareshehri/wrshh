@@ -11,7 +11,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 //
 // // add cars to the database
 // Future<void> addCar(String carName, String carModel, String carYear, String carColor, String carPlate, String carType, String carImage, String carPrice, String carDescription, String carOwner) async {
-//   await _firestore.collection('cars').doc(vin).add({
+//   await _firestore.collection('cars').doc(serial).add({
 //     'carName': carName,
 //     'carModel': carModel,
 //     'carYear': carYear,
@@ -65,7 +65,7 @@ Future<void> addAppointmentsTable(int capacity, Map<String, DateTime> selectedDa
             DateTime? dateTimeTemp = selectedDates[isin];
             Map<String, dynamic> wp = {
               'workshopID': user?.email,
-              'VIN': '',
+              'serial': '',
               'clientID': '',
               'status': 'available',
               'services': services,
@@ -194,21 +194,21 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
   return workshopName;
 }
 
-getVINFromUserId(String? userID) async {
-  String vin = '';
+getSerialFromUserId(String? userID) async {
+  String serial = '';
   await _firestore
       .collection('clients')
       .doc(userID)
       .get()
-      .then((value) => vin = value.data()!['vin']);
-  return vin;
+      .then((value) => serial = value.data()!['serial']);
+  return serial;
 }
 
 void bookAppointment(String id) async {
-  var vin = await getVINFromUserId(_auth.currentUser!.email);
+  var serial = await getSerialFromUserId(_auth.currentUser!.email);
   _firestore.collection('Appointments').doc(id).update({
     'clientID': _auth.currentUser!.email,
-    'VIN': vin,
+    'serial': serial,
     'status': 'booked',
   });
 }
@@ -285,11 +285,11 @@ getWorkshopLogoFromDB(String workshopID) async {
   return workshopLogo;
 }
 
-getAppointmentsByVIN(String vin) async {
+getAppointmentsBySerial(String serial) async {
   Map appointments = {};
   final Appointmentss = await _firestore
       .collection('Appointments')
-      .where('VIN', isEqualTo: vin)
+      .where('serial', isEqualTo: serial)
       .where('status', isEqualTo: 'finished')
       .get();
   for (var appointment in Appointmentss.docs) {
@@ -334,7 +334,7 @@ getWorkshopAppointmetnsByDate(DateTime date) async {
 addAppointments(String id) async {
   for (int i = 0; i < 10; i++) {
     FirebaseFirestore.instance.collection('Appointments').add({
-      'VIN': '',
+      'serial': '',
       'clientID': '',
       'workshopID': id,
       'datetime': DateTime.now(),

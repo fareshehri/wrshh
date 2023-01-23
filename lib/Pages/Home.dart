@@ -83,7 +83,7 @@ DateTime selectedDate = DateTime.now();
         const SnackBar(content: Text('Processing Data')),);
 
         // FIX Change getAppointmentsByVIN to getAppointmentsBySerial
-             var appointmentsDB = await getAppointmentsByVIN(serial);
+             var appointmentsDB = await getAppointmentsBySerial(serial);
               setState(() {appointments = appointmentsDB;});
 
 
