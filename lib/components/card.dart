@@ -434,6 +434,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           buttons.add(SizedBox(width: 10));
           buttons.add(cancelButton);
     } else if (widget.appointment!.status == 'finished') {
+        //buttons.add(uploadReportButton);
         buttons.add(rateButton);
         buttons.add(SizedBox(width: 10));
         buttons.add(reportButton);

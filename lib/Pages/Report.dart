@@ -157,35 +157,34 @@ class ReportPageState extends State<ReportPage> {
                     },),
               const SizedBox(height: 20,),
 
-              const Text('Upload'),
               //TextFormField(readOnly: true,initialValue: vin,textAlign: TextAlign.center,textAlignVertical: TextAlignVertical.center,decoration: InputDecoration(border: OutlineInputBorder(),hintText: vin,contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 2)),),
-              ElevatedButton(onPressed: () async{
-                result = await FilePicker.platform.pickFiles(allowMultiple: false ,type: FileType.custom,allowedExtensions: ['pdf',]);
-                      if (result == null) {
-                          print("No file selected");
-                          gotFile=false;
-                        } else {
-                        PlatformFile file = result!.files.single;
-                        if(file.extension=='pdf'){
-                          gotExt=true;
-                          print(file.name);
-                          //do something here to upload to firestore
-                          setState(() {
-                            if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){finalfile=result!.files.single.path;}
-                            else{uploadfile = result?.files.single.bytes;}
-                            extFile=file.extension;
-                            gotFile=true;
+              // ElevatedButton(onPressed: () async{
+              //   result = await FilePicker.platform.pickFiles(allowMultiple: false ,type: FileType.custom,allowedExtensions: ['pdf',]);
+              //         if (result == null) {
+              //             print("No file selected");
+              //             gotFile=false;
+              //           } else {
+              //           PlatformFile file = result!.files.single;
+              //           if(file.extension=='pdf'){
+              //             gotExt=true;
+              //             print(file.name);
+              //             //do something here to upload to firestore
+              //             setState(() {
+              //               if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){finalfile=result!.files.single.path;}
+              //               else{uploadfile = result?.files.single.bytes;}
+              //               extFile=file.extension;
+              //               gotFile=true;
 
-                        });
-                          }
-                        else{
-                          gotExt=false;
-                          gotFile=false;
-                          print("Incorrect Extension");
-                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The file Extension is incorrect')),);
-                        }
-                        }
-              }, child: const Text("File Picker"),),
+              //           });
+              //             }
+              //           else{
+              //             gotExt=false;
+              //             gotFile=false;
+              //             print("Incorrect Extension");
+              //              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The file Extension is incorrect')),);
+              //           }
+              //           }
+              // }, child: const Text("File Picker"),),
               
               const SizedBox(height: 20,),
               const SizedBox(height: 20,),
