@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:wrshh/constants.dart';
+import 'package:flutter/services.dart';
 
 import '../Pages/workshop_Home.dart';
 import '../components/roundedButton.dart';
@@ -74,7 +76,7 @@ class _Services extends State<Services> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: count,
+                itemCount: tempServices['service'].length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
@@ -116,6 +118,7 @@ class _Services extends State<Services> {
                                           ),
                                         ),
                                         TextFormField(
+                                          inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                                           controller: _priceController,
                                           decoration: const InputDecoration(
                                             labelText: 'Price',
@@ -201,6 +204,7 @@ class _Services extends State<Services> {
                             ),
                           ),
                           TextFormField(
+                            inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly,],
                             controller: _priceController,
                             decoration: const InputDecoration(
                               labelText: 'Price',
