@@ -1,12 +1,12 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wrshh/Pages/workshopAdmin/workshop_Home.dart';
 import 'package:wrshh/constants.dart';
 import 'package:flutter/services.dart';
 
-import '../Pages/workshop_Home.dart';
-import '../components/roundedButton.dart';
-import 'lib/Services/Auth/db.dart';
+import '../../Services/Auth/db.dart';
+import '../../components/roundedButton.dart';
 
 class Services extends StatefulWidget {
   const Services({Key? key}) : super(key: key);
