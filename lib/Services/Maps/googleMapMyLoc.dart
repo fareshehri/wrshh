@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
 
 import '../../Models/user.dart';
-import '../../Pages/workshop_Home.dart';
+import '../../Pages/workshopAdmin/workshop_Home.dart';
 import '../../components/roundedButton.dart';
 import '../Auth/auth.dart';
 

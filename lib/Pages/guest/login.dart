@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 
-import '../components/roundedButton.dart';
-import '../components/validators.dart';
-import '../constants.dart';
-import 'Home.dart';
-import 'admin_home.dart';
-import 'workshop_Home.dart';
+import '../../components/roundedButton.dart';
+import '../../components/validators.dart';
+import '../../constants.dart';
+import '../client/Home.dart';
+import '../admin_home.dart';
+import '../workshopAdmin/workshop_Home.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';

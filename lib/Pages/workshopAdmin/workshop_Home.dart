@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wrshh/Pages/Account.dart';
-import 'package:wrshh/Pages/welcome.dart';
+import 'package:wrshh/Pages/client/Account.dart';
+import 'package:wrshh/Pages/guest/welcome.dart';
+import 'package:wrshh/Pages/workshopAdmin/update_schedule.dart';
 
-import '../Services/Auth/auth.dart';
+import '../../Services/Auth/auth.dart';
 // import 'W_UpdatePage/break_Hours.dart';
 // import 'W_UpdatePage/capacity.dart';
 // import 'W_UpdatePage/services.dart';
 // import 'W_UpdatePage/working_Dates.dart';
 // import 'W_UpdatePage/working_Hours.dart';
-import '../Services/workhop_Services.dart';
-import 'W_UpdatePage/update_schedule.dart';
+import 'workhop_Services.dart';
+
 
 class WHome extends StatefulWidget {
   static const String id = 'Workshop_Home';

@@ -2,16 +2,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:wrshh/Pages/Home.dart';
+import 'package:wrshh/Pages/client/Home.dart';
 //import 'package:wrshh/Pages/Report.dart';
-import 'package:wrshh/Pages/welcome.dart';
+import 'package:wrshh/Pages/guest/welcome.dart';
 //import 'package:wrshh/constants.dart';
 import 'Pages/admin_home.dart';
-import 'Pages/workshop_Home.dart';
+import 'Pages/workshopAdmin/workshop_Home.dart';
 import 'firebase_options.dart';
 
-import 'Pages/login.dart';
-import 'Pages/registration.dart';
+import 'Pages/guest/login.dart';
+import 'Pages/guest/registration.dart';
 
 // void main() async{
 //     WidgetsFlutterBinding.ensureInitialized();

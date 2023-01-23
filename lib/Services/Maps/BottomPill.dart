@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wrshh/Services/Auth/db.dart';
-import '../../Pages/client_book.dart';
+import '../../Pages/client/client_book.dart';
 import 'bookPage.dart';
 
 class BottomPill extends StatelessWidget {

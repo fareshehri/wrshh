@@ -4,11 +4,11 @@ import 'package:rate/rate.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:wrshh/Models/appointment.dart';
-import 'package:wrshh/Pages/Home.dart';
+import 'package:wrshh/Pages/client/Home.dart';
 
 import 'package:wrshh/Services/Auth/db.dart';
 
-import '../Pages/Report.dart';
+import '../Pages/workshopTechnical/Report.dart';
 
 class AppointmentsCard extends StatefulWidget {
   final String? logoURL;

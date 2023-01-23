@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import '../Models/user.dart';
-import '../Services/Auth/auth.dart';
-import '../Services/Maps/googleMapMyLoc.dart';
-import '../components/avatar_upload.dart';
-import '../components/icon_content.dart';
-import '../components/reusable_card.dart';
-import '../components/roundedButton.dart';
-import '../components/validators.dart';
-import '../constants.dart';
-import 'Home.dart';
+import '../../Models/user.dart';
+import '../../Services/Auth/auth.dart';
+import '../../Services/Maps/googleMapMyLoc.dart';
+import '../../components/avatar_upload.dart';
+import '../../components/icon_content.dart';
+import '../../components/reusable_card.dart';
+import '../../components/roundedButton.dart';
+import '../../components/validators.dart';
+import '../../constants.dart';
+import '../client/Home.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';

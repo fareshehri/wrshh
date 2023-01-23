@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/main.dart';
-import 'package:wrshh/Pages/Account.dart';
+import 'package:wrshh/Pages/client/Account.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
