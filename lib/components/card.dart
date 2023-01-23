@@ -110,141 +110,144 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                   color: Colors.black)),
                         ),
                         SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.fitHeight,
-                              child: Text(
-                                widget.appointment!.datetime,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.fitHeight,
+                                child: Text(
+                                  widget.appointment!.datetime,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black),
+                                ),
                               ),
-                            ),
-                            SizedBox(width: 10),
-                            FittedBox(
-                                alignment: Alignment.centerRight,
-                                fit: BoxFit.fitWidth,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (context) =>
-                                          SingleChildScrollView(
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              top: 16,
-                                              left: 16,
-                                              right: 16,
-                                              bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom +
-                                                  16),
+                              SizedBox(width: 10),
+                              FittedBox(
+                                  alignment: Alignment.centerRight,
+                                  fit: BoxFit.fitWidth,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) =>
+                                            SingleChildScrollView(
                                           child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.5,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.9,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              border: Border.all(
-                                                  color: Colors.grey, width: 2),
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
-                                              child: Container(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    FittedBox(
-                                                      fit: BoxFit.fill,
-                                                      // TODO: add image from database
-                                                      child: ClipOval(
-                                                          child: Image.network(
-                                                        logoURL,
-                                                        errorBuilder: (context,
-                                                            error, stackTrace) {
-                                                          return Image.asset(
-                                                            'assets/images/FFFF.jpg',
-                                                            width: 160,
-                                                            height: 160,
-                                                          );
-                                                        },
-                                                        width: 160,
-                                                        height: 160,
-                                                        fit: BoxFit.cover,
-                                                      )),
-                                                    ),
-                                                    Container(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          SizedBox(height: 10),
-                                                          FittedBox(
-                                                            fit: BoxFit.fitHeight,
-                                                            child: Text(
-                                                              'Workshop Name: ${widget.itemName}',
-                                                              style: kTextStyle,
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          FittedBox(
-                                                            fit: BoxFit.fitHeight,
-                                                            child: Text(
-                                                              'Date & Time: ${widget.appointment!.datetime}',
-                                                              style: kTextStyle,
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          FittedBox(
-                                                            fit: BoxFit.fitHeight,
-                                                            child: Text(
-                                                                'Service & Price: ${widget.appointment!.service} - ${widget.appointment!.price} SR',
-                                                                style: kTextStyle
-                                                            ),
-                                                          ),
-                                                        ],
+                                            padding: EdgeInsets.only(
+                                                top: 16,
+                                                left: 16,
+                                                right: 16,
+                                                bottom: MediaQuery.of(context)
+                                                        .viewInsets
+                                                        .bottom +
+                                                    16),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.5,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    color: Colors.grey, width: 2),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      FittedBox(
+                                                        fit: BoxFit.fill,
+                                                        // TODO: add image from database
+                                                        child: ClipOval(
+                                                            child: Image.network(
+                                                          logoURL,
+                                                          errorBuilder: (context,
+                                                              error, stackTrace) {
+                                                            return Image.asset(
+                                                              'assets/images/FFFF.jpg',
+                                                              width: 160,
+                                                              height: 160,
+                                                            );
+                                                          },
+                                                          width: 160,
+                                                          height: 160,
+                                                          fit: BoxFit.cover,
+                                                        )),
                                                       ),
-                                                    ),
-                                                    SizedBox(height: 20),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: getButtons(),
-                                                    )
-                                                  ],
+                                                      Container(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(height: 10),
+                                                            FittedBox(
+                                                              fit: BoxFit.fitHeight,
+                                                              child: Text(
+                                                                'Workshop Name: ${widget.itemName}',
+                                                                style: kTextStyle,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 10),
+                                                            FittedBox(
+                                                              fit: BoxFit.fitHeight,
+                                                              child: Text(
+                                                                'Date & Time: ${widget.appointment!.datetime}',
+                                                                style: kTextStyle,
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 10),
+                                                            FittedBox(
+                                                              fit: BoxFit.fitHeight,
+                                                              child: Text(
+                                                                  'Service & Price: ${widget.appointment!.service} - ${widget.appointment!.price} SR',
+                                                                  style: kTextStyle
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 20),
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: getButtons(),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
+                                      );
+                                    },
+                                    child: Text('Show Details'),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Colors.pink,
+                                      onPrimary: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(32.0),
                                       ),
-                                    );
-                                  },
-                                  child: Text('Show Details'),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.pink,
-                                    onPrimary: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(32.0),
                                     ),
-                                  ),
-                                )),
-                          ],
+                                  )),
+                            ],
+                          ),
                         ),
                       ])),
             ),
