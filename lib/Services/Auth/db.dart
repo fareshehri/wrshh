@@ -48,11 +48,9 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 // return appointments;
 // }
 
-Future<void> addAppointmentsTable(
-    int capacity,
-    Map<String, DateTime> selectedDates,
-    LinkedHashMap<String, dynamic> datesHours) async {
+Future<void> addAppointmentsTable(int capacity, Map<String, DateTime> selectedDates, LinkedHashMap<String, dynamic> datesHours) async {
   final user = _auth.currentUser;
+  // LinkedHashMap<List<String>,List<Int>> services;
 
   try {
     for (var key in datesHours.keys) {
@@ -89,7 +87,7 @@ Future<void> addAppointmentsTable(
   }
 }
 
-Future<void> getAppointmentTableCount() async {
+Future<void> handleAppointmentsInDB() async {
   final user = _auth.currentUser;
   Query query = _firestore
       .collection("Appointments")

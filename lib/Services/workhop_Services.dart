@@ -76,7 +76,7 @@ class _Services extends State<Services> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: tempServices['service'].length,
+                itemCount: count,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(

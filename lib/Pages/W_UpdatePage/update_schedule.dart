@@ -171,7 +171,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
           }
         }
       }
-      getAppointmentTableCount().then((_) {
+      handleAppointmentsInDB().then((_) {
       addAppointmentsTable(capacity, selectedDates, datesHours);
       });
     });
