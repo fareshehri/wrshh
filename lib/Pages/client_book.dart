@@ -23,7 +23,7 @@ class _ClientBookingState extends State<ClientBooking> {
   Map selectedList = {};
   _ClientBookingState({required this.workshopInfo});
 
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDate = DateTime(2023,1,21);
 
   @override
   void initState() {
@@ -62,11 +62,12 @@ class _ClientBookingState extends State<ClientBooking> {
             child: CalendarTimeline(
               initialDate: selectedDate,
               firstDate: DateTime(2023, 1, 1),
-              lastDate: DateTime.now().add(Duration(days: 60)),
+              lastDate: DateTime(2023, 3, 3),
               onDateSelected: (date) {
                 // setState(() {
                 selectedDate = date;
                 (context as Element).reassemble();
+
                 // });
               },
               leftMargin: 20,
@@ -121,9 +122,7 @@ class _ClientBookingState extends State<ClientBooking> {
             height: 10,
           ),
           Container(
-            child: Expanded(
-              child: buildAppointmentList(appointments),
-            ),
+            child: buildAppointmentList(appointments),
           ),
           RoundedButton(
             title: 'Book',
@@ -192,16 +191,14 @@ class _ClientBookingState extends State<ClientBooking> {
         ),
       );
     }
-
     dayAppointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
     return Container(
-      child: Column(
-        children: [
+      child:
           Expanded(
             child: GridView.builder(
               itemCount: dayAppointments.length,
               itemBuilder: (context, index) {
-                return buildAppointmentCard(dayAppointments[index]);
+                return  buildAppointmentCard(dayAppointments[index]);
               },
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -209,13 +206,11 @@ class _ClientBookingState extends State<ClientBooking> {
               ),
             ),
           ),
-        ],
-      ),
+
     );
   }
 
   Container buildAppointmentCard(appointment) {
-    print(appointment);
     String status = appointment['status'];
     var timestamp = appointment['datetime'];
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
