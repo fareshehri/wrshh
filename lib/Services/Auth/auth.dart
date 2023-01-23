@@ -78,12 +78,17 @@ class AuthService {
           },
         );
       } else if (user.userType == 'WorkshopUser') {
+        LinkedHashMap<String, dynamic> services = {
+          'service': ['Check Up', 'Oil Change'],
+          'price': ['0','120'],
+        } as LinkedHashMap<String, dynamic>;
         _firestore.collection('workshopAdmin').doc(user.email).set(
           {
             'email': user.email,
             'phoneNumber': user.phoneNumber,
             'adminName': user.name,
             'city': user.city,
+            'services': services,
           },
         );
       } else if (user.userType == 'AdminUser') {
@@ -107,7 +112,7 @@ class AuthService {
   Future<void> addWorkshop(Workshop workshop, String email) async {
     /// Make variables for user to set
     final user = _auth.currentUser;
-    LinkedHashMap<String, dynamic> Hours = {
+    LinkedHashMap<String, dynamic> hoursAndAvailability = {
       'sunday': [false,0,0,0,0],
       'monday': [false,0,0,0,0],
       'tuesday': [false,0,0,0,0],
@@ -116,17 +121,12 @@ class AuthService {
       'friday': [false,0,0,0,0],
       'saturday': [false,0,0,0,0],
     } as LinkedHashMap<String, dynamic>;
-    LinkedHashMap<String, dynamic> services = {
-      'service': ['Check Up', 'Oil Change'],
-      'price': [0,120],
-    } as LinkedHashMap<String, dynamic>;
     Map<String,dynamic> wp={
       'adminEmail': email,
       'workshopName': workshop.name,
       'location': workshop.location,
       'overAllRate': 0,
-      'Hours': Hours,
-      'services': services,
+      'Hours': hoursAndAvailability,
       'capacity': 1
     };
     FirebaseFirestore.instance.collection('workshops').doc(user?.uid).set(wp);

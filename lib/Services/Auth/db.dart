@@ -64,7 +64,7 @@ Future<void> addAppointmentsTable(int capacity, Map<String, DateTime> selectedDa
           if (datesHours[day][0] && isin == key) {
             DateTime? dateTimeTemp = selectedDates[isin];
             Map<String, dynamic> wp = {
-              'workshopID': user?.email,
+              'workshopID': user?.uid,
               'serial': '',
               'clientID': '',
               'status': 'available',
@@ -94,7 +94,7 @@ Future<void> handleAppointmentsInDB() async {
   final user = _auth.currentUser;
   Query query = _firestore
       .collection("Appointments")
-      .where("workshopID", isEqualTo: user?.email);
+      .where("workshopID", isEqualTo: user?.uid);
 
   query.get().then((querySnapshot) {
     for (var document in querySnapshot.docs) {
@@ -107,7 +107,7 @@ Future<void> handleAppointmentsInDB() async {
 
 Future<LinkedHashMap<String, dynamic>> getDatesHours() async {
   final user = _auth.currentUser;
-  final time = await _firestore.collection('workshops').doc(user?.email).get();
+  final time = await _firestore.collection('workshops').doc(user?.uid).get();
   var hours = time['Hours'];
 
   return hours;
@@ -117,7 +117,7 @@ Future<void> updateDatesHours(LinkedHashMap<String, dynamic> datesHours) async {
   final user = _auth.currentUser;
   FirebaseFirestore.instance
       .collection('workshops')
-      .doc(user?.email)
+      .doc(user?.uid)
       .update({'Hours': datesHours});
 }
 
@@ -125,30 +125,28 @@ Future<void> updateCapacity(int c) async {
   final user = _auth.currentUser;
   FirebaseFirestore.instance
       .collection('workshops')
-      .doc(user?.email)
+      .doc(user?.uid)
       .update({'capacity': c});
 }
 
 Future<int> getCapacity() async {
   final user = _auth.currentUser;
-  final cap = await _firestore.collection('workshops').doc(user?.email).get();
+  final cap = await _firestore.collection('workshops').doc(user?.uid).get();
   return cap['capacity'] as int;
 }
 
 Future<void> updateServices(LinkedHashMap<String, dynamic> services) async {
   final user = _auth.currentUser;
   FirebaseFirestore.instance
-      .collection('workshops')
+      .collection('workshopAdmin')
       .doc(user?.email)
       .update({'services': services});
 }
 
 Future<LinkedHashMap<String, dynamic>> getServices() async {
   final user = _auth.currentUser;
-  final time = await _firestore.collection('workshops').doc(user?.email).get();
+  final time = await _firestore.collection('workshopAdmin').doc(user?.email).get();
   var services = time['services'];
-  // print(services.runtimeType);
-  // print(services['price'][0]);
 
   return services;
 }

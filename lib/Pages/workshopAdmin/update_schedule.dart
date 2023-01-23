@@ -314,6 +314,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                       ),
                     ],
                   ),
+                  const SizedBox(width: 25),
                   /// End Time Part
                   Row(
                     children: [
@@ -340,6 +341,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
             ),
             /// Capacity part
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('Capacity:',
                     style: TextStyle(
