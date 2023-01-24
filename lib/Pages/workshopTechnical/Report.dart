@@ -13,6 +13,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 
+import 'package:wrshh/Pages/workshopTechnical/CreatePdf.dart';
+
 
 final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
@@ -187,6 +189,12 @@ class ReportPageState extends State<ReportPage> {
               // }, child: const Text("File Picker"),),
               
               const SizedBox(height: 20,),
+              const SizedBox(height: 20,),
+              ElevatedButton.icon(onPressed: () {
+                setState(() {
+                  Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const CreatePdf()));
+                });
+              }, icon: Icon(Icons.abc), label: Text('h')),
               const SizedBox(height: 20,),
               ElevatedButton.icon(onPressed: () async {
                     //in try we want to change the car to registered car 
