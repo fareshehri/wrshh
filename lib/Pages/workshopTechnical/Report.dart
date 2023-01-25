@@ -192,7 +192,7 @@ class ReportPageState extends State<ReportPage> {
               const SizedBox(height: 20,),
               ElevatedButton.icon(onPressed: () {
                 setState(() {
-                  Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const CreatePdf()));
+                  Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const CreatePdf(Wid:"btest6w@gmail.com")));
                 });
               }, icon: Icon(Icons.abc), label: Text('h')),
               const SizedBox(height: 20,),

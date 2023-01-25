@@ -26,7 +26,11 @@ class CustomRow {
 
 class PdfInvoiceService {
 
-  Future<Uint8List> createInvoice(List<Product> soldProducts) async {
+  Future<Uint8List> createInvoice(List<Product> soldProducts,det) async {
+    var e="";
+    if(det!=""){
+      e="Maintenance Details: ";
+    }
     final pdf = pw.Document();
 
     // Step Calc
@@ -62,6 +66,14 @@ class PdfInvoiceService {
         "",
         "${(double.parse(getSubTotal(soldProducts)) + double.parse(getVatTotal(soldProducts))).toStringAsFixed(2)} SAR",
       )
+      ,CustomRow(
+        "$e",
+        "$det",
+        "",
+        "",
+        "",
+      ),
+      
     ];
   // Step Image
   // Here it will add the image
@@ -137,7 +149,7 @@ class PdfInvoiceService {
                 pw.Expanded(
                     child: pw.Text(element.vat, textAlign: pw.TextAlign.right)),
               ],
-            )
+            ),
         ],
       ),
     );
