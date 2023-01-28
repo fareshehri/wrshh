@@ -53,6 +53,7 @@ class _ReportPageState extends State<ReportPage> {
     var counter =0;
     List ser=[];
     List pri=[];
+    // Step ####### correct
     final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value) {
     setState(() {
       serv=value["services"];
