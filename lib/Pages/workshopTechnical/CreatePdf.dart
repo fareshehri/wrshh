@@ -36,10 +36,6 @@ class _ReportPageState extends State<ReportPage> {
     // Product("Hamburger", 5.99, 15),
   ];
     List<Product> services = [
-    // Product("Membership", 9.99, 15),
-    // Product("Nails", 0.30, 15),
-    // Product("Hammer", 26.43, 15),
-    // Product("Hamburger", 5.99, 15),
   ];
   var det="";
   var mileage;
@@ -54,7 +50,8 @@ class _ReportPageState extends State<ReportPage> {
     List ser=[];
     List pri=[];
     // Step ####### correct
-    final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value) {
+    //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
+    final wService = await _firestore.collection('workshopAdmin').doc("btest6w@gmail.com").get().then((value) {
     setState(() {
       serv=value["services"];
       for (var element in serv["service"]) {
@@ -291,7 +288,7 @@ const SizedBox(height: 10,),
                         }
                                         }
                       final data = await service.createInvoice(fin,det,widget.Wid,widget.serNo);
-                      await service.savePdfFile("invoice_($serial)($mileage)",serial,mileage, data);
+                      await service.savePdfFile(serial,mileage, data);
                       setState(() {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
                         Future.delayed(const Duration(seconds: 2));

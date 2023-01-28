@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:html'as html;
 
 import 'dart:typed_data';
 
@@ -34,8 +32,7 @@ class PdfInvoiceService {
   final _firestore = FirebaseFirestore.instance;
     // Step #################### correct
     final serial = await _firestore.collection('serial').doc(serialNo).get();
-    final workshop =await _firestore.collection('workshops').where('adminEmail', isEqualTo: WorkshopId).get();
-
+    //final workshop =await _firestore.collection('workshops').where('adminEmail', isEqualTo: WorkshopId).get();
 
     var e="";
     if(det!=""){
@@ -76,13 +73,13 @@ class PdfInvoiceService {
         "",
         "${(double.parse(getSubTotal(soldProducts)) + double.parse(getVatTotal(soldProducts))).toStringAsFixed(2)} SAR",
       )
-      ,CustomRow(
-        "$e",
-        "$det",
-        "",
-        "",
-        "",
-      ),
+      // ,CustomRow(
+      //   "$e",
+      //   "$det",
+      //   "",
+      //   "",
+      //   "",
+      // ),
       
     ];
   // Step Image
@@ -124,6 +121,11 @@ class PdfInvoiceService {
                   "Dear Customer, thanks for buying at Flutter Explained, feel free to see the list of items below."),
               pw.SizedBox(height: 25),
               itemColumn(elements),
+              pw.Row(children: [
+                pw.Text("$e"),
+                pw.Text("$det")
+              ]
+      ),
               pw.SizedBox(height: 25),
               pw.Text("Thanks for your trust, and till the next time."),
               pw.SizedBox(height: 25),
@@ -168,33 +170,12 @@ class PdfInvoiceService {
 
 // Step Savepdf file and push it 
 // Here it will save a pdf version on the device and on the cloud.
-    Future<void> savePdfFile(String fileName,String serial,String mileage, Uint8List byteList) async {
+    Future<void> savePdfFile(String serial,String mileage, Uint8List byteList) async {
       // Step #################### check
       final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
-      if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){
-    final output = await getTemporaryDirectory();
-    var filePath = "${output.path}/$fileName.pdf";
-    final file = File(filePath);
-    await file.writeAsBytes(byteList);
-    // Push to cloud
-    await ref.putFile(file);
-    await OpenDocument.openDocument(filePath: filePath);
-    }
-      else{
-        final blob = html.Blob([byteList]);
-        final url = html.Url.createObjectUrlFromBlob(blob);
-        final anchor = html.document.createElement('a') as html.AnchorElement..href = url..style.display = 'none'..download = '$fileName.pdf';
-        html.document.body?.children.add(anchor);
-      // download
-      anchor.click();
-      // cleanup
-      html.document.body?.children.remove(anchor);
-      html.Url.revokeObjectUrl(url);
-      // Push to cloud
-      await ref.putData(byteList);
-    }
-
-
+      if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
+      //Web
+      else{await ref.putData(byteList);}
   }
 
   String getSubTotal(List<Product> products) {
