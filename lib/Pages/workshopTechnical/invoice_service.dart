@@ -11,7 +11,7 @@ import 'package:open_document/open_document.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '/Models/product.dart';
 
@@ -29,7 +29,14 @@ class CustomRow {
 class PdfInvoiceService {
 
 
-  Future<Uint8List> createInvoice(List<Product> soldProducts,det) async {
+  Future<Uint8List> createInvoice(List<Product> soldProducts,det,String WorkshopId,String serialNo) async {
+//  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+    // Step #################### correct
+    final serial = await _firestore.collection('serial').doc(serialNo).get();
+    final workshop =await _firestore.collection('workshops').where('adminEmail', isEqualTo: WorkshopId).get();
+
+
     var e="";
     if(det!=""){
       e="Maintenance Details: ";
@@ -94,6 +101,7 @@ class PdfInvoiceService {
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pw.Column(
+                    // Step ####### correct
                     children: [
                       pw.Text("Customer Name"),
                       pw.Text("Customer Address"),
@@ -158,11 +166,11 @@ class PdfInvoiceService {
     );
   }
 
-// Step Savepdf file and push it
+// Step Savepdf file and push it 
 // Here it will save a pdf version on the device and on the cloud.
-    Future<void> savePdfFile(String fileName, Uint8List byteList) async {
-      //temp .child("1").chi..... change it ################
-      final ref = FirebaseStorage.instance.ref().child('Reports').child("1").child("2"+'.pdf');
+    Future<void> savePdfFile(String fileName,String serial,String mileage, Uint8List byteList) async {
+      // Step #################### check
+      final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
       if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){
     final output = await getTemporaryDirectory();
     var filePath = "${output.path}/$fileName.pdf";
@@ -175,7 +183,7 @@ class PdfInvoiceService {
       else{
         final blob = html.Blob([byteList]);
         final url = html.Url.createObjectUrlFromBlob(blob);
-        final anchor = html.document.createElement('a') as html.AnchorElement..href = url..style.display = 'none'..download = 'some_name.pdf';
+        final anchor = html.document.createElement('a') as html.AnchorElement..href = url..style.display = 'none'..download = '$fileName.pdf';
         html.document.body?.children.add(anchor);
       // download
       anchor.click();

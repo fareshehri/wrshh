@@ -13,20 +13,21 @@ import 'package:image_picker/image_picker.dart';
 import '/Pages/workshopTechnical/invoice_service.dart';
 import '/Models/product.dart';
 
-class CreatePdf extends StatefulWidget {
+class ReportPage extends StatefulWidget {
+  final String serNo;
   final String Wid;
-  const CreatePdf({super.key, required this.Wid});
+  const ReportPage({super.key, required this.Wid, required this.serNo});
 
   @override
-  State<CreatePdf> createState() => _CreatePdfState();
+  State<ReportPage> createState() => _ReportPageState();
 }
 
-class _CreatePdfState extends State<CreatePdf> {
+class _ReportPageState extends State<ReportPage> {
   bool gotPath = false;
   final PdfInvoiceService service = PdfInvoiceService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-    // Steps
+    // Step #################### correct
    //Get Products from Report.dart add it here
   List<Product> products = [
     Product("Membership", 9.99, 15),
@@ -70,8 +71,6 @@ class _CreatePdfState extends State<CreatePdf> {
         },);
     setState(() {gotPath = true;});
     }
-  //Number of invoice not so important ex. Invoice0 then invoice 1 etc....
-  int number = 0;
   
   @override
   void initState() {
@@ -87,7 +86,7 @@ final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-
+var serial = widget.serNo;
     if (!gotPath){
     return Scaffold(
       body: Center(
@@ -98,7 +97,7 @@ final _formKey = GlobalKey<FormState>();
   else{
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Invoice Generator"),
+        title: const Text("Create Invoice"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -165,7 +164,7 @@ final _formKey = GlobalKey<FormState>();
               ),
             ),
 // Step
-// Products  ########## change var from previous step
+// Products 
             SizedBox(height: 20),
             Text('Products',style: TextStyle(fontSize: 24,fontWeight:FontWeight.bold ),),
             SizedBox(height: 10),
@@ -271,10 +270,10 @@ const SizedBox(height: 10,),
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [const Text("Total"), Text("${getTotal()} ﷼")],
             ),
-            //ElevatedButton(onPressed: onPressed, child: child),
             Row(
               children: [
-                Expanded(child: ElevatedButton(onPressed: getFiles, child: Icon(Icons.upload_file))),
+                // Step (Delete it ???) 
+                //Expanded(child: ElevatedButton(onPressed: getFiles, child: Icon(Icons.upload_file))),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
@@ -290,17 +289,8 @@ const SizedBox(height: 10,),
                           fin.add(products[i]);
                         }
                                         }
-                      final data = await service.createInvoice(fin,det);
-                //Merege if other file submited
-                      if(file.isEmpty){
-                      await service.savePdfFile("invoice_$number", data);}
-                      else{
-                        //push data to fire storage
-                                                
-                        
-                        await service.savePdfFile("invoice_$number",data);
-                      }
-                      number++;
+                      final data = await service.createInvoice(fin,det,widget.Wid,widget.serNo);
+                      await service.savePdfFile("invoice_($serial)($mileage)",serial,mileage, data);
                       setState(() {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
                         Future.delayed(const Duration(seconds: 2));
