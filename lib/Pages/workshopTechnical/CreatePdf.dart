@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:html';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '/Pages/workshopTechnical/invoice_service.dart';
 import '/Models/product.dart';
@@ -35,6 +41,8 @@ class _CreatePdfState extends State<CreatePdf> {
     // Product("Hamburger", 5.99, 15),
   ];
   var det="";
+  var mileage;
+  List<Uint8List?> file=[];
   List<Product> fin=[];
 
   Future _getServices() async {
@@ -75,7 +83,7 @@ class _CreatePdfState extends State<CreatePdf> {
     // print(Sercounter);
     // print(Procounter);
   }
-
+final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -216,17 +224,38 @@ class _CreatePdfState extends State<CreatePdf> {
               ),
             ),
 // Step            
-// Step add comment
+// Step add  Mileage
 
 const SizedBox(height: 10,),
 
 
-              const Text('Details'),
-              TextFormField(onChanged: (value) => det=value,maxLines: 3,decoration: InputDecoration(border: OutlineInputBorder(),hintText: 'Enter Maintenance Comments'),validator: (value) {
-                    if (value == null || value.isEmpty ) {return 'Please enter Maintenance Details';}
+              Form(key: _formKey,child: Column(
+                children: [
+                  const Text('Mileage/Odometer'),
+
+              TextFormField(onChanged: (value) => mileage=value,maxLines: 2,decoration: InputDecoration(border: OutlineInputBorder(),hintText: 'Enter Car Mileage/Odometer'),inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],validator: (value) {
+                    if (value == null || value.isEmpty ) {return 'Please enter Mileage/Odometer';}
                     return null;
                     },),
-              const SizedBox(height: 30,),
+              const SizedBox(height: 20,),
+
+// Step            
+// Step add comment
+
+
+
+
+              const Text('Details'),
+              TextFormField(onChanged: (value) => det=value,maxLines: 3,decoration: InputDecoration(border: OutlineInputBorder(),hintText: 'Enter Maintenance Comments'),
+              // validator: (value) {
+              //       if (value == null || value.isEmpty ) {return 'Please enter Maintenance Details';}
+              //       return null;
+              //       },),
+              // const SizedBox(height: 30,),
+              //                 ],
+              // )
+              ),
+              const SizedBox(height: 10,),
 
 // Step
 //Calculate
@@ -242,34 +271,55 @@ const SizedBox(height: 10,),
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [const Text("Total"), Text("${getTotal()} ﷼")],
             ),
-            ElevatedButton(
-              onPressed: () async {
-                // change to final products
-                for (var i = 0; i < services.length; i++) {
-                  if(services[i].amount>=1){
-                    fin.add(services[i]);
-                  }
-                  }
-                  for (var i = 0; i < products.length; i++) {
-                  if(products[i].amount>=1){
-                    fin.add(products[i]);
-                  }
-                                  }
-                final data = await service.createInvoice(fin,det);
-                await service.savePdfFile("invoice_$number", data);
-                number++;
-                setState(() {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
-                  Future.delayed(const Duration(seconds: 2));
-                  Navigator.pop(context);
-                });
-              },
-              child: const Text("Create Invoice"),
+            //ElevatedButton(onPressed: onPressed, child: child),
+            Row(
+              children: [
+                Expanded(child: ElevatedButton(onPressed: getFiles, child: Icon(Icons.upload_file))),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                      // change to final products
+                      for (var i = 0; i < services.length; i++) {
+                        if(services[i].amount>=1){
+                          fin.add(services[i]);
+                        }
+                        }
+                        for (var i = 0; i < products.length; i++) {
+                        if(products[i].amount>=1){
+                          fin.add(products[i]);
+                        }
+                                        }
+                      final data = await service.createInvoice(fin,det);
+                //Merege if other file submited
+                      if(file.isEmpty){
+                      await service.savePdfFile("invoice_$number", data);}
+                      else{
+                        //push data to fire storage
+                                                
+                        
+                        await service.savePdfFile("invoice_$number",data);
+                      }
+                      number++;
+                      setState(() {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
+                        Future.delayed(const Duration(seconds: 2));
+                        Navigator.pop(context);
+                      });
+                    }
+                    },
+                    child: const Text("Create Invoice"),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
+        ])
+    )
     );
+    
   }
   }
   getPrice(){
@@ -294,4 +344,22 @@ const SizedBox(height: 10,),
     return c.toStringAsFixed(2);
 
   }
+
+  getFiles()async{
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true,type: FileType.custom,
+  allowedExtensions: ['pdf',],);
+    if (result != null) {
+      for (var i = 0; i < result.files.length; i++) {
+        file.add(result.files.elementAt(i).bytes);
+      }
+}
+
+   else {
+    print("No file selected");
+}
+
+  }
+   
+
   }

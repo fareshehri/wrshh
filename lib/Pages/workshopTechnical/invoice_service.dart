@@ -4,12 +4,14 @@ import 'dart:html'as html;
 
 import 'dart:typed_data';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:open_document/open_document.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+
 
 import '/Models/product.dart';
 
@@ -25,6 +27,7 @@ class CustomRow {
 
 
 class PdfInvoiceService {
+
 
   Future<Uint8List> createInvoice(List<Product> soldProducts,det) async {
     var e="";
@@ -155,33 +158,33 @@ class PdfInvoiceService {
     );
   }
 
-// Step Savepdf file   ####### you must add a method to link it with firestore.
-// Here it will save a pdf version on the device 
+// Step Savepdf file and push it
+// Here it will save a pdf version on the device and on the cloud.
     Future<void> savePdfFile(String fileName, Uint8List byteList) async {
+      //temp .child("1").chi..... change it ################
+      final ref = FirebaseStorage.instance.ref().child('Reports').child("1").child("2"+'.pdf');
       if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){
     final output = await getTemporaryDirectory();
     var filePath = "${output.path}/$fileName.pdf";
     final file = File(filePath);
     await file.writeAsBytes(byteList);
+    // Push to cloud
+    await ref.putFile(file);
     await OpenDocument.openDocument(filePath: filePath);
-      }
+    }
       else{
         final blob = html.Blob([byteList]);
         final url = html.Url.createObjectUrlFromBlob(blob);
-        final anchor = html.document.createElement('a') as html.AnchorElement
-          ..href = url
-          ..style.display = 'none'
-          ..download = 'some_name.pdf';
+        final anchor = html.document.createElement('a') as html.AnchorElement..href = url..style.display = 'none'..download = 'some_name.pdf';
         html.document.body?.children.add(anchor);
-
-// download
-anchor.click();
-
-// cleanup
-html.document.body?.children.remove(anchor);
-html.Url.revokeObjectUrl(url);
-
-      }
+      // download
+      anchor.click();
+      // cleanup
+      html.document.body?.children.remove(anchor);
+      html.Url.revokeObjectUrl(url);
+      // Push to cloud
+      await ref.putData(byteList);
+    }
 
 
   }
