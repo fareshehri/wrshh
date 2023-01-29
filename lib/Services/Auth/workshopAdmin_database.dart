@@ -118,7 +118,7 @@ getTechnicianNameFromDB(String technicianID) async {
        .collection('workshopTechnicians')
        .doc(technicianID)
        .get()
-       .then((value) => technicianName = value.data()!['name']);
+       .then((value) => technicianName = value.data()?['name']);
    return technicianName;
  }catch
     (e){

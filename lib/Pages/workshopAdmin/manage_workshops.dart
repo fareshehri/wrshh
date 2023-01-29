@@ -13,6 +13,8 @@ class ManageWorkshops extends StatefulWidget {
 
 class _ManageWorkshopsState extends State<ManageWorkshops> {
   Map workshops = {};
+  bool gotPath = false;
+  List<Widget> workshopsList = [];
 
   @override
   initState() {
@@ -25,29 +27,37 @@ class _ManageWorkshopsState extends State<ManageWorkshops> {
 
     setState(() {
       workshops = workshopsDB;
+      workshopsList = buildWorkshopsCards(workshops);
+      gotPath = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        ElevatedButton(
-            onPressed: () {
-              Navigator.of(
-                context,
-                rootNavigator: true,
-              ).push(MaterialPageRoute(
-                  builder: (BuildContext context) => const AddWorkshop()));
-            },
-            child: const Text('Add New Workshop')),
-        const SizedBox(
-          height: 20,
-        ),
-        Column(
-          children: buildWorkshopsCards(workshops),
-        ),
-      ],
-    );
+    if (!gotPath) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return Column(
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const AddWorkshop()));
+              },
+              child: const Text('Add New Workshop')),
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: ListView(
+              children: workshopsList,
+            ),
+          )
+        ],
+      );
+    }
   }
 }

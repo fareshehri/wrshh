@@ -64,8 +64,7 @@ List<Widget> buildWorkshopsCards(Map workshops) {
           location: workshops[workshop]['location'],
           overallRate:
               double.parse(workshops[workshop]['overallRate'].toString()),
-          logoURL: workshops[workshop]['logoURL'] ??
-              'https://firebasestorage.googleapis.com/v0/b/wrshhx.appspot.com/o/workshopLogo%2Fwaleed5%40gmail.co?alt=media&token=cff86bc2-1f59-4fe2-a5e8-51591705f78d',
+          logoURL: workshops[workshop]['logoURL'],
           numOfRates: workshops[workshop]['numberOfRates'] ?? 0,
         ),
       ),
