@@ -1,10 +1,14 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../Models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import '../../Models/workshop.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,51 +23,80 @@ class AuthService {
     }
   }
 
-  Future<AppUser> getUser() async {
-    final User user = _auth.currentUser!;
-    final client = await _firestore.collection('clients').doc(user.email).get();
-    final workshop = await _firestore.collection('workshopAdmin').doc(user.email).get();
-    if(client.exists){
-      return ClientUser(
-        email: client['email'],
-        name: client['name'],
-        phoneNumber: client['phoneNumber'],
-        password: '',
-      );
-    }
-    else if(workshop.exists){
-      return WorkshopUser(
-        email: workshop['email'],
-        name: workshop['name'],
-        phoneNumber: workshop['phoneNumber'],
-        password: '',
-      );
-    }
-    else{
-      return AppUser(
-        email: 'user.email',
-        name: 'user.displayName',
-        phoneNumber: 'user.phoneNumber', password: '', userType: '',
-
-      );
-    }
+  Future<String> getCurrentUserEmail() async {
+    final user = _auth.currentUser;
+    return user!.email!;
   }
 
-  Future<UserCredential> signInUser(String email, String password) async {
-      UserCredential userCredential = await FirebaseAuth.instance
+  // TODO: workshopTechnician
+  // Future<AppUser> getUser() async {
+  //   final User user = _auth.currentUser!;
+  //   final client = await _firestore.collection('clients').doc(user.email).get();
+  //   final workshop =
+  //       await _firestore.collection('workshopAdmins').doc(user.email).get();
+  //   if (client.exists) {
+  //     return ClientUser(
+  //       email: client['email'],
+  //       name: client['name'],
+  //       phoneNumber: client['phoneNumber'],
+  //       password: '',
+  //     );
+  //   } else if (workshop.exists) {
+  //     return WorkshopAdmin(
+  //       email: workshop['email'],
+  //       name: workshop['name'],
+  //       phoneNumber: workshop['phoneNumber'],
+  //       password: '',
+  //     );
+  //   } else {
+  //     return AppUser(
+  //       email: 'user.email',
+  //       name: 'user.displayName',
+  //       phoneNumber: 'user.phoneNumber',
+  //       password: '',
+  //       userType: '',
+  //     );
+  //   }
+  // }
+
+  Future<UserCredential?> signInUser(String email, String password) async {
+    UserCredential? userCredential;
+    try{
+      userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       return userCredential;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+      } else if (e.code == 'wrong-password') {
+      }
     }
+    return userCredential!;
+  }
 
   Future<String> getUserType() async {
     final user = _auth.currentUser;
-    final client = await _firestore.collection('clients').doc(user!.email).get();
-    final workshop = await _firestore.collection('workshopAdmin').doc(user.email).get();
+    final client =
+        await _firestore.collection('clients').doc(user!.email).get();
+    final workshopAdmin =
+        await _firestore.collection('workshopAdmins').doc(user.email).get();
+    final workshopTechnician = await _firestore
+        .collection('workshopTechnicians')
+        .doc(user.email)
+        .get();
     final admin = await _firestore.collection('admins').doc(user.email).get();
-    return client.exists ? 'ClientUser' : workshop.exists ? 'WorkshopUser' : admin.exists ? 'AdminUser' : 'none';
+
+    return client.exists
+        ? 'ClientUser'
+        : workshopAdmin.exists
+            ? 'workshopAdmin'
+            : workshopTechnician.exists
+                ? 'workshopTechnician'
+                : admin.exists
+                    ? 'AdminUser'
+                    : 'none';
   }
 
-  Future<UserCredential> signUpUser(AppUser user) async {
+  Future<UserCredential?> signUpUser(AppUser user) async {
     final newUser = await _auth.createUserWithEmailAndPassword(
         email: user.email, password: user.password);
     if (newUser.user?.email != null) {
@@ -77,16 +110,16 @@ class AuthService {
             'serial': '',
           },
         );
-      } else if (user.userType == 'WorkshopUser') {
+      } else if (user.userType == 'WorkshopAdmin') {
         LinkedHashMap<String, dynamic> services = {
           'service': ['Check Up', 'Oil Change'],
-          'price': ['0','120'],
+          'price': ['0', '120'],
         } as LinkedHashMap<String, dynamic>;
-        _firestore.collection('workshopAdmin').doc(user.email).set(
+        _firestore.collection('workshopAdmins').doc(user.email).set(
           {
             'email': user.email,
             'phoneNumber': user.phoneNumber,
-            'adminName': user.name,
+            'name': user.name,
             'city': user.city,
             'services': services,
           },
@@ -101,52 +134,92 @@ class AuthService {
           },
         );
       }
+      return newUser;
     }
-     return newUser;
+    return null;
   }
 
+  Future<UserCredential?> signUpTech(AppUser user) async {
+   try {
+     FirebaseApp app = await Firebase.initializeApp(
+         name: 'Secondary', options: Firebase
+         .app()
+         .options);
+       UserCredential userCredential = await FirebaseAuth.instanceFor(app: app)
+           .createUserWithEmailAndPassword(
+           email: user.email, password: user.password);
+
+       if (userCredential.user?.email != null) {
+         _firestore.collection('workshopTechnicians').doc(user.email).set(
+           {
+             'email': user.email,
+             'phoneNumber': user.phoneNumber,
+             'name': user.name,
+             'city': user.city,
+           },
+         );
+         app.delete();
+         return userCredential;
+       }
+     } catch (e) {}
+     return null;
+   }
   void logOut() {
     _auth.signOut();
   }
 
-  Future<void> addWorkshop(Workshop workshop, String email) async {
+  Future<void> addWorkshop(Workshop workshop) async {
     /// Make variables for user to set
     final user = _auth.currentUser;
     LinkedHashMap<String, dynamic> hoursAndAvailability = {
-      'sunday': [false,0,0,0,0],
-      'monday': [false,0,0,0,0],
-      'tuesday': [false,0,0,0,0],
-      'wednesday': [false,0,0,0,0],
-      'thursday': [false,0,0,0,0],
-      'friday': [false,0,0,0,0],
-      'saturday': [false,0,0,0,0],
+      'sunday': [false, 0, 0, 0, 0],
+      'monday': [false, 0, 0, 0, 0],
+      'tuesday': [false, 0, 0, 0, 0],
+      'wednesday': [false, 0, 0, 0, 0],
+      'thursday': [false, 0, 0, 0, 0],
+      'friday': [false, 0, 0, 0, 0],
+      'saturday': [false, 0, 0, 0, 0],
     } as LinkedHashMap<String, dynamic>;
-    Map<String,dynamic> wp={
-      'adminEmail': email,
-      'workshopName': workshop.name,
+    Map<String, dynamic> wp = {
+      'adminEmail': workshop.adminEmail,
+      'technicianEmail': workshop.technicianEmail,
+      'workshopName': workshop.workshopName,
       'location': workshop.location,
-      'overAllRate': 0,
+      'city': 'Al Riyadh',
+      'overallRate': 0,
+      'numberOfRates': 0,
       'Hours': hoursAndAvailability,
-      'capacity': 1
+      'capacity': 1,
+      'logoURL': workshop.logoURL,
     };
-    FirebaseFirestore.instance.collection('workshops').doc(user?.uid).set(wp);
-
-   try {
-      final ref = FirebaseStorage.instance.ref().child('workshopLogo').child(email);
-      await ref.putFile(workshop.logo);
-      final url = await ref.getDownloadURL();
-      _firestore.collection('workshops').where('adminEmail', isEqualTo: email).get().then((value) {
-        for (var element in value.docs) {
-          _firestore.collection('workshops').doc(element.id).update(
-            {
-              'logo': url,
-            },
-          );
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
+    FirebaseFirestore.instance.collection('workshops').doc(workshop.workshopUID).set(wp);
   }
 
+  void uploadLogo(File logo, String email) async {
+    try {
+      final ref =
+          FirebaseStorage.instance.ref().child('workshopLogo').child(email);
+      await ref.putFile(logo);
+    } catch (e) {}
+  }
+
+  getLogoURL(String email) async {
+    String url = '';
+    try {
+      await FirebaseStorage.instance
+          .ref()
+          .child('workshopLogo')
+          .child(email)
+          .getDownloadURL()
+          .then((value) => url = value);
+    } catch (e) {
+      await FirebaseStorage.instance
+          .ref()
+          .child('workshopLogo')
+          .child('waleed5@gmail.co')
+          .getDownloadURL()
+          .then((value) => url = value);
+    }
+    return url;
+  }
 }

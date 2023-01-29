@@ -6,8 +6,8 @@ import '../../components/roundedButton.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
 import '../client/Home.dart';
-import '../admin_home.dart';
-import '../workshopAdmin/workshop_Home.dart';
+import '../workshopAdmin/workshopAdmin_Home.dart';
+import '../workshopTechnician/technician_home.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -62,7 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
-                      hintText: 'Enter your email'),
+                      hintText: 'Enter your email',
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email)),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
@@ -73,7 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 gap,
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
-                      hintText: 'Enter your password'),
+                      hintText: 'Enter your password',
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.lock)),
                   obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {
@@ -93,14 +97,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       try {
                         final newUser = await AuthService().signInUser(email, password);
-                        if (newUser.user?.email != null){
+                        if (newUser?.user?.email != null){
                           var userType = await AuthService().getUserType();
                           if (userType == 'ClientUser'){
                             Navigator.pushNamed(context, Home.id);
-                          } else if (userType == 'WorkshopUser'){
-                            Navigator.pushNamed(context, WHome.id);
-                          } else if (userType == 'AdminUser'){
-                            Navigator.pushNamed(context, AHome.id);
+                          } else if (userType == 'workshopAdmin'){
+                            Navigator.pushNamed(context, WorkshopAdminHome.id);
+                          } else if (userType == 'workshopTechnician'){
+                            print('technician');
+                            Navigator.pushNamed(context, WorkshopTechnicianHome.id);
+                          // } else if (userType == 'AdminUser'){
+                          //   Navigator.pushNamed(context, AHome.id);
+                          } else {
                           }
                         }
                       } catch (e) {

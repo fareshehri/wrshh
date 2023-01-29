@@ -3,11 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/Pages/client/Home.dart';
-//import 'package:wrshh/Pages/Report.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
-//import 'package:wrshh/constants.dart';
-import 'Pages/admin_home.dart';
-import 'Pages/workshopAdmin/workshop_Home.dart';
+import 'Pages/workshopAdmin/workshopAdmin_Home.dart';
+import 'Pages/workshopTechnician/technician_home.dart';
 import 'firebase_options.dart';
 
 import 'Pages/guest/login.dart';
@@ -34,8 +32,9 @@ void main() async {
       LoginScreen.id: (context) => LoginScreen(),
       RegistrationScreen.id: (context) => RegistrationScreen(),
       Home.id: (context) => Home(),
-      WHome.id: (context) => WHome(),
-      AHome.id: (context) => AHome(),
+      WorkshopAdminHome.id: (context) => WorkshopAdminHome(),
+      WorkshopTechnicianHome.id: (context) => WorkshopTechnicianHome(),
+      // AHome.id: (context) => AHome(),
     },
     home: Wrapper(),
   ));

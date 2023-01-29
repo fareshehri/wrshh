@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:wrshh/Pages/workshopAdmin/schedule_data.dart';
 import 'package:wrshh/components/roundedButton.dart';
 import 'package:wrshh/constants.dart';
-import '../../Services/Auth/db.dart';
+import '../../Services/Auth/workshopTechnician_database.dart';
 import '../../components/booking_slot.dart';
 
 class UpdateSchedule extends StatefulWidget {

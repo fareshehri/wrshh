@@ -5,10 +5,9 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
+import 'package:wrshh/Pages/workshopTechnician/CreatePdf.dart';
 
-import 'package:wrshh/Services/Auth/db.dart';
-
-import '../Pages/workshopTechnical/Report.dart';
+import '../Services/Auth/client_database.dart';
 
 class AppointmentsCard extends StatefulWidget {
   final String? logoURL;
@@ -374,7 +373,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       child: ElevatedButton(
         onPressed: () async {
           var reportURL =
-          await getAppoitmetReport(widget.appointment!.appointmentID);
+          await getAppointmentReport(widget.appointment!.appointmentID);
           if (reportURL != null) {
             print('reportURL: $reportURL');
             Navigator.push(
@@ -417,7 +416,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReportPage(vin: widget.appointment!.VIN, Wid: widget.appointment!.workshopID,
+              builder: (context) => ReportPage(serNo: widget.appointment!.VIN, Wid: widget.appointment!.workshopID,
               ),
             ),
           );
@@ -439,7 +438,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
         buttons.add(SizedBox(width: 10));
         buttons.add(reportButton);
       }
-    } else if (widget.cardType == 'HistoryVIN') {
+    } else if (widget.cardType == 'HistorySerial') {
       buttons.add(reportButton);
     }
     else if (widget.cardType == 'Workshop') {

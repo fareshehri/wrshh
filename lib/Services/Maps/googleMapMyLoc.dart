@@ -1,34 +1,42 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
 
 import '../../Models/user.dart';
-import '../../Pages/workshopAdmin/workshop_Home.dart';
+import '../../Models/workshop.dart';
+import '../../Pages/workshopAdmin/workshopAdmin_Home.dart';
 import '../../components/roundedButton.dart';
 import '../Auth/auth.dart';
 
 class googleMapMyLoc extends StatefulWidget {
-  late WorkshopUser userInfo;
+  late WorkshopTech userInfo;
   late String workshopName;
-  late File logo;
-  googleMapMyLoc({required this.userInfo, required this.workshopName, required this.logo});
+  late String adminEmail;
+  googleMapMyLoc(
+      {required this.userInfo,
+      required this.workshopName,
+      required this.adminEmail});
 
   @override
   _googleMapsMyLocState createState() => _googleMapsMyLocState(
         userInfo: userInfo,
         workshopName: workshopName,
-        logo: logo,
+        adminEmail: adminEmail,
       );
 }
 
 class _googleMapsMyLocState extends State<googleMapMyLoc> {
-  late WorkshopUser userInfo;
+  late WorkshopTech userInfo;
   late String workshopName;
-  late File logo;
-  _googleMapsMyLocState({required this.userInfo, required this.workshopName, required this.logo});
+  late String adminEmail;
+  _googleMapsMyLocState(
+      {required this.userInfo,
+      required this.workshopName,
+      required this.adminEmail});
 
   /// Google Map Package Controller
   late final Completer<GoogleMapController> _controller = Completer();
@@ -105,7 +113,7 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                           CrossAxisAlignment.stretch,
                                       children: [
                                         /// First Line text
-                                        Text(loc.toString(),
+                                        Text(workshopName,
                                             style: TextStyle(
                                                 color: Colors.grey[700],
                                                 fontWeight: FontWeight.bold,
@@ -115,24 +123,37 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                           title: 'Register',
                                           colour: Colors.blueAccent,
                                           onPressed: () async {
-                                            String LOCA = '${loc.longitude},${loc.latitude}';
+                                            String LOCA =
+                                                '${loc.latitude},${loc.longitude}';
                                             try {
+                                              // String adminEmail =
+                                              // await AuthService()
+                                              //     .getCurrentUserEmail();
+                                              String logoURL =
+                                                  await AuthService()
+                                                      .getLogoURL(adminEmail);
                                               var user = await AuthService()
-                                                  .signUpUser(userInfo);
-                                              if (user.user?.uid != null) {
+                                                  .signUpTech(userInfo);
+                                              if (user!.user?.uid != null) {
                                                 Workshop workshop = Workshop(
-                                                  name: workshopName,
+                                                  workshopUID: user.user!.uid,
+                                                  adminEmail: adminEmail,
+                                                  technicianEmail:
+                                                      userInfo.email,
+                                                  workshopName: workshopName,
                                                   location: LOCA,
-                                                  logo: logo,
+                                                  overallRate: 0,
+                                                  numOfRates: 0,
+                                                  logoURL: logoURL,
                                                 );
                                                 AuthService()
-                                                    .addWorkshop(workshop, userInfo.email);
+                                                    .addWorkshop(workshop);
                                               }
-
-                                              Navigator.pushNamed(
-                                                  context, WHome.id);
+                                              Navigator.pushNamed(context,
+                                                  WorkshopAdminHome.id);
                                             } catch (e) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
                                                 const SnackBar(
                                                   content: Text(
                                                       'Something went wrong, Email may be already in use'),
@@ -147,7 +168,6 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                 )),
                           ));
                   const CameraPosition(zoom: 9, target: cityCenter);
-
                 });
               },
             ),

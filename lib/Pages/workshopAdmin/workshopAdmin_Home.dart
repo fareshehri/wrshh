@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
-import 'package:wrshh/Pages/client/Account.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
-import 'package:wrshh/Pages/workshopAdmin/update_schedule.dart';
+import 'package:wrshh/Pages/workshopAdmin/edit_account.dart';
 
 import '../../Services/Auth/auth.dart';
-// import 'W_UpdatePage/break_Hours.dart';
-// import 'W_UpdatePage/capacity.dart';
-// import 'W_UpdatePage/services.dart';
-// import 'W_UpdatePage/working_Dates.dart';
-// import 'W_UpdatePage/working_Hours.dart';
+import 'manage_workshops.dart';
 import 'workhop_Services.dart';
 
-
-class WHome extends StatefulWidget {
+class WorkshopAdminHome extends StatefulWidget {
   static const String id = 'Workshop_Home';
-  const WHome({Key? key}) : super(key: key);
+  const WorkshopAdminHome({Key? key}) : super(key: key);
 
   @override
-  State<WHome> createState() => _WHomeState();
+  State<WorkshopAdminHome> createState() => _WorkshopAdminHomeState();
 }
 
-class _WHomeState extends State<WHome> {
+class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
   //vin
   final _formKey = GlobalKey<FormState>();
   //styles
@@ -45,7 +39,7 @@ class _WHomeState extends State<WHome> {
     Colors.transparent,
     Colors.transparent
   ];
-  var titlename = ['Upcoming Maintenance', 'Create Booking', 'Update Schedule'];
+  var titlename = ['Manage Workshops', 'Create Booking', 'Update Services'];
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
@@ -63,14 +57,14 @@ class _WHomeState extends State<WHome> {
             ListTile(
               hoverColor: tc[_selectedIndex],
               leading: const Icon(Icons.manage_accounts),
-              title: const Text('Services'),
+              title: const Text('Update Profile'),
               onTap: () {
                 setState(() {
                   Navigator.of(
                     context,
                     rootNavigator: true,
                   ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const Services(),
+                    builder: (BuildContext context) => const EditAccount(),
                   ));
                 });
               },
@@ -122,13 +116,7 @@ class _WHomeState extends State<WHome> {
                     MediaQuery.of(context).padding.top -
                     kToolbarHeight,
                 width: MediaQuery.of(context).size.width * 0.9,
-                child: ListView(padding: const EdgeInsets.all(8), children: [
-                  SizedBox(
-                      child: Image.asset(
-                    'assets/images/wallpaper3.jpg',
-                    fit: BoxFit.contain,
-                  )),
-                ]),
+                child: ManageWorkshops(),
               );
             }
 
@@ -171,7 +159,7 @@ class _WHomeState extends State<WHome> {
                 ),
               );
             } else {
-              return UpdateSchedule();
+              return Services();
             }
           },
         )),
@@ -182,7 +170,7 @@ class _WHomeState extends State<WHome> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.upcoming),
-              label: 'Upcoming Maintainance',
+              label: 'Manage Workshops',
               backgroundColor: Colors.orange,
             ),
             BottomNavigationBarItem(
@@ -192,7 +180,7 @@ class _WHomeState extends State<WHome> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.edit_calendar),
-              label: 'Update Schedule',
+              label: 'Update Services',
               backgroundColor: Colors.blue,
             ),
           ],

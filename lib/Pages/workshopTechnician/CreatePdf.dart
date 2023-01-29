@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:image_picker/image_picker.dart';
 
-import '/Pages/workshopTechnical/invoice_service.dart';
 import '/Models/product.dart';
+import 'invoice_service.dart';
 
 class ReportPage extends StatefulWidget {
   final String serNo;

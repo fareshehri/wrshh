@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wrshh/Services/Auth/db.dart';
+import 'package:rate/rate.dart';
+import 'package:wrshh/Services/Auth/workshopTechnician_database.dart';
 import '../../Pages/client/client_book.dart';
 import 'bookPage.dart';
 
@@ -96,9 +97,28 @@ class BottomPill extends StatelessWidget {
           SizedBox(
             height: 5,
           ),
-          Text(
-            workshopInfo['overAllRate'].toString(),
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Rate(
+                  iconSize: 20,
+                  color: Colors.green,
+                  allowHalf: true,
+                  allowClear: true,
+                  initialValue:  double.parse(workshopInfo['overallRate'].toString()),
+                  readOnly: true,
+                ),
+              ),
+              SizedBox(width: 5),
+              FittedBox(
+                fit: BoxFit.fitHeight,
+                child: Text('based on ${workshopInfo['numberOfRates']} rates',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12, color: Colors.black)),
+              ),
+            ],
           ),
         ],
       ),

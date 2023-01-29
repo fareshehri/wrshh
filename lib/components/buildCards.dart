@@ -1,5 +1,6 @@
-
 import 'package:flutter/cupertino.dart';
+import 'package:wrshh/Models/workshop.dart';
+import 'package:wrshh/components/workshopsCards.dart';
 
 import '../Models/appointment.dart';
 import 'card.dart';
@@ -11,6 +12,7 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
   // loop through the appointments and create a card for each one
   for (var workshopName in appointments.keys) {
     for (var appointment in appointments[workshopName]) {
+
       final DateFormat formatter = DateFormat.yMd().add_jm();
       var date = DateTime.fromMillisecondsSinceEpoch(
           appointment.data()['datetime'].seconds * 1000);
@@ -28,19 +30,49 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
             clientID: appointment.data()['clientID'],
             status: appointment.data()['status'],
             service: appointment.data()['service'],
-            price: double.parse(appointment.data()['price'].toString()),
+            price: appointment.data()['price'] as double,
             datetime: dateFormatted,
             rate: double.parse(appointment.data()['rate'].toString()),
             reportURL: appointment.data()['reportURL'],
             reportDetails: '',
           ),
-
         ),
       );
-      cards.add(SizedBox(
+      cards.add(const SizedBox(
         height: 10,
       ));
     }
+  }
+
+  return cards;
+}
+
+List<Widget> buildWorkshopsCards(Map workshops) {
+  List<Widget> cards = [];
+
+  // loop through the workshops and create a card for each one
+  for (var workshop in workshops.keys) {
+    cards.add(
+      WorkshopsCard(
+        workshopID: workshop,
+        workshopName: workshops[workshop]['name'],
+        workshop: Workshop(
+          workshopUID: workshop,
+          adminEmail: workshops[workshop]['adminEmail'],
+          technicianEmail: workshops[workshop]['technicianEmail'],
+          workshopName: workshops[workshop]['workshopName'],
+          location: workshops[workshop]['location'],
+          overallRate:
+              double.parse(workshops[workshop]['overallRate'].toString()),
+          logoURL: workshops[workshop]['logoURL'] ??
+              'https://firebasestorage.googleapis.com/v0/b/wrshhx.appspot.com/o/workshopLogo%2Fwaleed5%40gmail.co?alt=media&token=cff86bc2-1f59-4fe2-a5e8-51591705f78d',
+          numOfRates: workshops[workshop]['numberOfRates'] ?? 0,
+        ),
+      ),
+    );
+    cards.add(const SizedBox(
+      height: 10,
+    ));
   }
 
   return cards;

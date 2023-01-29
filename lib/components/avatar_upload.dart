@@ -69,8 +69,8 @@ class _AvatarPhotoState extends State<AvatarPhoto> {
                 padding: const EdgeInsets.all(10.0),
                 child: !_load
                     ? const Icon(
-                        Icons.person,
-                        size: 100,
+                        Icons.add_a_photo,
+                        size: 50,
                         color: Colors.white,
                       )
                     : !kIsWeb

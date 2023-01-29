@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wrshh/components/booking_slot.dart';
 import 'package:intl/intl.dart';
 import 'package:wrshh/components/roundedButton.dart';
 import 'package:wrshh/constants.dart';
-import '../../Services/Auth/db.dart';
+import '../../Services/Auth/client_database.dart';
+import '../../Services/Auth/workshopTechnician_database.dart';
 import '../../components/Calendar_Timeline.dart';
 
 class ClientBooking extends StatefulWidget {
   final workshopInfo;
-  ClientBooking({required this.workshopInfo});
+  const ClientBooking({required this.workshopInfo});
 
   @override
   State<ClientBooking> createState() =>
@@ -23,7 +23,7 @@ class _ClientBookingState extends State<ClientBooking> {
   Map selectedList = {};
   _ClientBookingState({required this.workshopInfo});
 
-  DateTime selectedDate = DateTime(2023,1,21);
+  DateTime selectedDate = DateTime(2023, 1, 21);
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ClientBookingState extends State<ClientBooking> {
   @override
   Widget build(BuildContext context) {
     if (!gotPath) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -75,12 +75,12 @@ class _ClientBookingState extends State<ClientBooking> {
               dayColor: Colors.white,
               activeDayColor: Colors.pink,
               activeBackgroundDayColor: Colors.white,
-              dotsColor: Color(0xFF333A47),
+              dotsColor: const Color(0xFF333A47),
               selectableDayPredicate: (date) => date.day != 23,
               locale: 'en_ISO',
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Row(
@@ -90,35 +90,35 @@ class _ClientBookingState extends State<ClientBooking> {
                 radius: 10,
                 backgroundColor: Colors.green[800],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
-              Text('Available'),
-              SizedBox(
+              const Text('Available'),
+              const SizedBox(
                 width: 10,
               ),
               CircleAvatar(
                 radius: 10,
                 backgroundColor: Colors.red[800],
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
-              Text('Booked'),
-              SizedBox(
+              const Text('Booked'),
+              const SizedBox(
                 width: 10,
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 10,
                 backgroundColor: Colors.grey,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
-              Text('Selected'),
+              const Text('Selected'),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Container(
@@ -134,7 +134,25 @@ class _ClientBookingState extends State<ClientBooking> {
                 });
                 Navigator.pop(context);
               } else {
-                print('No appointment selected');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                        title: const Center(
+                          child: Text('No appointments selected'),
+                        ),
+                        content: const Text(
+                            'Please select a slot to book an appointment'),
+                        actions: [
+                          TextButton(
+                            child: const Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ]);
+                  },
+                );
               }
             },
           ),
@@ -143,7 +161,7 @@ class _ClientBookingState extends State<ClientBooking> {
     }
   }
 
-  Container buildAppointmentList(List appointments) {
+  Widget buildAppointmentList(List appointments) {
     List dayAppointments = [];
     Map allDayAppointments = {};
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -181,56 +199,48 @@ class _ClientBookingState extends State<ClientBooking> {
       }
     }
     if (dayAppointments.isEmpty) {
-      return Container(
-        child: Center(
-          child: Text('No appointments available',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.grey,
-              )),
-        ),
+      return const Center(
+        child: Text('No appointments available',
+            style: TextStyle(
+              fontSize: 24,
+              color: Colors.grey,
+            )),
       );
     }
     dayAppointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
-    return Container(
-      child:
-          Expanded(
-            child: GridView.builder(
-              itemCount: dayAppointments.length,
-              itemBuilder: (context, index) {
-                return  buildAppointmentCard(dayAppointments[index]);
-              },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 2,
-              ),
-            ),
-          ),
-
+    return Expanded(
+      child: GridView.builder(
+        itemCount: dayAppointments.length,
+        itemBuilder: (context, index) {
+          return buildAppointmentCard(dayAppointments[index]);
+        },
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 2,
+        ),
+      ),
     );
   }
 
-  Container buildAppointmentCard(appointment) {
+  BookingSlot buildAppointmentCard(appointment) {
     String status = appointment['status'];
     var timestamp = appointment['datetime'];
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
 
-    return Container(
-      child: BookingSlot(
-        onTap: () {
-          setState(() {
-            selectedList = {};
-            selectedList[appointment.id] = true;
-          });
-        },
-        isBooked: status == 'available' ? false : true,
-        isSelected: selectedList[appointment.id] ?? false,
-        isPauseTime: false,
-        child: Center(
-          child: Text(
-            date.hour.toString() + ':' + date.minute.toString(),
-            style: TextStyle(color: Colors.white),
-          ),
+    return BookingSlot(
+      onTap: () {
+        setState(() {
+          selectedList = {};
+          selectedList[appointment.id] = true;
+        });
+      },
+      isBooked: status == 'available' ? false : true,
+      isSelected: selectedList[appointment.id] ?? false,
+      isPauseTime: false,
+      child: Center(
+        child: Text(
+          '${date.hour}:${date.minute}',
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );

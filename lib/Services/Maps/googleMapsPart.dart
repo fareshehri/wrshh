@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../Auth/db.dart';
+import '../Auth/client_database.dart';
 import 'upperPill.dart';
 import 'BottomPill.dart';
 
@@ -41,9 +38,10 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
   Map<String, dynamic> workshopInfo = {
     'workshopID': '',
     'workshopName': '',
-    'overAllRate': 0,
+    'overallRate': 0,
+    'numberOfRates': 0,
     'logo': '',
-    'adminEmail': ''
+    'technicianEmail': ''
   };
 
   @override
@@ -62,8 +60,8 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
           String loc = workshops[workshop]['location'] as String;
           String name = workshops[workshop]['workshopName'];
           List Loc = loc.split(',');
-          double lat = double.parse(Loc[1]);
-          double long = double.parse(Loc[0]);
+          double lat = double.parse(Loc[0]);
+          double long = double.parse(Loc[1]);
 
           _markers.add(Marker(
               markerId: MarkerId(name),
@@ -74,9 +72,10 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
                   /// Show pin info
                   workshopInfo['workshopID'] = workshop;
                   workshopInfo['workshopName'] = name;
-                  workshopInfo['overAllRate'] = workshops[workshop]['overAllRate'];
-                  workshopInfo['logo'] = workshops[workshop]['logo'];
-                  workshopInfo['adminEmail'] = workshops[workshop]['adminEmail'];
+                  workshopInfo['overallRate'] =  double.parse(workshops[workshop]['overallRate'].toString());
+                  workshopInfo['numberOfRates'] = workshops[workshop]['numberOfRates'] as num;
+                  workshopInfo['logo'] = workshops[workshop]['logoURL'];
+                  workshopInfo['technicianEmail'] = workshops[workshop]['technicianEmail'];
 
                   pinPillPosition = pinVisiblePosition;
 
