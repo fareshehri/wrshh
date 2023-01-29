@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:wrshh/components/roundedButton.dart';
 import 'package:wrshh/constants.dart';
 import '../../Services/Auth/client_database.dart';
-import '../../Services/Auth/workshopTechnician_database.dart';
 import '../../components/Calendar_Timeline.dart';
 
 class ClientBooking extends StatefulWidget {

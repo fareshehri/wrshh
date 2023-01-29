@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
 import 'package:wrshh/Pages/workshopAdmin/update_schedule.dart';
+import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
+import '../../components/Calendar_Timeline.dart';
+import 'make_invoice.dart';
 
 class WorkshopTechnicianHome extends StatefulWidget {
   static const String id = 'WorkshopTechnicianHome';
@@ -40,7 +43,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
   var titlename = ['View Appointments', 'Make Invoice', 'Update Schedule'];
 
   static const TextStyle optionStyle =
-  TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
+      TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
   int _selectedIndex = 0;
 
 //date picker
@@ -51,40 +54,38 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
       return Scaffold(
         drawer: Drawer(
             child: ListView(
-              children: [
-                ListTile(
-                  hoverColor: tc[_selectedIndex],
-                  leading: const Icon(Icons.manage_accounts),
-                  title: const Text('Services'),
-                  onTap: () {
-
-                  },
-                ),
-                ListTile(
-                  hoverColor: tc[_selectedIndex],
-                  leading: const Icon(Icons.exit_to_app),
-                  title: const Text('Logout'),
-                  onTap: () {
-                    AuthService().logOut();
-                    setState(() {
-                      Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(MaterialPageRoute(
-                        builder: (BuildContext context) => WelcomeScreen(),
-                      ));
-                    });
-                  },
-                )
-              ],
-            )),
+          children: [
+            ListTile(
+              hoverColor: tc[_selectedIndex],
+              leading: const Icon(Icons.manage_accounts),
+              title: const Text('Services'),
+              onTap: () {},
+            ),
+            ListTile(
+              hoverColor: tc[_selectedIndex],
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Logout'),
+              onTap: () {
+                AuthService().logOut();
+                setState(() {
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).push(MaterialPageRoute(
+                    builder: (BuildContext context) => WelcomeScreen(),
+                  ));
+                });
+              },
+            )
+          ],
+        )),
         //AB:
         //appBar: AppBar(title: Text('Home'),centerTitle: true,backgroundColor:bbcolor[_selectedIndex],) ,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle(
               systemNavigationBarColor: buttoncolor[_selectedIndex]),
           actionsIconTheme:
-          IconThemeData(color: buttoncolor[_selectedIndex], size: 24),
+              IconThemeData(color: buttoncolor[_selectedIndex], size: 24),
           title: Text(
             titlename[_selectedIndex],
             style: optionStyle,
@@ -98,62 +99,20 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
 
         body: Center(
             child: FutureBuilder(
-              initialData: _selectedIndex,
-              builder: (context, snapshot) {
-                if (_selectedIndex == 0) {
-                  //Main PAGE after listview try padding: EdgeInsets.all(8)
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top -
-                        kToolbarHeight,
-                    width: MediaQuery.of(context).size.width * 0.9,
+          initialData: _selectedIndex,
+          builder: (context, snapshot) {
+            if (_selectedIndex == 0) {
+              //Main PAGE after listview try padding: EdgeInsets.all(8)
+              return ViewAppoinments();
+            }
 
-                  );
-                }
-
-                if (_selectedIndex == 1) {
-                  return Form(
-                    key: _formKey,
-                    child: Column(
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.zero),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(17)
-                          ],
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter VIN Number';
-                            }
-                            return null;
-                          },
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            // Validate returns true if the form is valid, or false otherwise.
-                            if (_formKey.currentState!.validate()) {
-                              // If the form is valid, display a snackbar. In the real world,
-                              // you'd often call a server or save the information in a database.
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Processing Data')),
-                              );
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.search_rounded,
-                          ),
-                          label: const Text('Search'),
-                        )
-                      ],
-                    ),
-                  );
-                } else {
-                  return UpdateSchedule();
-                }
-              },
-            )),
+            if (_selectedIndex == 1) {
+              return MakeInvoice();
+            } else {
+              return UpdateSchedule();
+            }
+          },
+        )),
 
         bottomNavigationBar: BottomNavigationBar(
           elevation: 0,

@@ -26,7 +26,7 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
           appointment: Appointment(
             appointmentID: appointment.id,
             workshopID: appointment.data()['workshopID'],
-            VIN: appointment.data()['VIN'],
+            serial: appointment.data()['serial'],
             clientID: appointment.data()['clientID'],
             status: appointment.data()['status'],
             service: appointment.data()['service'],

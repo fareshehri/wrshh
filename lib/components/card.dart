@@ -416,7 +416,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReportPage(serNo: widget.appointment!.VIN, Wid: widget.appointment!.workshopID,
+              builder: (context) => ReportPage(serNo: widget.appointment!.serial, Wid: widget.appointment!.workshopID,
               ),
             ),
           );
@@ -441,8 +441,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
     } else if (widget.cardType == 'HistorySerial') {
       buttons.add(reportButton);
     }
-    else if (widget.cardType == 'Workshop') {
+    else if (widget.cardType == 'WorkshopInvoice') {
       buttons.add(uploadReportButton);
+    }
+    else if (widget.cardType == 'Workshop') {
+      // buttons.add(uploadReportButton);
     }
 
     return buttons;

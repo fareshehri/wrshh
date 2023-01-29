@@ -1,7 +1,7 @@
 class Appointment {
   late String appointmentID;
   late String workshopID;
-  late String VIN;
+  late String serial;
   late String clientID;
   late String status;
   late String service;
@@ -14,7 +14,7 @@ class Appointment {
   Appointment(
       {required this.appointmentID,
       required this.workshopID,
-      required this.VIN,
+      required this.serial,
       required this.clientID,
       required this.status,
       required this.service,

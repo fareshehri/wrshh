@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       try {
                         final newUser = await AuthService().signInUser(email, password);
                         if (newUser?.user?.email != null){
-                          var userType = await AuthService().getUserType();
+                          var userType = await AuthService().getUserType(newUser?.user!.email!);
                           if (userType == 'ClientUser'){
                             Navigator.pushNamed(context, Home.id);
                           } else if (userType == 'workshopAdmin'){

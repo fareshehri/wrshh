@@ -5,11 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../Pages/workshopAdmin/schedule_data.dart';
 
-
 final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-Future<void> addAppointmentsTable(int capacity, Map<String, DateTime> selectedDates, LinkedHashMap<String, dynamic> datesHours) async {
+Future<void> addAppointmentsTable(
+    int capacity,
+    Map<String, DateTime> selectedDates,
+    LinkedHashMap<String, dynamic> datesHours) async {
   final user = _auth.currentUser;
   LinkedHashMap<String, dynamic> services = {
     'service': [],
@@ -96,13 +98,6 @@ Future<int> getCapacity() async {
   return cap['capacity'] as int;
 }
 
-
-
-
-
-
-
-
 Future<String> getWorkshopNameFromDB(String workshopID) async {
   String workshopName = '';
   await _firestore
@@ -112,10 +107,6 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
       .then((value) => workshopName = value.data()!['workshopName']);
   return workshopName;
 }
-
-
-
-
 
 // Future<Map> getBookedAppointmentsFromDB(String email) async {
 //   Map appointments = {};
@@ -133,9 +124,6 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
 //   return appointments;
 // }
 
-
-
-
 getWorkshopAppointmentsByDate(DateTime date) async {
   Map appointments = {};
   final AppointmentsDB = await _firestore
@@ -148,7 +136,7 @@ getWorkshopAppointmentsByDate(DateTime date) async {
         appointmentDate.month == date.month &&
         appointmentDate.day == date.day) {
       var workshopName =
-      await getWorkshopNameFromDB(appointment.data()['workshopID']);
+          await getWorkshopNameFromDB(appointment.data()['workshopID']);
       // if workshopName is not in appointments.keys add it
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
@@ -160,3 +148,22 @@ getWorkshopAppointmentsByDate(DateTime date) async {
   return appointments;
 }
 
+getWorkshopFinishedAppointments() async {
+  Map appointments = {};
+  final AppointmentsDB = await _firestore
+      .collection('Appointments')
+      .where('workshopID', isEqualTo: _auth.currentUser!.uid)
+      .where('status', isEqualTo: 'finished')
+      .get();
+  var workshopName = await getWorkshopNameFromDB(
+      AppointmentsDB.docs.first.data()['workshopID']);
+  for (var appointment in AppointmentsDB.docs) {
+// if workshopName is not in appointments.keys add it
+    if (!appointments.keys.contains(workshopName)) {
+      appointments[workshopName] = [];
+    }
+// add the appointment to the list of appointments
+    appointments[workshopName].add(appointment);
+  }
+  return appointments;
+}
