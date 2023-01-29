@@ -10,6 +10,7 @@ import '../../Models/user.dart';
 import '../../Models/workshop.dart';
 import '../../Pages/workshopAdmin/workshopAdmin_Home.dart';
 import '../../components/roundedButton.dart';
+import '../../constants.dart';
 import '../Auth/auth.dart';
 
 class googleMapMyLoc extends StatefulWidget {
@@ -107,7 +108,6 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                         .bottom),
                                 child: Container(
                                   margin: EdgeInsets.all(20.0),
-                                  child: Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.stretch,
@@ -117,18 +117,15 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                             style: TextStyle(
                                                 color: Colors.grey[700],
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 15)),
+                                                fontSize: 18)),
 
                                         RoundedButton(
                                           title: 'Register',
-                                          colour: Colors.blueAccent,
+                                          colour: kLightColor,
                                           onPressed: () async {
                                             String LOCA =
                                                 '${loc.latitude},${loc.longitude}';
                                             try {
-                                              // String adminEmail =
-                                              // await AuthService()
-                                              //     .getCurrentUserEmail();
                                               String logoURL =
                                                   await AuthService()
                                                       .getLogoURL(adminEmail);
@@ -166,7 +163,7 @@ class _googleMapsMyLocState extends State<googleMapMyLoc> {
                                     ),
                                   ),
                                 )),
-                          ));
+                          );
                   const CameraPosition(zoom: 9, target: cityCenter);
                 });
               },
