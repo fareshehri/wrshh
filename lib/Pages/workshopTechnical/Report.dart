@@ -13,19 +13,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 
+import 'package:wrshh/Pages/workshopTechnical/CreatePdf.dart';
+
 
 final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
-class ReportPage extends StatefulWidget {
+class ReportPage1 extends StatefulWidget {
   final String vin;
   final String Wid;
-  const ReportPage({Key? key,required this.vin, required this.Wid}) : super(key: key);
+  const ReportPage1({Key? key,required this.vin, required this.Wid}) : super(key: key);
 
   @override
-  State<ReportPage> createState() => ReportPageState();
+  State<ReportPage1> createState() => ReportPage1State();
 }
 
-class ReportPageState extends State<ReportPage> {
+class ReportPage1State extends State<ReportPage1> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   String selectedDate = formatter.format(DateTime.now());
@@ -187,6 +189,12 @@ class ReportPageState extends State<ReportPage> {
               // }, child: const Text("File Picker"),),
               
               const SizedBox(height: 20,),
+              const SizedBox(height: 20,),
+              ElevatedButton.icon(onPressed: () {
+                setState(() {
+                  //Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const CreatePdf(Wid:"btest6w@gmail.com")));
+                });
+              }, icon: Icon(Icons.abc), label: Text('h')),
               const SizedBox(height: 20,),
               ElevatedButton.icon(onPressed: () async {
                     //in try we want to change the car to registered car 

@@ -34,6 +34,8 @@ dependencies:
 #  rate_in_stars: ^0.0.3
   rate: ^0.0.1
   syncfusion_flutter_pdfviewer: ^20.4.44
+  open_document: ^1.0.5
+  pdf: ^3.8.4
 
 
 dev_dependencies:
@@ -43,6 +45,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
+
 
   uses-material-design: true
 
