@@ -73,7 +73,7 @@ class AuthService {
     return userCredential!;
   }
 
-  Future<String> getUserType() async {
+  Future<String> getUserType(String? email) async {
     final user = _auth.currentUser;
     final client =
         await _firestore.collection('clients').doc(user!.email).get();

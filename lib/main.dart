@@ -6,6 +6,7 @@ import 'package:wrshh/Pages/client/Home.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
 import 'Pages/workshopAdmin/workshopAdmin_Home.dart';
 import 'Pages/workshopTechnician/technician_home.dart';
+import 'Services/Auth/auth.dart';
 import 'firebase_options.dart';
 
 import 'Pages/guest/login.dart';
@@ -52,96 +53,28 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<User>(
-        future: getUser(),
-        builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+    return FutureBuilder<String>(
+        future: getUserType(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
-            return const Home();
-            //return ReportPage(vin: '4324234234',Wid: 'zxc',);
+            if (snapshot.data == 'client') {
+              return Home();
+            } else if (snapshot.data == 'workshopAdmin') {
+              return WorkshopAdminHome();
+            } else if (snapshot.data == 'workshopTechnician') {
+              return WorkshopTechnicianHome();
+            } else {
+              return LoginScreen();
+            }
           } else {
             return WelcomeScreen();
           }
         });
   }
 
-  Future<User> getUser() async {
+  Future<String> getUserType() async {
     final User user = await FirebaseAuth.instance.currentUser!;
-    return user;
+    String userType = await AuthService().getUserType(user!.email);
+    return userType;
   }
 }
-
-// class Wrapper extends StatefulWidget {
-//   const Wrapper({Key? key}) : super(key: key);
-
-//   @override
-//   State<Wrapper> createState() => _WrapperState();
-// }
-
-// class _WrapperState extends State<Wrapper> {
-
-//   @override
-//       Widget build(BuildContext context){
-//         return FutureBuilder<User>(
-//           future:getUser(),
-//             builder: (BuildContext context, AsyncSnapshot<User> snapshot){
-//                        if (snapshot.hasData){
-//                         print('1');
-//                            return const Home();
-//                         }
-//                         else{
-//                         print('2');
-//                         return const signIn();}
-//              }
-//           );
-//     }
-// }
-
-// //firebase Old
-
-// Future<User> getUser() async {
-//   final User user = await FirebaseAuth.instance.currentUser!;
-//   return user;
-//   }
-
-//     Future signinAnnon() async{
-//     final FirebaseAuth _auth = FirebaseAuth.instance;
-//     try {
-//       UserCredential result = await _auth.signInAnonymously();
-//       User user = result.user!;
-//       print(user.uid);
-//       return user;
-
-//     } catch (e) {
-//       print(e.toString());
-//       return null;
-//     }
-//   }
-
-//   //sign in email
-
-//   //sign in phone
-
-//   //register email
-//   Future registerEmail(String email, String password)async{
-//     final FirebaseAuth _auth = FirebaseAuth.instance;
-//   try {
-//     UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-//     User user = result.user!;
-//     return user;
-//   } catch (e) {
-//     print(e.toString());
-//     return null;
-// }
-//   }
-//   //register phone
-
-//   //signout
-//   logOut(){
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
-//     try{
-//       _auth.signOut();
-//     }
-//     catch(e){
-//       print(e.toString());
-//     }
-//   }
