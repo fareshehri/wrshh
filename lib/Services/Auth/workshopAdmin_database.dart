@@ -127,6 +127,17 @@ getTechnicianNameFromDB(String technicianID) async {
 }
 
 
+getTechnicianInfoFromDB(String technicianID) async {
+  var technicianInfo = {};
+  await _firestore
+      .collection('workshopTechnicians')
+      .doc(technicianID)
+      .get()
+      .then((value) => technicianInfo = value.data()!);
+  return technicianInfo;
+}
+
+
 getWorkshopLogoURL(String email) async {
   String url = '';
   try {
