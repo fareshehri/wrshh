@@ -14,7 +14,7 @@ class ViewAppoinments extends StatefulWidget {
 class _ViewAppoinmentsState extends State<ViewAppoinments> {
   DateTime selectedDate = DateTime(2023, 1, 30);
   late Map appointments = {};
-  // late List workshops = [];
+  bool gotPath = false;
   late List<Widget> widgets = [];
   @override
   void initState() {
@@ -29,6 +29,7 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
     setState(() {
       appointments = appointmentsDB;
       widgets = buildAppointmentsCards(appointments, 'Workshop');
+      gotPath = true;
     });
   }
 
@@ -48,6 +49,7 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
               onDateSelected: (date) {
                 setState(() {
                   selectedDate = date;
+                  gotPath = false;
                   _asyncMethod();
                 });
               },
@@ -65,67 +67,31 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
             height: 20,
           ),
           Expanded(
-            child: ListView(
-              children: widgets.isEmpty
-                  ? [
-                      const Center(
-                        child: Text('No Appointments Found for this Date',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.grey,),
-                      )
-                      )
-                    ]
-                  : widgets,
-            ),
+            child: gotPath
+                ? ListView(
+                    children: widgets.isEmpty
+                        ? [
+                            const Center(
+                                child: Text(
+
+                              'No Appointments Found for this Date',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.grey,
+                              ),
+                            ))
+                          ]
+                        : widgets,
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ),
           ),
         ],
       ),
     );
   }
 
-  Widget getBody() {
-    if (appointments.isEmpty) {
-      return const Center(
-        child: Text('You have no appointments',
-            style: TextStyle(
-              fontSize: 24,
-              color: Colors.grey,
-            )),
-      );
-    } else {
-      return ListView(
-        children: [
-          Container(
-            height: 120,
-            color: Colors.pink,
-            child: CalendarTimeline(
-              initialDate: selectedDate,
-              firstDate: DateTime(2023, 1, 1),
-              lastDate: DateTime(2023, 3, 3),
-              onDateSelected: (date) {
-                // setState(() {
-                selectedDate = date;
-                (context as Element).reassemble();
 
-                // });
-              },
-              leftMargin: 20,
-              monthColor: Colors.white,
-              dayColor: Colors.white,
-              activeDayColor: Colors.pink,
-              activeBackgroundDayColor: Colors.white,
-              dotsColor: const Color(0xFF333A47),
-              selectableDayPredicate: (date) => date.day != 23,
-              locale: 'en_ISO',
-            ),
-          ),
-          ListView(
-            children: buildAppointmentsCards(appointments, 'Workshop'),
-          ),
-        ],
-      );
-    }
-  }
 }
