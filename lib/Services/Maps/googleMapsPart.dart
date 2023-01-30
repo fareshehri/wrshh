@@ -1,12 +1,7 @@
-import 'dart:async';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:wrshh/Services/Auth/auth.dart';
 
 import '../Auth/client_database.dart';
-import 'upperPill.dart';
 import 'BottomPill.dart';
 
 /// Best Coverage on whole city
@@ -169,9 +164,6 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
                  },
                ),
              ),
-
-             /// Upper pill
-             const upperPill(),
 
              /// Bottom pill
              BottomPill(

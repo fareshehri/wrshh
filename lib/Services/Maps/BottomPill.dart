@@ -101,14 +101,19 @@ class BottomPill extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Rate(
-                iconSize: 20,
-                color: Colors.green,
-                allowHalf: true,
-                allowClear: true,
-                initialValue: rate,
-                readOnly: true,
-              ),
+              for (int i = 0; i < 5; i++)
+                if (i <  rate.round())
+                  Icon(
+                    Icons.star,
+                    color: Colors.green,
+                    size: 20,
+                  )
+                else
+                  Icon(
+                    Icons.star_border,
+                    color: Colors.green,
+                    size: 20,
+                  ),
               SizedBox(width: 5),
               FittedBox(
                 fit: BoxFit.fitHeight,
@@ -163,50 +168,50 @@ class BottomPill extends StatelessWidget {
       ),
     );
   }
-
-  /// lower lower pill
-  Container lowerLowerPill() {
-    return Container(
-      child: Column(
-        children: [
-          SizedBox(height: 20),
-          Row(
-            children: [
-              /// Circular image code (star)
-              Container(
-                width: 50,
-                height: 50,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(color: Colors.green, width: 4),
-                ),
-                child: const Icon(
-                  Icons.star,
-                  color: Colors.yellow,
-                  size: 30,
-                ),
-              ),
-
-              /// Text code
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  /// First Line
-                  Text("no way jose",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-
-                  /// Second Line
-                  Text("Recommended for ford vehicles..")
-                ],
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
+  //
+  // /// lower lower pill
+  // Container lowerLowerPill() {
+  //   return Container(
+  //     child: Column(
+  //       children: [
+  //         SizedBox(height: 20),
+  //         Row(
+  //           children: [
+  //             /// Circular image code (star)
+  //             Container(
+  //               width: 50,
+  //               height: 50,
+  //               padding: EdgeInsets.all(5),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(50),
+  //                 border: Border.all(color: Colors.green, width: 4),
+  //               ),
+  //               child: const Icon(
+  //                 Icons.star,
+  //                 color: Colors.yellow,
+  //                 size: 30,
+  //               ),
+  //             ),
+  //
+  //             /// Text code
+  //             const SizedBox(width: 20),
+  //             Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: const [
+  //                 /// First Line
+  //                 Text("no way jose",
+  //                     style: TextStyle(fontWeight: FontWeight.bold)),
+  //
+  //                 /// Second Line
+  //                 Text("Recommended for ford vehicles..")
+  //               ],
+  //             )
+  //           ],
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   ///Book button pill
   Container bookButtonPill(BuildContext context) {
