@@ -189,3 +189,25 @@ Future<String> getAdminEmailfromDB(String workshopID) async {
   var email = workshopDB.data()!['adminEmail'];
   return email;
 }
+
+Future<bool> checkReportStatus(String appointmentID) async {
+  final appointmentDB =
+      await _firestore.collection('Appointments').doc(appointmentID).get();
+  var reportURL = appointmentDB.data()!['reportURL'];
+  return reportURL != '';
+}
+
+Future<bool> checkRateStatus(String appointmentID) async {
+  final appointmentDB =
+      await _firestore.collection('Appointments').doc(appointmentID).get();
+  var rate = appointmentDB.data()!['rate'];
+  return rate != 0;
+}
+
+// change this
+Future<bool> checkPaymentStatus(String appointmentID) async {
+  final appointmentDB =
+      await _firestore.collection('Appointments').doc(appointmentID).get();
+  var payment = appointmentDB.data()!['payment'];
+  return payment != 0;
+}
