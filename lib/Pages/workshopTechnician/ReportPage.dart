@@ -13,7 +13,8 @@ import 'invoice_service.dart';
 class ReportPage extends StatefulWidget {
   final String serNo;
   final String Wid;
-  const ReportPage({super.key, required this.Wid, required this.serNo});
+  final String AppointmentId;
+  const ReportPage({super.key, required this.Wid, required this.serNo, required this.AppointmentId});
 
   @override
   State<ReportPage> createState() => _ReportPageState();
@@ -285,7 +286,7 @@ const SizedBox(height: 10,),
                         }
                                         }
                       final data = await service.createInvoice(fin,det,widget.Wid,widget.serNo);
-                      await service.savePdfFile(serial,mileage, data);
+                      await service.savePdfFile(serial,mileage,widget.AppointmentId,data);
                       setState(() {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
                         Future.delayed(const Duration(seconds: 2));

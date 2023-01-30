@@ -5,7 +5,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
-import 'package:wrshh/Pages/workshopTechnician/CreatePdf.dart';
+import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
 
 import '../Services/Auth/client_database.dart';
 

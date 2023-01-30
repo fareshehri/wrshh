@@ -168,8 +168,8 @@ class PdfInvoiceService {
 
 // Step Savepdf file and push it 
 // Here it will save a pdf version on the device and on the cloud.
-    Future<void> savePdfFile(String serial,String mileage, Uint8List byteList) async {
-      // Step #################### check
+    Future<void> savePdfFile(String serial,String mileage,String apid ,Uint8List byteList) async {
+      // Step #################### check ############# add apid
       final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
       if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
       //Web
