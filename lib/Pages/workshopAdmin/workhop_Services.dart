@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:wrshh/Pages/workshopAdmin/schedule_data.dart';
 import '../../components/roundedButton.dart';
 import '../../constants.dart';
+import '../workshopTechnician/schedule_data.dart';
 
 class Services extends StatefulWidget {
   const Services({super.key});

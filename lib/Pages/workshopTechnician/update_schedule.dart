@@ -2,7 +2,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
-import 'package:wrshh/Pages/workshopAdmin/schedule_data.dart';
+import 'package:wrshh/Pages/workshopTechnician/schedule_data.dart';
+
 import 'package:wrshh/components/roundedButton.dart';
 import 'package:wrshh/constants.dart';
 import '../../Services/Auth/workshopTechnician_database.dart';

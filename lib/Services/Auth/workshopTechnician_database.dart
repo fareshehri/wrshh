@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../Pages/workshopAdmin/schedule_data.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,38 +13,38 @@ Future<void> addAppointmentsTable(
     LinkedHashMap<String, dynamic> datesHours,
     int duration) async {
   final user = _auth.currentUser;
-  // LinkedHashMap<String, dynamic> services = {
-  //   'service': [],
-  //   'price': [],
-  // } as LinkedHashMap<String, dynamic>;
-
   try {
-    for (var key in datesHours.keys) {
-      for (var isin in selectedDates.keys) {
-        for (var day in days) {
-          if (datesHours[day][0] && isin == key) {
-            DateTime? dateTimeTemp = selectedDates[isin];
+    for (var day in datesHours.keys) {
+      if (datesHours[day][0] && selectedDates[day] != null) {
+        DateTime startTime = selectedDates[day] as DateTime;
+        DateTime endTime = DateTime(startTime.year, startTime.month,
+            startTime.day, datesHours[day][3], datesHours[day][4]);
+        var endTimeF = DateFormat('yyyy-MM-dd hh:mm').parse(endTime.toString());
+        DateTime appEndTime = startTime.add(Duration(minutes: duration));
+        var appEndTimeF =
+            DateFormat('yyyy-MM-dd hh:mm').parse(appEndTime.toString());
+        while (startTime.isBefore(endTimeF) ||
+            startTime.isAtSameMomentAs(endTimeF)) {
+          for (int c = 0; c < capacity; c++) {
             Map<String, dynamic> wp = {
               'workshopID': user?.uid,
               'serial': '',
               'clientID': '',
               'status': 'available',
+              'paid': false,
               'services': [],
               'price': 0,
-              'datetime': dateTimeTemp,
+              'datetime': startTime,
               'rate': 0,
               'reportURL': '',
-              // update this
               'odometer': '',
             };
-            for (int c = 0; c < capacity; c++) {
-              FirebaseFirestore.instance
-                  .collection('Appointments')
-                  .doc()
-                  .set(wp);
-            }
-            break;
+            FirebaseFirestore.instance.collection('Appointments').doc().set(wp);
           }
+          startTime = appEndTime;
+          appEndTime = appEndTime.add(Duration(minutes: duration));
+          appEndTimeF =
+              DateFormat('yyyy-MM-dd hh:mm').parse(appEndTime.toString());
         }
       }
     }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
-import 'package:wrshh/Pages/workshopAdmin/update_schedule.dart';
+import 'package:wrshh/Pages/workshopTechnician/update_schedule.dart';
 import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
