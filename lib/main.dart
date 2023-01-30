@@ -74,7 +74,7 @@ class _WrapperState extends State<Wrapper> {
 
   Future<String> getUserType() async {
     final User user = await FirebaseAuth.instance.currentUser!;
-    String userType = await AuthService().getUserType(user!.email);
+    String userType = await AuthService().getUserType(user.email);
     return userType;
   }
 }
