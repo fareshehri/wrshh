@@ -21,6 +21,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
 
   bool gotPath = false; /// Retrieve from DB var temp
   late int capacity = 0; /// Capacity
+  late int duration = 15; /// Duration
   late LinkedHashMap<String,dynamic> datesHours; ///Contains Days and Shift hours
   late List<DateTime> dates = []; /// Check Day of the week, and assign based on it
   late Map<String,DateTime> selectedDates = {}; // Not yet
@@ -173,7 +174,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
         }
       }
       handleAppointmentsInDB().then((_) {
-      addAppointmentsTable(capacity, selectedDates, datesHours);
+      addAppointmentsTable(capacity, selectedDates, datesHours, duration);
       });
     });
   }
@@ -252,6 +253,16 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
     List<DropdownMenuItem<int>> dropdownItems = [];
     for (int c in capacityList) {
       var newItem = DropdownMenuItem(value: c, child: Text(c.toString()));
+      dropdownItems.add(newItem);
+    }
+    return dropdownItems;
+  }
+
+
+  List<DropdownMenuItem<int>> durationDropdown() {
+    List<DropdownMenuItem<int>> dropdownItems = [];
+    for (int d in durationList) {
+      var newItem = DropdownMenuItem(value: d, child: Text('$d minutes'));
       dropdownItems.add(newItem);
     }
     return dropdownItems;
@@ -341,24 +352,55 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
             ),
             /// Capacity part
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Capacity:',
-                    style: TextStyle(
-                      fontSize: 18,
-                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Duration:',
+                        style: TextStyle(
+                          fontSize: 18,
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    DropdownButton(
+                      value: duration,
+                      items: durationDropdown(),
+                      onChanged: (value) {
+                        setState(() {
+                          duration = value as int;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+
                 const SizedBox(
                   width: 10,
                 ),
-                DropdownButton(
-                  value: capacity,
-                  items: capacityDropdown(),
-                  onChanged: (value) {
-                    setState(() {
-                      capacity = value as int;
-                    });
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Capacity:',
+                        style: TextStyle(
+                          fontSize: 18,
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    DropdownButton(
+                      value: capacity,
+                      items: capacityDropdown(),
+                      onChanged: (value) {
+                        setState(() {
+                          capacity = value as int;
+                        });
+                      },
+                    ),
+                  ],
                 ),
+
               ],
             ),
             /// Update Button part

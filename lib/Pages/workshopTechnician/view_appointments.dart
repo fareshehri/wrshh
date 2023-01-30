@@ -39,7 +39,7 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          Container(
+          SizedBox(
             height: 120,
             // color: Colors.pink,
             child: CalendarTimeline(
@@ -73,7 +73,6 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
                         ? [
                             const Center(
                                 child: Text(
-
                               'No Appointments Found for this Date',
                               textAlign: TextAlign.center,
                               style: TextStyle(
