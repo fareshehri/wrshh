@@ -178,6 +178,7 @@ class PdfInvoiceService {
       await _firestore.collection('Appointments').doc(app.appointmentID).update(
             {
               'reportURL': url,
+              'status': "finished",
             },
           ).onError((error, stackTrace) => null);
       if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
