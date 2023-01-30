@@ -83,7 +83,7 @@ class PdfInvoiceService {
     ];
   // Step Image
   // Here it will add the image
- final image = (await rootBundle.load("images/Logo.png")).buffer.asUint8List();
+ final image = (await rootBundle.load("assets/images/Logo.png")).buffer.asUint8List();
  // Step Info
  //Here it will add header info such as client name address and company name address etc...
     pdf.addPage(
@@ -175,9 +175,7 @@ class PdfInvoiceService {
       // Step #################### check ############# update services
       final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
       
-      if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
-      //Web
-      else{await ref.putData(byteList);}
+      await ref.putData(byteList);
       final url = await ref.getDownloadURL();
       await _firestore.collection('Appointments').doc(app.appointmentID).update(
             {
