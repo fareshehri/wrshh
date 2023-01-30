@@ -11,12 +11,12 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 Future<void> addAppointmentsTable(
     int capacity,
     Map<String, DateTime> selectedDates,
-    LinkedHashMap<String, dynamic> datesHours) async {
+    LinkedHashMap<String, dynamic> datesHours, int duration) async {
   final user = _auth.currentUser;
-  LinkedHashMap<String, dynamic> services = {
-    'service': [],
-    'price': [],
-  } as LinkedHashMap<String, dynamic>;
+  // LinkedHashMap<String, dynamic> services = {
+  //   'service': [],
+  //   'price': [],
+  // } as LinkedHashMap<String, dynamic>;
 
   try {
     for (var key in datesHours.keys) {
@@ -29,11 +29,13 @@ Future<void> addAppointmentsTable(
               'serial': '',
               'clientID': '',
               'status': 'available',
-              'services': services,
+              'services': [],
+              'price': 0,
               'datetime': dateTimeTemp,
               'rate': 0,
               'reportURL': '',
-              'reportDetails': '',
+              // update this
+              'odometer': '',
             };
             for (int c = 0; c < capacity; c++) {
               FirebaseFirestore.instance
@@ -166,4 +168,12 @@ getWorkshopFinishedAppointments() async {
     appointments[workshopName].add(appointment);
   }
   return appointments;
+}
+
+
+// get workshop from workshopID
+Future<String> getAdminEmailfromDB(String workshopID) async {
+  final workshopDB = await _firestore.collection('workshops').doc().get();
+  var email = workshopDB.data()!['adminEmail'];
+  return email;
 }
