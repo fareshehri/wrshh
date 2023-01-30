@@ -57,7 +57,7 @@ class _WrapperState extends State<Wrapper> {
         future: getUserType(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data == 'client') {
+            if (snapshot.data == 'ClientUser') {
               return Home();
             } else if (snapshot.data == 'workshopAdmin') {
               return WorkshopAdminHome();

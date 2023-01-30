@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:wrshh/Services/Auth/auth.dart';
 
 import '../Auth/client_database.dart';
 import 'upperPill.dart';
@@ -44,106 +46,144 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
     'technicianEmail': ''
   };
 
+  var serial = '';
+  bool gotPath = false;
+
   @override
   void initState() {
     super.initState();
     _asyncMethod();
-
   }
 
   _asyncMethod() async {
     var workshops = await getWorkshopsFromDB();
+    final clientSerial = await getSerial();
+    setState(() {
+      serial = clientSerial;
+    });
 
-        _markers.clear();
 
-        for (var workshop in workshops.keys) {
-          String loc = workshops[workshop]['location'] as String;
-          String name = workshops[workshop]['workshopName'];
-          List Loc = loc.split(',');
-          double lat = double.parse(Loc[0]);
-          double long = double.parse(Loc[1]);
+    _markers.clear();
 
-          _markers.add(Marker(
-              markerId: MarkerId(name),
-              position: LatLng(lat, long),
-              draggable: false,
-              onTap: () {
-                setState(() {
-                  /// Show pin info
-                  workshopInfo['workshopID'] = workshop;
-                  workshopInfo['workshopName'] = name;
-                  workshopInfo['overallRate'] =  double.parse(workshops[workshop]['overallRate'].toString());
-                  workshopInfo['numberOfRates'] = workshops[workshop]['numberOfRates'] as num;
-                  workshopInfo['logo'] = workshops[workshop]['logoURL'];
-                  workshopInfo['technicianEmail'] = workshops[workshop]['technicianEmail'];
+    for (var workshop in workshops.keys) {
+      String loc = workshops[workshop]['location'] as String;
+      String name = workshops[workshop]['workshopName'];
+      List Loc = loc.split(',');
+      double lat = double.parse(Loc[0]);
+      double long = double.parse(Loc[1]);
 
-                  pinPillPosition = pinVisiblePosition;
+      _markers.add(Marker(
+          markerId: MarkerId(name),
+          position: LatLng(lat, long),
+          draggable: false,
+          onTap: () {
+            setState(() {
+              /// Show pin info
+              workshopInfo['workshopID'] = workshop;
+              workshopInfo['workshopName'] = name;
+              workshopInfo['overallRate'] =
+                  double.parse(workshops[workshop]['overallRate'].toString());
+              workshopInfo['numberOfRates'] =
+                  workshops[workshop]['numberOfRates'] as num;
+              workshopInfo['logo'] = workshops[workshop]['logoURL'];
+              workshopInfo['technicianEmail'] =
+                  workshops[workshop]['technicianEmail'];
 
-                  _controller.animateCamera(
-                      CameraUpdate.newLatLngZoom(LatLng(lat, long), 18));
-                });
-              }));
-        }
-        setState(() {});
+              pinPillPosition = pinVisiblePosition;
+
+              _controller.animateCamera(
+                  CameraUpdate.newLatLngZoom(LatLng(lat, long), 18));
+            });
+          }));
+    }
+    setState(() {
+      gotPath = true;
+    });
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          /// The map
-          Positioned.fill(
-            child: GoogleMap(
-              /// Attack _markers to Google map's markers
-              markers: _markers,
+   if (!gotPath){
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+   }
+   else{
+     if (serial == ""){
+       return const Scaffold(
+         body: Center(
+           child: Text("Please add your car information first",
+           style: TextStyle(
+             fontSize: 20,
+             fontWeight: FontWeight.bold,
+             color: Colors.red
+           ),),
+         ),
+       );
+     } else {
+       return Scaffold(
+         body: Stack(
+           children: [
+             /// The map
+             Positioned.fill(
+               child: GoogleMap(
+                 /// Attack _markers to Google map's markers
+                 markers: _markers,
 
-              /// Map type (satellite, etc..)
-              mapType: MapType.normal,
+                 /// Map type (satellite, etc..)
+                 mapType: MapType.normal,
 
-              /// Enable zoom
-              zoomControlsEnabled: true,
+                 /// Enable zoom
+                 zoomControlsEnabled: true,
 
-              /// Remove the Device Location button
-              myLocationButtonEnabled: false,
+                 /// Remove the Device Location button
+                 myLocationButtonEnabled: false,
 
-              /// Initial Camera Position
-              initialCameraPosition: const CameraPosition(
-                /// Target area (coordinates)
-                target: cityCenter,
+                 /// Initial Camera Position
+                 initialCameraPosition: const CameraPosition(
+                   /// Target area (coordinates)
+                   target: cityCenter,
 
-                /// Zoom level
-                zoom: 11.75,
-              ),
+                   /// Zoom level
+                   zoom: 11.75,
+                 ),
 
-              /// On Map Create
-              onMapCreated: (GoogleMapController controller) {
-                /// Attach Previously Stated Controller
-                _controller = controller;
+                 /// On Map Create
+                 onMapCreated: (GoogleMapController controller) {
+                   /// Attach Previously Stated Controller
+                   _controller = controller;
 
-                /// showPinsOnMap() Method call
-                // showPinsOnMap();
-              },
+                   /// showPinsOnMap() Method call
+                   // showPinsOnMap();
+                 },
 
-              /// On Map tap (Anywhere than the pins)
-              onTap: (LatLng loc) {
-                setState(() {
-                  /// Hide pin info
-                  pinPillPosition = pinInvisiblePosition;
-                });
-              },
-            ),
-          ),
+                 /// On Map tap (Anywhere than the pins)
+                 onTap: (LatLng loc) {
+                   setState(() {
+                     /// Hide pin info
+                     pinPillPosition = pinInvisiblePosition;
+                   });
+                 },
+               ),
+             ),
 
-          /// Upper pill
-          const upperPill(),
+             /// Upper pill
+             const upperPill(),
 
-          /// Bottom pill
-          BottomPill(
-              pinPillPosition: pinPillPosition, workshopInfo: workshopInfo),
-        ],
-      ),
-    );
+             /// Bottom pill
+             BottomPill(
+               pinPillPosition: pinPillPosition,
+               workshopInfo: workshopInfo,
+               rate: double.parse(workshopInfo['overallRate'].toString()),
+             ),
+           ],
+         ),
+       );
+     }
+   }
   }
 
   /// Registered Workshops pins

@@ -30,7 +30,7 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
             clientID: appointment.data()['clientID'],
             status: appointment.data()['status'],
             service: appointment.data()['service'],
-            price: appointment.data()['price'] as double,
+            price: double.parse(appointment.data()['price'].toString()),
             datetime: dateFormatted,
             rate: double.parse(appointment.data()['rate'].toString()),
             reportURL: appointment.data()['reportURL'],

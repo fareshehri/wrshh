@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:rate/rate.dart';
-import 'package:wrshh/Services/Auth/workshopTechnician_database.dart';
+
 import '../../Pages/client/client_book.dart';
-import 'bookPage.dart';
 
 class BottomPill extends StatelessWidget {
   const BottomPill({
     Key? key,
     required this.pinPillPosition,
     required this.workshopInfo,
+    required this.rate,
   }) : super(key: key);
 
   final double pinPillPosition;
   final Map<String, dynamic> workshopInfo;
+  final double rate;
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +101,13 @@ class BottomPill extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FittedBox(
-                fit: BoxFit.fitHeight,
-                child: Rate(
-                  iconSize: 20,
-                  color: Colors.green,
-                  allowHalf: true,
-                  allowClear: true,
-                  initialValue:  double.parse(workshopInfo['overallRate'].toString()),
-                  readOnly: true,
-                ),
+              Rate(
+                iconSize: 20,
+                color: Colors.green,
+                allowHalf: true,
+                allowClear: true,
+                initialValue: rate,
+                readOnly: true,
               ),
               SizedBox(width: 5),
               FittedBox(
@@ -231,7 +229,7 @@ class BottomPill extends StatelessWidget {
                             /// Navigate to the bookPage() function
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => ClientBooking(
-                                  workshopInfo: workshopInfo,
+                                      workshopInfo: workshopInfo,
                                     )));
                           },
 

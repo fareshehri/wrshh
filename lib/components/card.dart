@@ -16,25 +16,16 @@ class AppointmentsCard extends StatefulWidget {
   final double? itemHeight;
   final Appointment appointment;
 
-  final Function? onPay;
-  final Function? onCancel;
-  final Function? onRate;
-  final Function? onShowReport;
-  final Function? onUploadReport;
   final String cardType;
 
-  const AppointmentsCard(
-      {this.logoURL,
-      required this.itemName,
-      required this.appointment,
-      required this.itemID,
-      required this.cardType,
-      this.itemHeight,
-      this.onPay,
-      this.onCancel,
-      this.onRate,
-      this.onShowReport,
-      this.onUploadReport});
+  const AppointmentsCard({
+    this.logoURL,
+    required this.itemName,
+    required this.appointment,
+    required this.itemID,
+    required this.cardType,
+    this.itemHeight,
+  });
 
   @override
   State<AppointmentsCard> createState() => _AppointmentsCardState();
@@ -158,23 +149,28 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 border: Border.all(
-                                                    color: Colors.grey, width: 2),
+                                                    color: Colors.grey,
+                                                    width: 2),
                                               ),
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(16.0),
                                                 child: Container(
                                                   child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
                                                       FittedBox(
                                                         fit: BoxFit.fill,
                                                         // TODO: add image from database
                                                         child: ClipOval(
-                                                            child: Image.network(
+                                                            child:
+                                                                Image.network(
                                                           logoURL,
-                                                          errorBuilder: (context,
-                                                              error, stackTrace) {
+                                                          errorBuilder:
+                                                              (context, error,
+                                                                  stackTrace) {
                                                             return Image.asset(
                                                               'assets/images/FFFF.jpg',
                                                               width: 160,
@@ -188,31 +184,41 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                       ),
                                                       Container(
                                                         child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            SizedBox(height: 10),
+                                                            SizedBox(
+                                                                height: 10),
                                                             FittedBox(
-                                                              fit: BoxFit.fitHeight,
+                                                              fit: BoxFit
+                                                                  .fitHeight,
                                                               child: Text(
                                                                 'Workshop Name: ${widget.itemName}',
-                                                                style: kTextStyle,
+                                                                style:
+                                                                    kTextStyle,
                                                               ),
                                                             ),
-                                                            SizedBox(height: 10),
+                                                            SizedBox(
+                                                                height: 10),
                                                             FittedBox(
-                                                              fit: BoxFit.fitHeight,
+                                                              fit: BoxFit
+                                                                  .fitHeight,
                                                               child: Text(
                                                                 'Date & Time: ${widget.appointment.datetime}',
-                                                                style: kTextStyle,
+                                                                style:
+                                                                    kTextStyle,
                                                               ),
                                                             ),
-                                                            SizedBox(height: 10),
+                                                            SizedBox(
+                                                                height: 10),
                                                             FittedBox(
-                                                              fit: BoxFit.fitHeight,
+                                                              fit: BoxFit
+                                                                  .fitHeight,
                                                               child: Text(
                                                                   'Service & Price: ${widget.appointment.service} - ${widget.appointment.price} SR',
-                                                                  style: kTextStyle
-                                                              ),
+                                                                  style:
+                                                                      kTextStyle),
                                                             ),
                                                           ],
                                                         ),
@@ -241,7 +247,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                       primary: Colors.pink,
                                       onPrimary: Colors.white,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(32.0),
+                                        borderRadius:
+                                            BorderRadius.circular(32.0),
                                       ),
                                     ),
                                   )),
@@ -264,11 +271,9 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
 
   List<Widget> getButtons() {
     List<Widget> buttons = [];
-    var payButton =   Expanded(
+    var payButton = Expanded(
       child: ElevatedButton(
-        onPressed: () {
-          widget.onPay!();
-        },
+        onPressed: () {},
         child: Text('Pay'),
         style: kButtonsStyle,
       ),
@@ -276,37 +281,37 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
 
     var cancelButton = Expanded(
         child: ElevatedButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Confirmation"),
-                    content:
+      onPressed: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirmation"),
+                content:
                     Text("Are you sure you want to cancel this appointment?"),
-                    actions: [
-                      TextButton(
-                        child: Text("No"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      TextButton(
-                        child: Text("Yes"),
-                        onPressed: () {
-                          cancelAppointment(widget.appointment.appointmentID);
-                          Navigator.pop(context);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()));
-                        },
-                      ),
-                    ],
-                  );
-                });
-          },
-          child: Text('Cancel Booking'),
-          style: kButtonsStyle,
-        ));
+                actions: [
+                  TextButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: Text("Yes"),
+                    onPressed: () {
+                      cancelAppointment(widget.appointment.appointmentID);
+                      Navigator.pop(context);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Home()));
+                    },
+                  ),
+                ],
+              );
+            });
+      },
+      child: Text('Cancel Booking'),
+      style: kButtonsStyle,
+    ));
 
     var rateButton = Expanded(
       child: ElevatedButton(
@@ -322,7 +327,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     right: 16,
                     bottom: MediaQuery.of(context).viewInsets.bottom + 16),
                 child: Container(
-                  // height: MediaQuery.of(context).size.height * 0.2,
+                    // height: MediaQuery.of(context).size.height * 0.2,
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -373,9 +378,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       child: ElevatedButton(
         onPressed: () async {
           var reportURL =
-          await getAppointmentReport(widget.appointment.appointmentID);
-          if (reportURL != null) {
-            print('reportURL: $reportURL');
+              await getAppointmentReport(widget.appointment.appointmentID);
+          if (reportURL != "") {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -403,6 +407,28 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                 ),
               ),
             );
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                      title: Center(
+                    child: Column(children: const [
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Report is not ready yet',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]),
+                  ));
+                });
+            Future.delayed(
+                const Duration(seconds: 2), () => Navigator.pop(context));
           }
         },
         child: Text('Show Report'),
@@ -416,7 +442,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReportPage(app: widget.appointment,
+              builder: (context) => ReportPage(
+                app: widget.appointment,
               ),
             ),
           );
@@ -426,13 +453,12 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       ),
     );
 
-
     if (widget.cardType == 'Bookings') {
       if (widget.appointment.status == 'booked') {
-          buttons.add(payButton);
-          buttons.add(SizedBox(width: 10));
-          buttons.add(cancelButton);
-    } else if (widget.appointment.status == 'finished') {
+        buttons.add(payButton);
+        buttons.add(SizedBox(width: 10));
+        buttons.add(cancelButton);
+      } else if (widget.appointment.status == 'finished') {
         //buttons.add(uploadReportButton);
         buttons.add(rateButton);
         buttons.add(SizedBox(width: 10));
@@ -440,22 +466,15 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       }
     } else if (widget.cardType == 'HistorySerial') {
       buttons.add(reportButton);
-    }
-    else if (widget.cardType == 'WorkshopInvoice') {
+    } else if (widget.cardType == 'WorkshopInvoice') {
       buttons.add(uploadReportButton);
-    }
-    else if (widget.cardType == 'Workshop') {
+    } else if (widget.cardType == 'Workshop') {
       // buttons.add(uploadReportButton);
     }
 
     return buttons;
   }
 
-
-  var kTextStyle = TextStyle(
-      fontSize: 20,
-      fontWeight:
-      FontWeight.bold,
-      color:
-      Colors.black);
+  var kTextStyle =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black);
 }

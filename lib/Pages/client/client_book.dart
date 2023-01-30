@@ -22,7 +22,7 @@ class _ClientBookingState extends State<ClientBooking> {
   Map selectedList = {};
   _ClientBookingState({required this.workshopInfo});
 
-  DateTime selectedDate = DateTime(2023, 1, 21);
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -60,8 +60,8 @@ class _ClientBookingState extends State<ClientBooking> {
             color: Colors.pink,
             child: CalendarTimeline(
               initialDate: selectedDate,
-              firstDate: DateTime(2023, 1, 1),
-              lastDate: DateTime(2023, 3, 3),
+              firstDate: DateTime.now(),
+              lastDate: DateTime.now().add(const Duration(days: 30)),
               onDateSelected: (date) {
                 // setState(() {
                 selectedDate = date;

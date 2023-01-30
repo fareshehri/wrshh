@@ -1,5 +1,5 @@
 import 'dart:collection';
-
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,7 +11,8 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 Future<void> addAppointmentsTable(
     int capacity,
     Map<String, DateTime> selectedDates,
-    LinkedHashMap<String, dynamic> datesHours, int duration) async {
+    LinkedHashMap<String, dynamic> datesHours,
+    int duration) async {
   final user = _auth.currentUser;
   // LinkedHashMap<String, dynamic> services = {
   //   'service': [],
@@ -155,21 +156,32 @@ getWorkshopFinishedAppointments() async {
   final AppointmentsDB = await _firestore
       .collection('Appointments')
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
-      .where('status', isEqualTo: 'finished')
-      .get();
+      .where('status', whereIn: ['finished', 'booked']).get();
+
+  if (AppointmentsDB.size == 0) {
+    return appointments;
+  }
   var workshopName = await getWorkshopNameFromDB(
       AppointmentsDB.docs.first.data()['workshopID']);
+  var dateFormat = DateFormat('yyyy-MM-dd');
+  var today = dateFormat.format(DateTime.now());
+  var yesterday = dateFormat.format(DateTime.now().subtract(Duration(days: 1)));
+  var tomorrow = dateFormat.format(DateTime.now().add(Duration(days: 1)));
+
   for (var appointment in AppointmentsDB.docs) {
-// if workshopName is not in appointments.keys add it
-    if (!appointments.keys.contains(workshopName)) {
-      appointments[workshopName] = [];
+    var appointmentDate =
+        dateFormat.format(appointment.data()['datetime'].toDate());
+    if (appointmentDate == today ||
+        appointmentDate == yesterday ||
+        appointmentDate == tomorrow) {
+      if (!appointments.keys.contains(workshopName)) {
+        appointments[workshopName] = [];
+      }
+      appointments[workshopName].add(appointment);
     }
-// add the appointment to the list of appointments
-    appointments[workshopName].add(appointment);
   }
   return appointments;
 }
-
 
 // get workshop from workshopID
 Future<String> getAdminEmailfromDB(String workshopID) async {

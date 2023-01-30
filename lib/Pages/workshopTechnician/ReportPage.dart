@@ -292,8 +292,7 @@ const SizedBox(height: 10,),
                       await service.savePdfFile(widget.app,mileage,finser,getTotal(),data);
                       setState(() {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
-                        Future.delayed(const Duration(seconds: 2));
-                        Navigator.pop(context);
+                        Future.delayed(const Duration(seconds: 2), () => Navigator.pop(context));
                       });
                     }
                     }
@@ -338,21 +337,5 @@ const SizedBox(height: 10,),
 
   }
 
-  getFiles()async{
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true,type: FileType.custom,
-  allowedExtensions: ['pdf',],);
-    if (result != null) {
-      for (var i = 0; i < result.files.length; i++) {
-        file.add(result.files.elementAt(i).bytes);
-      }
-}
-
-   else {
-    print("No file selected");
-}
-
-  }
-   
 
   }

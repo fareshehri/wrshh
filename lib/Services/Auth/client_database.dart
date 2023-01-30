@@ -82,6 +82,14 @@ Future<Map<String, dynamic>?> getUserInfo() async {
   return userInfo.data();
 }
 
+Future<String> getSerial() async {
+  var user = _auth.currentUser;
+  var userInfo = await _firestore.collection('clients').doc(user!.email).get();
+  var serial = userInfo.data()!['serial'];
+  return serial;
+}
+
+
 Future<Map<String, dynamic>?> getCarInfoBySerial(String serial) async {
   var carInfo = await _firestore.collection('serial').doc(serial).get();
   return carInfo.data();
@@ -162,9 +170,13 @@ cancelAppointment(String appointmentID) async {
 }
 
 getAppointmentReport(String appointmentID) async {
+  String report = '';
   var appointment =
   await _firestore.collection('Appointments').doc(appointmentID).get();
-  return appointment['reportURL'];
+  if (appointment['reportURL'] != "") {
+    report = appointment['reportURL'];
+  }
+  return report;
 }
 
 getAppointmentsBySerial(String serial) async {

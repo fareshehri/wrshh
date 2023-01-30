@@ -17,18 +17,15 @@ class _EditCarInfoState extends State<EditCarInfo> {
   late String welcomeMsg;
   bool serialExists = false;
   //get data
-  var name;
+  late String name;
+  late String email;
   var carsserial;
-  var email;
-  var maker;
-  var car;
-  var year;
 
   //set values
   var ob = "";
   var oc = "";
-  var _selectedB;
-  var _selectedC;
+  String _selectedB = 'Chevrolet';
+  String _selectedC = 'Groove';
   var _serial;
   var _currentSelectedYear = 2023;
 
@@ -37,9 +34,6 @@ class _EditCarInfoState extends State<EditCarInfo> {
   var visin = false;
   bool gotPath = false;
 
-  //final selection to fix other
-  var finb;
-  var finc;
 
 //Get data from firestore
   Future _getData() async {
@@ -61,29 +55,23 @@ class _EditCarInfoState extends State<EditCarInfo> {
       final serial =
           await getCarInfoBySerial(carsserial); //get car info by serial
       setState(() {
-        maker = serial!['carManufacturer'];
-        car = serial['carModel'];
-        year = int.parse(serial['carYear']);
+        _selectedB = serial!['carManufacturer'];
+        _selectedC = serial['carModel'];
+        _currentSelectedYear = int.parse(serial['carYear']);
         ob = serial['otherBrand'];
         oc = serial['otherCar'];
-        _selectedB = maker;
-        _selectedC = car;
-        finb = maker;
-        finc = car;
         _serial = carsserial;
-        _currentSelectedYear = year;
         gotPath = true;
-        if (car == 'Other') {
+        if (_selectedB == 'Other') {
           viscar = false;
           visin = true;
         }
       });
-    } else {
+    }
+    else {
       title = "Add Car Information";
       welcomeMsg = "Hello $name, Please add your car information";
       setState(() {
-        _selectedB = 'Chevrolet';
-        _selectedC = 'Groove';
         gotPath = true;
       });
     }
@@ -113,13 +101,13 @@ class _EditCarInfoState extends State<EditCarInfo> {
         //add to db
         if (_formKey.currentState!.validate()) {
           //if brand is chosen clear ob
-          if (finb != 'Other') {
+          if (_selectedB != 'Other') {
             ob = "";
             oc = "";
           }
           Map<String, String> saved = {
-            'carManufacturer': finb,
-            'carModel': finc,
+            'carManufacturer': _selectedB,
+            'carModel': _selectedC,
             'carYear': _currentSelectedYear.toString(),
             'otherBrand': ob,
             'otherCar': oc,
@@ -254,6 +242,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                             child: DropdownButton(
                                 menuMaxHeight: 200,
                                 value: _selectedB,
+
                                 borderRadius: BorderRadius.circular(16),
                                 items: _selectbrand
                                     .map(
@@ -266,11 +255,9 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                     //set first dropdown
                                     _selectedB = val.toString();
                                     //set final based on first dropdown
-                                    finb = _selectedB;
                                     //set second dropdown
                                     _selectedC = cars[_selectedB]!.first;
                                     //set final based on second dropdown
-                                    finc = _selectedC;
                                     //change views
                                     if (_selectedB == "Other") {
                                       viscar = false;
@@ -310,8 +297,6 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                     setState(() {
                                       //set second dropdown
                                       _selectedC = val.toString();
-                                      //set final based on second dropdown
-                                      finc = _selectedC;
                                     });
                                   }),
                             ),
@@ -421,10 +406,12 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                 .collection('serial')
                                 .doc(_serial)
                                 .get();
-                            if (x != null && x['carModel'] != finc ||
-                                x['carManufacturer'] != finb ||
-                                x['otherBrand'] != ob ||
-                                x['otherCar'] != oc) {
+
+                            if (x.exists &&
+                                (x['carModel'] != _selectedC ||
+                                    x['carManufacturer'] != _selectedB ||
+                                    x['otherBrand'] != ob ||
+                                    x['otherCar'] != oc)) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text(
@@ -433,13 +420,13 @@ class _EditCarInfoState extends State<EditCarInfo> {
                             } else {
                               if (_formKey.currentState!.validate()) {
                                 //if brand is chosen clear ob
-                                if (finb != 'Other') {
+                                if (_selectedB != 'Other') {
                                   ob = "";
                                   oc = "";
                                 }
                                 Map<String, String> saved = {
-                                  'carManufacturer': finb,
-                                  'carModel': finc,
+                                  'carManufacturer': _selectedB,
+                                  'carModel': _selectedC,
                                   'carYear': _currentSelectedYear.toString(),
                                   'otherBrand': ob,
                                   'otherCar': oc,
@@ -447,7 +434,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                 FirebaseFirestore.instance
                                     .collection('serial')
                                     .doc(_serial)
-                                    .update(saved);
+                                    .set(saved);
                                 FirebaseFirestore.instance
                                     .collection('clients')
                                     .doc(email)
