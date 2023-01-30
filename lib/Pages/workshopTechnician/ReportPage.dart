@@ -280,7 +280,7 @@ const SizedBox(height: 10,),
                       for (var i = 0; i < services.length; i++) {
                         if(services[i].amount>=1){
                           fin.add(services[i]);
-                          finser.add(services[i]);
+                          finser.add(services[i].name);
                         }
                         }
                         for (var i = 0; i < products.length; i++) {
@@ -298,7 +298,6 @@ const SizedBox(height: 10,),
                     }
                     }
                     catch (e){
-                      print(e);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice has not been Created')),);
                     }
                     },

@@ -173,6 +173,7 @@ class PdfInvoiceService {
       final _firestore = FirebaseFirestore.instance;
       var serial=app.serial;
       // Step #################### check ############# update services
+      try{
       final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
       
       await ref.putData(byteList);
@@ -182,9 +183,14 @@ class PdfInvoiceService {
               'reportURL': url,
               'status': "finished",
               'services':ser,
-              'price':tot
+              'price':double.parse(tot)
             },
           ).onError((error, stackTrace) => null);
+          print('1');
+      }
+      catch (e){
+        print(e);
+      }
   }
 
   String getSubTotal(List<Product> products) {
