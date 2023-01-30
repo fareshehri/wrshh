@@ -9,7 +9,7 @@ class Appointment {
   late String datetime;
   late double rate;
   late String reportURL;
-  late String reportDetails;
+  late String odometer;
 
   Appointment(
       {required this.appointmentID,
@@ -22,5 +22,5 @@ class Appointment {
       required this.datetime,
       required this.rate,
       required this.reportURL
-      ,required this.reportDetails});
+      ,required this.odometer});
 }

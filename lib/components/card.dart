@@ -14,7 +14,7 @@ class AppointmentsCard extends StatefulWidget {
   final String? itemName;
   final String? itemID;
   final double? itemHeight;
-  final Appointment? appointment;
+  final Appointment appointment;
 
   final Function? onPay;
   final Function? onCancel;
@@ -118,7 +118,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                               FittedBox(
                                 fit: BoxFit.fitHeight,
                                 child: Text(
-                                  widget.appointment!.datetime,
+                                  widget.appointment.datetime,
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -202,7 +202,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                             FittedBox(
                                                               fit: BoxFit.fitHeight,
                                                               child: Text(
-                                                                'Date & Time: ${widget.appointment!.datetime}',
+                                                                'Date & Time: ${widget.appointment.datetime}',
                                                                 style: kTextStyle,
                                                               ),
                                                             ),
@@ -210,7 +210,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                             FittedBox(
                                                               fit: BoxFit.fitHeight,
                                                               child: Text(
-                                                                  'Service & Price: ${widget.appointment!.service} - ${widget.appointment!.price} SR',
+                                                                  'Service & Price: ${widget.appointment.service} - ${widget.appointment.price} SR',
                                                                   style: kTextStyle
                                                               ),
                                                             ),
@@ -294,7 +294,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                       TextButton(
                         child: Text("Yes"),
                         onPressed: () {
-                          cancelAppointment(widget.appointment!.appointmentID);
+                          cancelAppointment(widget.appointment.appointmentID);
                           Navigator.pop(context);
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => Home()));
@@ -350,8 +350,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                         ElevatedButton(
                           onPressed: () {
                             if (rate != 0) {
-                              rateAppointment(widget.appointment!.appointmentID,
-                                  widget.appointment!.workshopID, rate);
+                              rateAppointment(widget.appointment.appointmentID,
+                                  widget.appointment.workshopID, rate);
                               Navigator.pop(context);
                             }
                           },
@@ -373,7 +373,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       child: ElevatedButton(
         onPressed: () async {
           var reportURL =
-          await getAppointmentReport(widget.appointment!.appointmentID);
+          await getAppointmentReport(widget.appointment.appointmentID);
           if (reportURL != null) {
             print('reportURL: $reportURL');
             Navigator.push(
@@ -416,7 +416,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ReportPage(serNo: widget.appointment!.serial, Wid: widget.appointment!.workshopID,
+              builder: (context) => ReportPage(app: widget.appointment,
               ),
             ),
           );
@@ -428,11 +428,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
 
 
     if (widget.cardType == 'Bookings') {
-      if (widget.appointment!.status == 'booked') {
+      if (widget.appointment.status == 'booked') {
           buttons.add(payButton);
           buttons.add(SizedBox(width: 10));
           buttons.add(cancelButton);
-    } else if (widget.appointment!.status == 'finished') {
+    } else if (widget.appointment.status == 'finished') {
         //buttons.add(uploadReportButton);
         buttons.add(rateButton);
         buttons.add(SizedBox(width: 10));

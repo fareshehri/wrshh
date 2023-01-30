@@ -34,7 +34,7 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
             datetime: dateFormatted,
             rate: double.parse(appointment.data()['rate'].toString()),
             reportURL: appointment.data()['reportURL'],
-            reportDetails: '',
+            odometer: '',
           ),
         ),
       );

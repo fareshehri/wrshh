@@ -6,15 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:wrshh/Models/appointment.dart';
 
 import '/Models/product.dart';
 import 'invoice_service.dart';
 
 class ReportPage extends StatefulWidget {
-  final String serNo;
-  final String Wid;
-  final String AppointmentId;
-  const ReportPage({super.key, required this.Wid, required this.serNo, required this.AppointmentId});
+  final Appointment app;
+  const ReportPage({super.key,required this.app});
 
   @override
   State<ReportPage> createState() => _ReportPageState();
@@ -82,7 +81,8 @@ final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-var serial = widget.serNo;
+var serial = widget.app.serial;
+print(serial);
     if (!gotPath){
     return Scaffold(
       body: Center(
@@ -285,8 +285,8 @@ const SizedBox(height: 10,),
                           fin.add(products[i]);
                         }
                                         }
-                      final data = await service.createInvoice(fin,det,widget.Wid,widget.serNo);
-                      await service.savePdfFile(serial,mileage,widget.AppointmentId,data);
+                      final data = await service.createInvoice(fin,det,widget.app.workshopID,widget.app.serial);
+                      await service.savePdfFile(widget.app,mileage,data);
                       setState(() {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
                         Future.delayed(const Duration(seconds: 2));

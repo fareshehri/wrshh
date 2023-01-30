@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wrshh/Models/appointment.dart';
 
 import '/Models/product.dart';
 
@@ -168,9 +169,17 @@ class PdfInvoiceService {
 
 // Step Savepdf file and push it 
 // Here it will save a pdf version on the device and on the cloud.
-    Future<void> savePdfFile(String serial,String mileage,String apid ,Uint8List byteList) async {
-      // Step #################### check ############# add apid
+    Future<void> savePdfFile(Appointment app,String mileage,Uint8List byteList) async {
+      final _firestore = FirebaseFirestore.instance;
+      var serial=app.serial;
+      // Step #################### check ############# add services
       final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
+      final url = await ref.getDownloadURL();
+      await _firestore.collection('Appointments').doc(app.appointmentID).update(
+            {
+              'reportURL': url,
+            },
+          ).onError((error, stackTrace) => null);
       if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
       //Web
       else{await ref.putData(byteList);}
