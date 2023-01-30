@@ -48,7 +48,9 @@ class _ReportPageState extends State<ReportPage> {
     List pri=[];
     // Step ####### correct
     //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
-    final wService = await _firestore.collection('workshopAdmin').doc("btest6w@gmail.com").get().then((value) {
+    final workshopDB = await _firestore.collection('workshops').doc(widget.app.workshopID).get();
+    var email = workshopDB.data()!['adminEmail'];
+    final wService = await _firestore.collection('workshopAdmin').doc(email).get().then((value) {
     setState(() {
       serv=value["services"];
       for (var element in serv["service"]) {
