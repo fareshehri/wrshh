@@ -273,6 +273,7 @@ const SizedBox(height: 10,),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
+                      try{
                       if (_formKey.currentState!.validate()) {
                       // change to final products
                       for (var i = 0; i < services.length; i++) {
@@ -292,6 +293,10 @@ const SizedBox(height: 10,),
                         Future.delayed(const Duration(seconds: 2));
                         Navigator.pop(context);
                       });
+                    }
+                    }
+                    catch (e){
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice has not been Created')),);
                     }
                     },
                     child: const Text("Create Invoice"),
