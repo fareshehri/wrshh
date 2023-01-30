@@ -169,21 +169,24 @@ class PdfInvoiceService {
 
 // Step Savepdf file and push it 
 // Here it will save a pdf version on the device and on the cloud.
-    Future<void> savePdfFile(Appointment app,String mileage,Uint8List byteList) async {
+    Future<void> savePdfFile(Appointment app,String mileage,List ser,String tot,Uint8List byteList) async {
       final _firestore = FirebaseFirestore.instance;
       var serial=app.serial;
       // Step #################### check ############# update services
       final ref = FirebaseStorage.instance.ref().child('Reports').child("$serial").child("$mileage"+'.pdf');
+      
+      if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
+      //Web
+      else{await ref.putData(byteList);}
       final url = await ref.getDownloadURL();
       await _firestore.collection('Appointments').doc(app.appointmentID).update(
             {
               'reportURL': url,
               'status': "finished",
+              'services':ser,
+              'price':tot
             },
           ).onError((error, stackTrace) => null);
-      if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){await ref.putFile(File(byteList.toString()));}
-      //Web
-      else{await ref.putData(byteList);}
   }
 
   String getSubTotal(List<Product> products) {

@@ -50,7 +50,7 @@ class _ReportPageState extends State<ReportPage> {
     //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
     final workshopDB = await _firestore.collection('workshops').doc(widget.app.workshopID).get();
     var email = workshopDB.data()!['adminEmail'];
-    final wService = await _firestore.collection('workshopAdmin').doc(email).get().then((value) {
+    final wService = await _firestore.collection('workshopAdmins').doc(email).get().then((value) {
     setState(() {
       serv=value["services"];
       for (var element in serv["service"]) {
@@ -83,8 +83,6 @@ final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-var serial = widget.app.serial;
-print(serial);
     if (!gotPath){
     return Scaffold(
       body: Center(
@@ -275,12 +273,14 @@ const SizedBox(height: 10,),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
+                      var finser=[];
                       try{
                       if (_formKey.currentState!.validate()) {
                       // change to final products
                       for (var i = 0; i < services.length; i++) {
                         if(services[i].amount>=1){
                           fin.add(services[i]);
+                          finser.add(services[i]);
                         }
                         }
                         for (var i = 0; i < products.length; i++) {
@@ -289,7 +289,7 @@ const SizedBox(height: 10,),
                         }
                                         }
                       final data = await service.createInvoice(fin,det,widget.app.workshopID,widget.app.serial);
-                      await service.savePdfFile(widget.app,mileage,data);
+                      await service.savePdfFile(widget.app,mileage,finser,getTotal(),data);
                       setState(() {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice Created Successfully')),);
                         Future.delayed(const Duration(seconds: 2));
@@ -298,6 +298,7 @@ const SizedBox(height: 10,),
                     }
                     }
                     catch (e){
+                      print(e);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Invoice has not been Created')),);
                     }
                     },
