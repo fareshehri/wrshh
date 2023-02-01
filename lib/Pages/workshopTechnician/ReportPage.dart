@@ -60,7 +60,7 @@ class _ReportPageState extends State<ReportPage> {
             counter++;
           }
           for (var element in serv["price"]) {
-            Spri.add(double.parse(element));
+            Spri.add(double.parse(element.toString()));
           }
           for (var i = 0; i < counter; i++) {
             services.add(Product(ser[i], Spri[i], 15));

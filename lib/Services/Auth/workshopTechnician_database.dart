@@ -159,11 +159,11 @@ Future<int> getCapacity() async {
 
 Future<String> getWorkshopNameFromDB(String workshopID) async {
   String workshopName = '';
-  await _firestore
+  var workshop =  await _firestore
       .collection('workshops')
       .doc(workshopID)
-      .get()
-      .then((value) => workshopName = value.data()!['workshopName']);
+      .get();
+  workshopName = workshop['workshopName'];
   return workshopName;
 }
 
