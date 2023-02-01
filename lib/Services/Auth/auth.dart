@@ -112,8 +112,10 @@ class AuthService {
         );
       } else if (user.userType == 'WorkshopAdmin') {
         LinkedHashMap<String, dynamic> services = {
-          'service': ['Check Up', 'Oil Change'],
-          'price': ['0', '120'],
+          'service': ['Check Up'],
+          'price': [0],
+          'SubPrices': {'Check up': [0]},
+          'SubServices': {'Check up': ['Tyre Pressure']}
         } as LinkedHashMap<String, dynamic>;
         _firestore.collection('workshopAdmins').doc(user.email).set(
           {

@@ -6,7 +6,7 @@ import 'package:wrshh/Pages/workshopAdmin/edit_account.dart';
 
 import '../../Services/Auth/auth.dart';
 import 'manage_workshops.dart';
-import 'workhop_Services.dart';
+import 'workshop_services.dart';
 
 class WorkshopAdminHome extends StatefulWidget {
   static const String id = 'Workshop_Home';
