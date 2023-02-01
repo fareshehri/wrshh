@@ -9,16 +9,17 @@ import 'package:wrshh/constants.dart';
 import '../../Services/Auth/workshopTechnician_database.dart';
 import '../../components/booking_slot.dart';
 
-class UpdateSchedule extends StatefulWidget {
-  const UpdateSchedule({Key? key}) : super(key: key);
+class AddSchedule extends StatefulWidget {
+  const AddSchedule({Key? key}) : super(key: key);
   @override
-  State<UpdateSchedule> createState() => _UpdateScheduleState();
+  State<AddSchedule> createState() => _AddScheduleState();
 }
 
-class _UpdateScheduleState extends State<UpdateSchedule> {
+class _AddScheduleState extends State<AddSchedule> {
   TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0); ///Shift start time
   TimeOfDay endTime = TimeOfDay(hour: 16, minute: 0); ///Shift finish time
   late Map selectedDays = {}; ///Reference for days cards selection
+  late Map bookedDays = {};
 
   bool gotPath = false; /// Retrieve from DB var temp
   late int capacity = 0; /// Capacity
@@ -53,6 +54,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
       call();
       checkDaysDates();
       checkDays();
+      changeDatesHoursStatus();
     }
     catch (e) {
       print(e);
@@ -65,7 +67,8 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
     setState(() {
       for (var t in days) {
         /// Assign selected days from DB to selected Days cards reference
-        selectedDays[t] = datesHours[t][0];
+        bookedDays[t] = datesHours[t][0];
+
       }
     });
   }
@@ -158,6 +161,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
 
       updateCapacity(capacity);
       updateDatesHours(datesHours);
+      changeDatesHoursStatus();
 
       /// HERE
       selectedDates = {};
@@ -174,9 +178,9 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
           }
         }
       }
-      handleAppointmentsInDB().then((_) {
+      // handleAppointmentsInDB().then((_) {
       addAppointmentsTable(capacity, selectedDates, datesHours, duration);
-      });
+      // });
     });
   }
 
@@ -204,11 +208,24 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
       },
       isSelected: selectedDays[day] ?? false,
       isPauseTime: false,
-      isBooked: false,
-      child: Center(
-        child: Text(
-          '${getDayName(dates[index])}, ${dates[index].day}/${dates[index].month}',
-          style: const TextStyle(color: Colors.white),
+      isBooked: bookedDays[day] ?? false,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Center(
+            child: Column(
+              children: [
+                Text(
+                  '${getDayName(dates[index])}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  '${dates[index].day}/${dates[index].month}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            )
         ),
       ),
     );
@@ -406,7 +423,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
             ),
             /// Update Button part
             RoundedButton(
-                title: 'Update',
+                title: 'Add Schedule',
                 colour: kDarkColor,
                 onPressed: () {
                   if (endTime.hour < startTime.hour ||
@@ -423,7 +440,7 @@ class _UpdateScheduleState extends State<UpdateSchedule> {
                     checkAll();
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Update Done!'),
+                          content: Text('Add Schedule Done!'),
                         )
                     );
                   }

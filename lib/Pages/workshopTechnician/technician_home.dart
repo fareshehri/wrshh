@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
-import 'package:wrshh/Pages/workshopTechnician/update_schedule.dart';
+import 'package:wrshh/Pages/workshopTechnician/add_schedule.dart';
 import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
@@ -40,7 +40,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
     Colors.transparent,
     Colors.transparent
   ];
-  var titlename = ['View Appointments', 'Make Invoice', 'Update Schedule'];
+  var titlename = ['View Appointments', 'Make Invoice', 'Add Schedule'];
 
   static const TextStyle optionStyle =
       TextStyle(fontSize: 25, fontWeight: FontWeight.w400);
@@ -109,7 +109,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
             if (_selectedIndex == 1) {
               return MakeInvoice();
             } else {
-              return UpdateSchedule();
+              return AddSchedule();
             }
           },
         )),
@@ -130,7 +130,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.edit_calendar),
-              label: 'Update Schedule',
+              label: 'Add Schedule',
               backgroundColor: Colors.blue,
             ),
           ],

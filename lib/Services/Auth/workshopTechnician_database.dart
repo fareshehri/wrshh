@@ -23,8 +23,7 @@ Future<void> addAppointmentsTable(
         DateTime appEndTime = startTime.add(Duration(minutes: duration));
         var appEndTimeF =
             DateFormat('yyyy-MM-dd hh:mm').parse(appEndTime.toString());
-        while (startTime.isBefore(endTimeF) ||
-            startTime.isAtSameMomentAs(endTimeF)) {
+        while (startTime.isBefore(endTimeF) ) {
           for (int c = 0; c < capacity; c++) {
             Map<String, dynamic> wp = {
               'workshopID': user?.uid,
@@ -57,7 +56,8 @@ Future<void> handleAppointmentsInDB() async {
   final user = _auth.currentUser;
   Query query = _firestore
       .collection("Appointments")
-      .where("workshopID", isEqualTo: user?.uid);
+      .where("workshopID", isEqualTo: user?.uid)
+  .where("status", isEqualTo: 'available');
 
   query.get().then((querySnapshot) {
     for (var document in querySnapshot.docs) {
@@ -70,7 +70,6 @@ Future<void> handleAppointmentsInDB() async {
 
 Future<LinkedHashMap<String, dynamic>> getDatesHours() async {
   final user = _auth.currentUser;
-  print('THIS IS THE USER: $user');
   final time = await _firestore.collection('workshops').doc(user?.uid).get();
   var hours = time['Hours'];
 
@@ -83,6 +82,64 @@ Future<void> updateDatesHours(LinkedHashMap<String, dynamic> datesHours) async {
       .collection('workshops')
       .doc(user?.uid)
       .update({'Hours': datesHours});
+}
+
+changeDatesHoursStatus() async{
+  final user = _auth.currentUser;
+  final time = await _firestore.collection('workshops').doc(user?.uid).get();
+  var hours = time['Hours'];
+  DateTime temp = DateTime.now().add(Duration());
+
+  // if today is Saturday, change status for all days to false
+  if (temp.weekday == 6) {
+    hours['saturday'][0] = false;
+    // hours['sunday'][0] = false;
+    // hours['monday'][0] = false;
+    // hours['tuesday'][0] = false;
+    // hours['wednesday'][0] = false;
+    // hours['thursday'][0] = false;
+  }
+  // if today is Sunday, get remaining week days (6)
+  else if (temp.weekday == 7) {
+    hours['sunday'][0] = false;
+  }
+  // if today is Monday, get remaining week days (5)
+  else if (temp.weekday == 1) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+  }
+  // if today is Tuesday, get remaining week days (4)
+  else if (temp.weekday == 2) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+  }
+  // if today is Wednesday, get remaining week days(3)
+  else if (temp.weekday == 3) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+    hours['wednesday'][0] = false;
+
+  }
+  // if today is Thursday, get remaining week days(2)
+  else if (temp.weekday == 4) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+    hours['wednesday'][0] = false;
+    hours['thursday'][0] = false;
+  }
+  // if today is Friday, get remaining week days(1)
+  else if (temp.weekday == 5) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+    hours['wednesday'][0] = false;
+    hours['thursday'][0] = false;
+    hours['friday'][0] = false;
+  }
+  updateDatesHours(hours);
 }
 
 Future<void> updateCapacity(int c) async {
@@ -147,6 +204,14 @@ getWorkshopAppointmentsByDate(DateTime date) async {
       appointments[workshopName].add(appointment);
     }
   }
+  // sort the appointments by time
+  appointments.forEach((key, value) {
+    appointments[key].sort((a, b) {
+      var aTime = a.data()['datetime'].toDate();
+      var bTime = b.data()['datetime'].toDate();
+      return aTime.isBefore(bTime) ? -1 : 1;
+    });
+  });
   return appointments;
 }
 

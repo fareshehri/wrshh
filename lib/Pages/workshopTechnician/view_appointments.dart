@@ -12,7 +12,7 @@ class ViewAppoinments extends StatefulWidget {
 }
 
 class _ViewAppoinmentsState extends State<ViewAppoinments> {
-  DateTime selectedDate = DateTime(2023, 1, 30);
+  DateTime selectedDate = DateTime.now();
   late Map appointments = {};
   bool gotPath = false;
   late List<Widget> widgets = [];
