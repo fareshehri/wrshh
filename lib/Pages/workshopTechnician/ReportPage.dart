@@ -33,49 +33,50 @@ class _ReportPageState extends State<ReportPage> {
   List<Uint8List?> file = [];
   List<Product> fin = [];
 
+
   Future _getServices() async {
     // Step
 // init var serv for services || var ser for service || var Spri for service price || var  pro for products || var Ppri for product price
     var serv;
-    var counter = 0;
+    var scounter = 0;
+    var pcounter = 0;
     List ser = [];
     List Spri = [];
     List pro = [];
     List Ppri = [];
     // Step ####### correct
     //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
-    final workshopDB = await _firestore
-        .collection('workshops')
-        .doc(widget.app.workshopID)
-        .get();
+    final workshopDB = await _firestore.collection('workshops').doc(widget.app.workshopID).get();
     var email = workshopDB.data()!['adminEmail'];
-    final wService =
-        await _firestore.collection('workshopAdmins').doc(email).get().then(
+    await _firestore.collection('workshopAdmins').doc(email).get().then(
       (value) {
         setState(() {
           //Services
           serv = value["services"];
           for (var element in serv["service"]) {
             ser.add(element);
-            counter++;
+            scounter++;
           }
           for (var element in serv["price"]) {
             Spri.add(double.parse(element.toString()));
           }
-          for (var i = 0; i < counter; i++) {
+          for (var i = 0; i < scounter; i++) {
             services.add(Product(ser[i], Spri[i], 15));
           }
           //Products
-          for (var element in serv["SubServices"]) {
-            pro.add(element);
-            counter++;
+          for (var element in serv["SubServices"].keys) {
+            serv["SubServices"][element].forEach((e){pro.add(e);});
+            //pro.add(element);
+            pcounter++;
           }
-          for (var element in serv["SubPrices"]) {
-            Ppri.add(double.parse(element));
+          for (var element in serv["SubPrices"].keys) {
+            serv["SubPrices"][element].forEach((e){Ppri.add(e);});
+            //Ppri.add(double.parse(element));
           }
-          for (var i = 0; i < counter; i++) {
-            services.add(Product(pro[i], Ppri[i], 15));
+          for (var i = 0; i < pcounter; i++) {
+            products.add(Product(pro[i], Ppri[i], 15));
           }
+          print(1);
         
         });
       },
@@ -90,10 +91,6 @@ class _ReportPageState extends State<ReportPage> {
     // TODO: implement initState
     super.initState();
     _getServices();
-    // var Sercounter =services.length;
-    // var Procounter =products.length;
-    // print(Sercounter);
-    // print(Procounter);
   }
 
   final _formKey = GlobalKey<FormState>();
