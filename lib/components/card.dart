@@ -5,6 +5,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
+import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
 
 import '../Services/Auth/client_database.dart';
@@ -273,7 +274,13 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
     List<Widget> buttons = [];
     var payButton = Expanded(
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PaymentPage(
+                      )));
+        },
         child: Text('Pay'),
         style: kButtonsStyle,
       ),
