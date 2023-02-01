@@ -194,8 +194,8 @@ getWorkshopAppointmentsByDate(DateTime date) async {
     if (appointmentDate.year == date.year &&
         appointmentDate.month == date.month &&
         appointmentDate.day == date.day) {
-      var workshopName =
-          await getWorkshopNameFromDB(appointment.data()['workshopID']);
+      var workshopName = 'No Name';
+          // await getWorkshopNameFromDB(appointment.data()['workshopID']);
       // if workshopName is not in appointments.keys add it
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
