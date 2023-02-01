@@ -26,12 +26,7 @@ class _ReportPageState extends State<ReportPage> {
   final _firestore = FirebaseFirestore.instance;
   // Step #################### correct
   //Get Products from Report.dart add it here
-  List<Product> products = [
-    Product("Membership", 9.99, 15),
-    // Product("Nails", 0.30, 15),
-    // Product("Hammer", 26.43, 15),
-    // Product("Hamburger", 5.99, 15),
-  ];
+  List<Product> products = [];
   List<Product> services = [];
   var det = "";
   var mileage;
@@ -40,11 +35,13 @@ class _ReportPageState extends State<ReportPage> {
 
   Future _getServices() async {
     // Step
-// init var serv for services || var ser for service || var pri for price
+// init var serv for services || var ser for service || var Spri for service price || var  pro for products || var Ppri for product price
     var serv;
     var counter = 0;
     List ser = [];
-    List pri = [];
+    List Spri = [];
+    List pro = [];
+    List Ppri = [];
     // Step ####### correct
     //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
     final workshopDB = await _firestore
@@ -56,17 +53,30 @@ class _ReportPageState extends State<ReportPage> {
         await _firestore.collection('workshopAdmins').doc(email).get().then(
       (value) {
         setState(() {
+          //Services
           serv = value["services"];
           for (var element in serv["service"]) {
             ser.add(element);
             counter++;
           }
           for (var element in serv["price"]) {
-            pri.add(double.parse(element));
+            Spri.add(double.parse(element));
           }
           for (var i = 0; i < counter; i++) {
-            services.add(Product(ser[i], pri[i], 15));
+            services.add(Product(ser[i], Spri[i], 15));
           }
+          //Products
+          for (var element in serv["SubServices"]) {
+            pro.add(element);
+            counter++;
+          }
+          for (var element in serv["SubPrices"]) {
+            Ppri.add(double.parse(element));
+          }
+          for (var i = 0; i < counter; i++) {
+            services.add(Product(pro[i], Ppri[i], 15));
+          }
+        
         });
       },
     );
