@@ -210,8 +210,7 @@ getWorkshopFinishedAppointments() async {
   if (AppointmentsDB.size == 0) {
     return appointments;
   }
-  var workshopName = await getWorkshopNameFromDB(
-      AppointmentsDB.docs.first['workshopID']);
+  var workshopName = await getWorkshopNameFromDB(_auth.currentUser!.uid);
   var dateFormat = DateFormat('yyyy-MM-dd');
   var today = dateFormat.format(DateTime.now());
   var yesterday = dateFormat.format(DateTime.now().subtract(Duration(days: 1)));
