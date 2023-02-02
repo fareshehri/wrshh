@@ -185,32 +185,18 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
 
 getWorkshopAppointmentsByDate(DateTime date) async {
   Map appointments = {};
+  Timestamp startDate = Timestamp.fromDate(date);
+  Timestamp endDate = Timestamp.fromDate(date.add(Duration(hours: 23, minutes: 59)));
   final AppointmentsDB = await _firestore
       .collection('Appointments')
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
+      .where('datetime', isGreaterThanOrEqualTo: startDate)
+      .where('datetime', isLessThanOrEqualTo: endDate)
+      .orderBy('datetime', descending: false)
       .get();
-  for (var appointment in AppointmentsDB.docs) {
-    var appointmentDate = appointment['datetime'].toDate();
-    if (appointmentDate.year == date.year &&
-        appointmentDate.month == date.month &&
-        appointmentDate.day == date.day) {
-      var workshopName = await getWorkshopNameFromDB(appointment['workshopID']);
-      // if workshopName is not in appointments.keys add it
-      if (!appointments.keys.contains(workshopName)) {
-        appointments[workshopName] = [];
-      }
-      // add the appointment to the list of appointments
-      appointments[workshopName].add(appointment);
-    }
-  }
-  // sort the appointments by time
-  appointments.forEach((key, value) {
-    appointments[key].sort((a, b) {
-      var aTime = a.data()['datetime'].toDate();
-      var bTime = b.data()['datetime'].toDate();
-      return aTime.isBefore(bTime) ? -1 : 1;
-    });
-  });
+  var workshopName = await getWorkshopNameFromDB(_auth.currentUser!.uid);
+    appointments[workshopName] = [];
+  appointments[workshopName].addAll(AppointmentsDB.docs);
   return appointments;
 }
 
