@@ -190,12 +190,11 @@ getWorkshopAppointmentsByDate(DateTime date) async {
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
       .get();
   for (var appointment in AppointmentsDB.docs) {
-    var appointmentDate = appointment.data()['datetime'].toDate();
+    var appointmentDate = appointment['datetime'].toDate();
     if (appointmentDate.year == date.year &&
         appointmentDate.month == date.month &&
         appointmentDate.day == date.day) {
-      var workshopName = 'No Name';
-          // await getWorkshopNameFromDB(appointment.data()['workshopID']);
+      var workshopName = await getWorkshopNameFromDB(appointment['workshopID']);
       // if workshopName is not in appointments.keys add it
       if (!appointments.keys.contains(workshopName)) {
         appointments[workshopName] = [];
@@ -226,7 +225,7 @@ getWorkshopFinishedAppointments() async {
     return appointments;
   }
   var workshopName = await getWorkshopNameFromDB(
-      AppointmentsDB.docs.first.data()['workshopID']);
+      AppointmentsDB.docs.first['workshopID']);
   var dateFormat = DateFormat('yyyy-MM-dd');
   var today = dateFormat.format(DateTime.now());
   var yesterday = dateFormat.format(DateTime.now().subtract(Duration(days: 1)));

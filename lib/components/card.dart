@@ -72,7 +72,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     logoURL,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.asset(
-                        'assets/images/FFFF.jpg',
+                        'assets/images/loading.png',
                         width: 80,
                         height: 80,
                       );
