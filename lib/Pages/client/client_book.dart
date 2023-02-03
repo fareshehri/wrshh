@@ -232,6 +232,8 @@ class _ClientBookingState extends State<ClientBooking> {
     var timestamp = appointment['datetime'];
     var date = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
 
+    var dateFormatted = DateFormat.jm().format(DateTime.parse(date.toString()));
+
     return BookingSlot(
       onTap: () {
         setState(() {
@@ -244,7 +246,7 @@ class _ClientBookingState extends State<ClientBooking> {
       isPauseTime: false,
       child: Center(
         child: Text(
-          '${date.hour}:${date.minute}',
+          '$dateFormatted',
           style: const TextStyle(color: Colors.white),
         ),
       ),
