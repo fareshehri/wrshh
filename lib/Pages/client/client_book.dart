@@ -135,12 +135,16 @@ class _ClientBookingState extends State<ClientBooking> {
                 selectedList.forEach((key, value) {
                   bookAppointment(key, widget.selectedServices);
                 });
+                // wait for 2 seconds to execute
+                Future.delayed(const Duration(seconds: 2), () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Home(),
-                    ),
+                        builder: (context) => Home(
+                              index: 2,
+                            )),
                   );
+                });
               } else {
                 showDialog(
                   context: context,

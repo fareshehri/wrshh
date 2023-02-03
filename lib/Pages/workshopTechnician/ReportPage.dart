@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:wrshh/Models/appointment.dart';
+import 'package:wrshh/Pages/client/Home.dart';
+import 'package:wrshh/Pages/workshopTechnician/make_invoice.dart';
+import 'package:wrshh/Pages/workshopTechnician/technician_home.dart';
 
 import '/Models/product.dart';
 import 'invoice_service.dart';
@@ -352,7 +355,10 @@ class _ReportPageState extends State<ReportPage> {
                                               'Invoice Created Successfully')),
                                     );
                                     Future.delayed(const Duration(seconds: 2),
-                                        () => Navigator.pop(context));
+                                        () => Navigator.push(context,
+                                            MaterialPageRoute(builder: (context) {
+                                          return WorkshopTechnicianHome(index: 1,);
+                                        })));
                                   });
                                 }
                               } catch (e) {

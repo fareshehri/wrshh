@@ -271,7 +271,9 @@ getWorkshopFinishedAppointments() async {
   final AppointmentsDB = await _firestore
       .collection('Appointments')
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
-      .where('status', whereIn: ['finished', 'booked']).get();
+      .where('status', whereIn: ['finished', 'booked'])
+      .where('reportURL', isEqualTo: '')
+      .get();
 
   if (AppointmentsDB.size == 0) {
     return appointments;

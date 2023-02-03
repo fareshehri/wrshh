@@ -11,7 +11,8 @@ import 'make_invoice.dart';
 
 class WorkshopTechnicianHome extends StatefulWidget {
   static const String id = 'WorkshopTechnicianHome';
-  const WorkshopTechnicianHome({Key? key}) : super(key: key);
+  late int index;
+  WorkshopTechnicianHome({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<WorkshopTechnicianHome> createState() => _WorkshopTechnicianHomeState();
@@ -48,6 +49,14 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
 
 //date picker
   DateTime selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _selectedIndex = widget.index;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {

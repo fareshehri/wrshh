@@ -46,13 +46,14 @@ class _SeviceSelectionState extends State<SeviceSelection> {
         appBar: AppBar(
           title: const Text('Select Services'),
           shadowColor: Colors.transparent,
+          backgroundColor: kLightColor,
         ),
         body: Column(
           children: [
             Expanded(
               child: ListView.builder(itemBuilder: (context, index) {
                 return CheckboxListTile(
-                  title: Text(services[index]),
+                  title: Text(services[index], style: TextStyle(fontSize: 18),),
                   value: selectedServices.contains(services[index]),
                   onChanged: (bool? value) {
                     if (value == true) {
@@ -65,6 +66,8 @@ class _SeviceSelectionState extends State<SeviceSelection> {
                       });
                     }
                   },
+                  checkColor: Colors.white,
+                  activeColor: kLightColor
                 );
               }, itemCount: services.length),
               ),
@@ -91,7 +94,7 @@ class _SeviceSelectionState extends State<SeviceSelection> {
                      ),
                    );
                  }
-                }, title: 'Next', colour: kDarkColor,
+                }, title: 'Next', colour: kLightColor,
               ),
             ),
           ],
