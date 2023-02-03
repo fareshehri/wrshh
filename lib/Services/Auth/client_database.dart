@@ -244,3 +244,15 @@ Future<List<String>> getServicesFromDB(String adminEmail) async {
   }
   return servicesDB;
 }
+Future<bool> checkFutureAppointment() async {
+  final User? user = _auth.currentUser;
+  final Appointmentss = await _firestore
+      .collection('Appointments')
+      .where('clientID', isEqualTo: user!.email)
+      .where('status', isEqualTo: 'booked')
+      .get();
+  if (Appointmentss.docs.isEmpty) {
+    return false;
+  }
+  return true;
+}

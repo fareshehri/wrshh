@@ -3,6 +3,7 @@ import 'package:rate/rate.dart';
 
 import '../../Pages/client/client_book.dart';
 import '../../Pages/client/service_select.dart';
+import '../Auth/client_database.dart';
 
 class BottomPill extends StatelessWidget {
   const BottomPill({
@@ -103,7 +104,7 @@ class BottomPill extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               for (int i = 0; i < 5; i++)
-                if (i <  rate.round())
+                if (i < rate.round())
                   Icon(
                     Icons.star,
                     color: Colors.green,
@@ -230,11 +231,18 @@ class BottomPill extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            /// Navigate to the bookPage() function
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SeviceSelection(
-                                      workshopInfo: workshopInfo,
-                                    )));
+                            bool isBooked = await checkFutureAppointment();
+                            if (isBooked) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      'You have already booked an appointment')));
+                            } else {
+                              /// Navigate to the bookPage() function
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => SeviceSelection(
+                                        workshopInfo: workshopInfo,
+                                      )));
+                            }
                           },
 
                           /// Button Style
