@@ -6,12 +6,13 @@ import 'package:wrshh/Pages/workshopTechnician/add_schedule.dart';
 import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
-import '../../components/Calendar_Timeline.dart';
+import 'edit_account.dart';
 import 'make_invoice.dart';
 
 class WorkshopTechnicianHome extends StatefulWidget {
   static const String id = 'WorkshopTechnicianHome';
-  const WorkshopTechnicianHome({Key? key}) : super(key: key);
+  late int index;
+  WorkshopTechnicianHome({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<WorkshopTechnicianHome> createState() => _WorkshopTechnicianHomeState();
@@ -48,6 +49,14 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
 
 //date picker
   DateTime selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _selectedIndex = widget.index;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -58,8 +67,13 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
             ListTile(
               hoverColor: tc[_selectedIndex],
               leading: const Icon(Icons.manage_accounts),
-              title: const Text('Services'),
-              onTap: () {},
+              title: const Text('Edit Profile'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  EditAccount()));
+              },
             ),
             ListTile(
               hoverColor: tc[_selectedIndex],

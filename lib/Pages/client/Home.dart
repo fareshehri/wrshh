@@ -12,7 +12,8 @@ import 'client_appointments.dart';
 
 class Home extends StatefulWidget {
   static const String id = 'Home_screen';
-  const Home({Key? key}) : super(key: key);
+  late int index;
+  Home({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -54,6 +55,12 @@ class _HomeState extends State<Home> {
 
 //date picker
   DateTime selectedDate = DateTime.now();
+@override
+  void initState() {
+    // TODO: implement initState
+  _selectedIndex = widget.index;
+  super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
