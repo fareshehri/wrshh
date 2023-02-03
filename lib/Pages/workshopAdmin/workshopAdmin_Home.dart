@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
+import 'package:wrshh/Pages/workshopAdmin/create_booking.dart';
 import 'package:wrshh/Pages/workshopAdmin/edit_account.dart';
 
 import '../../Services/Auth/auth.dart';
@@ -121,43 +122,7 @@ class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
             }
 
             if (_selectedIndex == 1) {
-              return Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.zero),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(17)
-                      ],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter VIN Number';
-                        }
-                        return null;
-                      },
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState!.validate()) {
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.search_rounded,
-                      ),
-                      label: const Text('Search'),
-                    )
-                  ],
-                ),
-              );
+              return CreateBooking();
             } else {
               return Services();
             }

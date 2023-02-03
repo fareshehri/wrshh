@@ -148,6 +148,7 @@ class _HomeState extends State<Home> {
                               hintText: 'Enter any serial number',
                               labelText: 'Serial number',
                               prefixIcon: const Icon(Icons.search)),
+                          maxLength: 9,
                           onChanged: (val) {
                             setState(() {
                               serial = val;

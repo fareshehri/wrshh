@@ -9,6 +9,17 @@ final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 
+
+void bookAppointmentByAdmin(String id, Map user, List selectedServices) async {
+  print(id);
+  _firestore.collection('Appointments').doc(id).update({
+    'clientID': user['email'],
+    'serial': user['serial'],
+    'status': 'booked',
+    'services': selectedServices,
+  });
+}
+
 getUserWorkshopsFromDB() async {
   Map workshopsMap = {};
   var workshopsDB = await _firestore.collection('workshops')
@@ -154,8 +165,9 @@ getTechnicianInfoFromDB(String technicianID) async {
 }
 
 
-getWorkshopLogoURL(String email) async {
+getWorkshopLogoURL() async {
   String url = '';
+  String email = _auth.currentUser!.email!;
   try {
     await FirebaseStorage.instance
         .ref()

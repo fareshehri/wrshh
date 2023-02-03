@@ -1,43 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:wrshh/Services/Auth/auth.dart';
 
-import '../../Models/user.dart';
 import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../Services/Maps/googleMapMyLoc.dart';
+import '../../Services/Maps/googleMapsPartAdmin.dart';
 import '../../components/roundedButton.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
 
-class AddWorkshop extends StatefulWidget {
-  const AddWorkshop({Key? key}) : super(key: key);
+
+class CreateBooking extends StatefulWidget {
+  const CreateBooking({Key? key}) : super(key: key);
 
   @override
-  State<AddWorkshop> createState() => _AddWorkshopState();
+  State<CreateBooking> createState() => _CreateBookingState();
 }
 
-enum accType {
-  client,
-  workshop,
-}
-
-class _AddWorkshopState extends State<AddWorkshop> {
+class _CreateBookingState extends State<CreateBooking> {
   final _formKey = GlobalKey<FormState>();
 
   var gap = const SizedBox(height: 8.0);
 
-  accType selectedType = accType.client;
-
   bool showSpinner = false;
-  late String adminEmail;
   late String email;
-  late String password;
+  late String serial;
   late String phoneNumber;
   late String name;
   late String workshop;
-  String logoURL = '';
+  late String logoURL;
   bool gotPath = false;
+
+  _asyncMethod() async {
+    logoURL = await getWorkshopLogoURL();
+    setState(() {
+      logoURL = logoURL;
+      gotPath = true;
+    });
+  }
 
   @override
   void initState() {
@@ -46,31 +46,21 @@ class _AddWorkshopState extends State<AddWorkshop> {
     _asyncMethod();
   }
 
-  _asyncMethod() async {
-    var logo = await getWorkshopLogoURL();
-    setState(() {
-      logoURL = logo;
-      gotPath = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actionsIconTheme: const IconThemeData(size: 24),
-        title: const Text('Add Workshop'),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: kDarkColor, size: 24),
+  if (!gotPath){
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
       ),
+    );
+  }else{
+    return Scaffold(
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
             key: _formKey,
             child: ListView(
@@ -86,7 +76,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                             logoURL,
                             errorBuilder: (context, error, stackTrace) {
                               return Image.asset(
-                                'assets/images/FFFF.jpg',
+                                'assets/images/loading.png',
                                 width: 80,
                                 height: 80,
                               );
@@ -100,8 +90,8 @@ class _AddWorkshopState extends State<AddWorkshop> {
                 ),
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
-                    hintText: 'Enter technician email',
-                    labelText: 'Technician email',
+                    hintText: 'Enter client email',
+                    labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
                   ),
                   textAlign: TextAlign.center,
@@ -114,21 +104,8 @@ class _AddWorkshopState extends State<AddWorkshop> {
                 gap,
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
-                      hintText: 'Enter technician password',
-                      labelText: 'Technician password',
-                      prefixIcon: Icon(Icons.lock)),
-                  obscureText: true,
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    password = value;
-                  },
-                  validator: passwordValidator,
-                ),
-                gap,
-                TextFormField(
-                  decoration: kTextFieldDecoratopn.copyWith(
-                      hintText: 'Enter technician name',
-                      labelText: 'Technician name',
+                      hintText: 'Enter client name',
+                      labelText: 'Name',
                       prefixIcon: Icon(Icons.person)),
                   textAlign: TextAlign.center,
                   onChanged: (value) {
@@ -137,10 +114,32 @@ class _AddWorkshopState extends State<AddWorkshop> {
                   validator: nameValidator,
                 ),
                 gap,
+                TextFormField(
+                  decoration: kTextFieldDecoratopn.copyWith(
+                      hintText: 'Enter car serial number',
+                      labelText: 'Serial number',
+                      prefixIcon: Icon(Icons.car_repair)),
+                  textAlign: TextAlign.center,
+                  maxLength: 9,
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(9),
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChanged: (value) {
+                    serial = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length != 9) {
+                      return 'Please enter a valid Serial Number';
+                    }
+                    return null;
+                  },
+                ),
+                gap,
                 IntlPhoneField(
                   decoration: kTextFieldDecoratopn.copyWith(
-                      hintText: 'Enter technician phone number',
-                      labelText: 'Technician phone Number',
+                      hintText: 'Enter client phone number',
+                      labelText: 'Phone Number',
                       prefixIcon: Icon(Icons.phone)),
                   countries: const ['SA'],
                   initialCountryCode: 'SA',
@@ -151,63 +150,48 @@ class _AddWorkshopState extends State<AddWorkshop> {
                 gap,
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
-                    hintText: 'Branch name',
-                    labelText: 'Branch Name',
-                    prefixIcon: const Icon(Icons.car_repair),
-                  ),
-                  textAlign: TextAlign.center,
-                  onChanged: (value) {
-                    workshop = value;
-                  },
-                  validator: workshopNameValidator,
-                ),
-                SizedBox(
-                  height: 24.0,
-                ),
-                TextFormField(
-                  decoration: kTextFieldDecoratopn.copyWith(
-                      hintText: 'Enter your city',
+                      hintText: 'Enter client city',
                       labelText: 'City',
                       prefixIcon: Icon(Icons.location_city)),
                   textAlign: TextAlign.center,
                   enabled: false,
                   initialValue: 'Al Riyadh',
+
                 ),
                 RoundedButton(
-                    title: 'Add Workshop',
+                    title: 'Next',
                     colour: kLightColor,
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         setState(() {
                           showSpinner = true;
                         });
-                        var newUser;
-                        newUser = WorkshopTech(
-                          email: email,
-                          password: password,
-                          phoneNumber: phoneNumber,
-                          name: name,
-                        );
-                        showSpinner = false;
-                        String adminEmail =
-                            await AuthService().getCurrentUserEmail();
-                        Navigator.of(
+                        Map userInfo = {
+                          'email': email,
+                          'phoneNumber': phoneNumber,
+                          'name': name,
+                          'serial': serial,
+                        };
+                        print(userInfo);
+                        Navigator.push(
                           context,
-                          rootNavigator: true,
-                        ).push(MaterialPageRoute(
-                          builder: (BuildContext context) => googleMapMyLoc(
-                            adminEmail: adminEmail,
-                            userInfo: newUser,
-                            workshopName: workshop,
+                          MaterialPageRoute(
+                            builder: (context) => AdminGoogleMaps(
+                              userInfo: userInfo,
+                            ),
                           ),
-                        ));
+                        );
+
                       }
-                    }),
+                    }
+
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
   }
 }

@@ -3,7 +3,6 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../../Models/workshop.dart';
 import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../Services/Maps/googleMapsPart.dart';
 import '../../Services/Maps/WorkshopGoogleMaps.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
@@ -77,7 +76,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                                 logoURL,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Image.asset(
-                                    'assets/images/FFFF.jpg',
+                                    'assets/images/loading.png',
                                     width: 80,
                                     height: 80,
                                   );

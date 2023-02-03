@@ -386,8 +386,9 @@ class _EditCarInfoState extends State<EditCarInfo> {
                           LengthLimitingTextInputFormatter(9),
                           FilteringTextInputFormatter.digitsOnly,
                         ],
+                        maxLength: 9,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null || value.isEmpty || value.length != 9) {
                             return 'Please enter Serial Number';
                           }
                           return null;
