@@ -124,7 +124,7 @@ class _HomeState extends State<Home> {
                 child: ListView(padding: const EdgeInsets.all(8), children: [
                   SizedBox(
                       child: Image.asset(
-                    'assets/images/wallpaper3.jpg',
+                    'assets/images/wallpaper.jpg',
                     fit: BoxFit.contain,
                   )),
                   // const SizedBox(height: 1,),
