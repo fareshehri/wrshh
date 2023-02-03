@@ -54,6 +54,22 @@ Future<String> updateWorkshopAdminInfo(Map userData) async {
   return result;
 }
 
+// update workshop name where technicianEmail = technicianEmail
+updateWorkshopName(String name, String technicianEmail) async{
+  var result = 'success';
+  try{
+    await _firestore.collection('workshops').doc(technicianEmail).update(
+      {
+        'workshopName': name,
+      },
+    );
+  } catch (e){
+    result = e.toString();
+  }
+  return result;
+}
+
+
 
 Future<String> updateWorkshopAdminEmail(String email, Map data) async {
   String result = 'success';
