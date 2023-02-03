@@ -4,15 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 
+
 import 'package:rate/rate.dart';
-// import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
 import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
 import 'package:wrshh/components/downApp.dart';
-import 'package:wrshh/components/downWeb.dart';
 
 import '../Services/Auth/client_database.dart';
 import 'package:dio/dio.dart';
@@ -429,6 +428,50 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           var reportURL =
               await getAppointmentReport(widget.appointment.appointmentID);
           if (reportURL != "") {
+            // await Permission.storage.request();
+            // await Permission.manageExternalStorage.request();
+            //
+            // Directory appDocDir = await getApplicationDocumentsDirectory();
+            // String appDocPath = appDocDir.path;
+            //
+            // final name = await OpenDocument.getNameFile(url: reportURL);
+            //
+            // // final path = await OpenDocument.getPathDocument(folderName: "Reports");
+            //
+            // var filePath = "$appDocPath/$name";
+            //
+            // final isCheck = await OpenDocument.checkDocument(filePath: filePath);
+            // Future<String> downloadFile(String filePath, String url) async {
+            //   // CancelToken cancelToken = CancelToken();
+            //   Dio dio = new Dio();
+            //   await dio.download(
+            //     url,
+            //     filePath,
+            //     onReceiveProgress: (count, total) {
+            //       debugPrint('---Download----Rec: $count, Total: $total');
+            //       setState(() {
+            //         // _platformVersion = ((count / total) * 100).toStringAsFixed(0) + "%";
+            //       });
+            //     },
+            //   );
+            //   return filePath;
+            // }
+            //
+            // try {
+            //   if (!isCheck) {
+            //     filePath = await downloadFile("$filePath", reportURL);
+            //   }
+            //
+            //   await OpenDocument.openDocument(filePath: filePath);
+            // } catch (e) {
+            //   print(e);
+            // }
+            // } on PlatformException catch (e) {
+            //   debugPrint("ERROR: message_${e.message} ---- detail_${e.details}");
+            // }
+
+
+
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -441,10 +484,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height * 0.7,
-                        // child: SfPdfViewer.network(
-                        //   reportURL,
-                        //   enableDoubleTapZooming: true,
-                        // ),
+                        // child: PDF.network(
+                        //   'https://raw.githubusercontent.com/FlutterInThai/Dart-for-Flutter-Sheet-cheet/master/Dart-for-Flutter-Cheat-Sheet.pdf',
+                        //   height: 500,
+                        //   width: 300,
+                        // )
                       ),
                       ElevatedButton(
                         onPressed: () async{

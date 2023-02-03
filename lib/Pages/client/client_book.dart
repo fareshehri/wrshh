@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wrshh/Pages/client/Home.dart';
 import 'package:wrshh/Pages/client/client_appointments.dart';
 import 'package:wrshh/components/booking_slot.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +11,8 @@ import '../../components/Calendar_Timeline.dart';
 class ClientBooking extends StatefulWidget {
   final workshopInfo;
   final selectedServices;
-  const ClientBooking({required this.workshopInfo , required this.selectedServices});
+  const ClientBooking(
+      {required this.workshopInfo, required this.selectedServices});
 
   @override
   State<ClientBooking> createState() =>
@@ -133,10 +135,12 @@ class _ClientBookingState extends State<ClientBooking> {
                 selectedList.forEach((key, value) {
                   bookAppointment(key, widget.selectedServices);
                 });
-                Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ClientAppointments()));
+                      builder: (context) => Home(),
+                    ),
+                  );
               } else {
                 showDialog(
                   context: context,
@@ -178,7 +182,7 @@ class _ClientBookingState extends State<ClientBooking> {
         if (appointmentDate.isAfter(DateTime.now())) {
           var timestamp = appointments[i]['datetime'];
           var date =
-          DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+              DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
           if (allDayAppointments.containsKey(date)) {
             allDayAppointments[date].add(appointments[i]);
           } else {
