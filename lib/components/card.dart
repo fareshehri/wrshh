@@ -9,6 +9,7 @@ import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
 
 import '../Services/Auth/client_database.dart';
+import 'package:dio/dio.dart';
 
 class AppointmentsCard extends StatefulWidget {
   final String? logoURL;
@@ -440,7 +441,16 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async{
+                            try {
+
+                              var response = await Dio().download(reportURL, "report.pdf");
+
+                            } catch (e) {
+                              print(e);
+                            }
+
+                        },
                         child: Text('Download'),
                         style: kButtonsStyle,
                       )
