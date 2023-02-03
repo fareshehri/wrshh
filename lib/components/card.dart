@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 
 import 'package:rate/rate.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -7,6 +11,8 @@ import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
 import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
+import 'package:wrshh/components/downApp.dart';
+import 'package:wrshh/components/downWeb.dart';
 
 import '../Services/Auth/client_database.dart';
 import 'package:dio/dio.dart';
@@ -443,9 +449,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                       ElevatedButton(
                         onPressed: () async{
                             try {
-
-                              var response = await Dio().download(reportURL, "report.pdf");
-
+                              var request = await HttpClient().getUrl(Uri.parse(reportURL));
+                              var response = await request.close();
+                              var bytes = await consolidateHttpClientResponseBytes(response);
+                              if(kIsWeb){downloadWeb(bytes);}
+                              else{downloadApp(bytes);}
                             } catch (e) {
                               print(e);
                             }
