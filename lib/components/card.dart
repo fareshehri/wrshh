@@ -35,16 +35,28 @@ class AppointmentsCard extends StatefulWidget {
 class _AppointmentsCardState extends State<AppointmentsCard> {
   late String logoURL = '';
   late double rate = 0;
+  late String serialOrWorkshop = '';
+  bool isRated = false;
+  bool isReported = false;
+  bool isPaid = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _asyncMethod();
+    if (widget.cardType == 'WorkshopInvoice' || widget.cardType == 'Workshop') {
+      serialOrWorkshop = 'Serial Number:';
+    } else {
+      serialOrWorkshop = 'Workshop Name:';
+    }
   }
 
   _asyncMethod() async {
     var appointmentlogo = await getWorkshopLogoFromDB(widget.itemID!);
+    isReported = await checkReportStatus(widget.appointment.appointmentID!);
+    isRated = await checkRateStatus(widget.appointment.appointmentID!);
+    isPaid = await checkPaymentStatus(widget.appointment.appointmentID!);
     setState(() {
       logoURL = appointmentlogo;
     });
@@ -95,12 +107,12 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                           fit: BoxFit.fitWidth,
                           child: Text(widget.itemName!,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black)),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         FittedBox(
                           fit: BoxFit.fitWidth,
                           child: Row(
@@ -111,13 +123,13 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                 fit: BoxFit.fitHeight,
                                 child: Text(
                                   widget.appointment.datetime,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.black),
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               FittedBox(
                                   alignment: Alignment.centerRight,
                                   fit: BoxFit.fitWidth,
@@ -138,10 +150,6 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                         .bottom +
                                                     16),
                                             child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.5,
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
@@ -156,86 +164,116 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(16.0),
-                                                child: Container(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      FittedBox(
-                                                        fit: BoxFit.fill,
-                                                        // TODO: add image from database
-                                                        child: ClipOval(
-                                                            child:
-                                                                Image.network(
-                                                          logoURL,
-                                                          errorBuilder:
-                                                              (context, error,
-                                                                  stackTrace) {
-                                                            return Image.asset(
-                                                              'assets/images/FFFF.jpg',
-                                                              width: 160,
-                                                              height: 160,
-                                                            );
-                                                          },
-                                                          width: 160,
-                                                          height: 160,
-                                                          fit: BoxFit.cover,
-                                                        )),
-                                                      ),
-                                                      Container(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            SizedBox(
-                                                                height: 10),
-                                                            FittedBox(
-                                                              fit: BoxFit
-                                                                  .fitHeight,
-                                                              child: Text(
-                                                                'Workshop Name: ${widget.itemName}',
-                                                                style:
-                                                                    kTextStyle,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                                height: 10),
-                                                            FittedBox(
-                                                              fit: BoxFit
-                                                                  .fitHeight,
-                                                              child: Text(
-                                                                'Date & Time: ${widget.appointment.datetime}',
-                                                                style:
-                                                                    kTextStyle,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                                height: 10),
-                                                            FittedBox(
-                                                              fit: BoxFit
-                                                                  .fitHeight,
-                                                              child: Text(
-                                                                  'Service & Price: ${widget.appointment.service} - ${widget.appointment.price} SR',
-                                                                  style:
-                                                                      kTextStyle),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 20),
-                                                      Row(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    FittedBox(
+                                                      fit: BoxFit.fill,
+                                                      child: ClipOval(
+                                                          child: Image.network(
+                                                        logoURL,
+                                                        errorBuilder: (context,
+                                                            error, stackTrace) {
+                                                          return Image.asset(
+                                                            'assets/images/loading.png',
+                                                            width: 130,
+                                                            height: 130,
+                                                          );
+                                                        },
+                                                        width: 130,
+                                                        height: 130,
+                                                        fit: BoxFit.cover,
+                                                      )),
+                                                    ),
+                                                    Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: getButtons(),
-                                                      )
-                                                    ],
-                                                  ),
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 250,
+                                                            child: ListView(
+                                                              children: [
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                FittedBox(
+                                                                  fit: BoxFit
+                                                                      .fitWidth,
+                                                                  child: Text(
+                                                                    '$serialOrWorkshop ${widget.itemName}',
+                                                                    style:
+                                                                        kTextStyle,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                FittedBox(
+                                                                  fit: BoxFit
+                                                                      .fitHeight,
+                                                                  child: Text(
+                                                                    'Date & Time: ${widget.appointment.datetime}',
+                                                                    style:
+                                                                        kTextStyle,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                Center(
+                                                                  child:
+                                                                      FittedBox(
+                                                                    fit: BoxFit
+                                                                        .fitHeight,
+                                                                    child: Text(
+                                                                      'Services',
+                                                                      style: const TextStyle(
+                                                                          fontSize:
+                                                                              20,
+                                                                          fontWeight: FontWeight
+                                                                              .bold,
+                                                                          color:
+                                                                              Colors.black),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.8,
+                                                                  height: 100,
+                                                                  child: ListView
+                                                                      .builder(
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            index) {
+                                                                      return Text(
+                                                                        '${widget.appointment.service[index]}',
+                                                                        style:
+                                                                            kTextStyle,
+                                                                      );
+                                                                    },
+                                                                    itemCount: widget
+                                                                        .appointment
+                                                                        .service
+                                                                        .length,
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ]),
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: getButtons(),
+                                                    )
+                                                  ],
                                                 ),
                                               ),
                                             ),
@@ -276,10 +314,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PaymentPage(
-                      )));
+              context, MaterialPageRoute(builder: (context) => PaymentPage()));
         },
         child: Text('Pay'),
         style: kButtonsStyle,
@@ -462,21 +497,36 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
 
     if (widget.cardType == 'Bookings') {
       if (widget.appointment.status == 'booked') {
-        buttons.add(payButton);
-        buttons.add(SizedBox(width: 10));
         buttons.add(cancelButton);
       } else if (widget.appointment.status == 'finished') {
-        //buttons.add(uploadReportButton);
-        buttons.add(rateButton);
-        buttons.add(SizedBox(width: 10));
-        buttons.add(reportButton);
+        if (!isRated){
+          buttons.add(rateButton);
+        }
+        if (isReported){
+          buttons.add(reportButton);
+        }
+        if (!isPaid){
+          buttons.add(payButton);
+        }
       }
     } else if (widget.cardType == 'HistorySerial') {
-      buttons.add(reportButton);
+      if (isReported){
+        buttons.add(reportButton);
+      }
     } else if (widget.cardType == 'WorkshopInvoice') {
-      buttons.add(uploadReportButton);
+      if (!isReported){
+        buttons.add(uploadReportButton);
+      }
     } else if (widget.cardType == 'Workshop') {
-      // buttons.add(uploadReportButton);
+      if (widget.appointment.status == 'booked') {
+        buttons.add(cancelButton);
+      }
+    }
+    if (buttons.length > 1){
+      buttons.insert(1, SizedBox(width: 10));
+    }
+    if (buttons.length > 2){
+      buttons.insert(2, SizedBox(width: 10));
     }
 
     return buttons;

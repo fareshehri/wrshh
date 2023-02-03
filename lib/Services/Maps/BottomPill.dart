@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rate/rate.dart';
 
 import '../../Pages/client/client_book.dart';
+import '../../Pages/client/service_select.dart';
 
 class BottomPill extends StatelessWidget {
   const BottomPill({
@@ -229,11 +230,9 @@ class BottomPill extends StatelessWidget {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            print(workshopInfo['workshopID']);
-                            // addAppointments(workshopInfo['workshopID']);
                             /// Navigate to the bookPage() function
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ClientBooking(
+                                builder: (context) => SeviceSelection(
                                       workshopInfo: workshopInfo,
                                     )));
                           },

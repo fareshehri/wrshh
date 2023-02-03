@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wrshh/Pages/client/client_appointments.dart';
 import 'package:wrshh/components/booking_slot.dart';
 import 'package:intl/intl.dart';
 import 'package:wrshh/components/roundedButton.dart';
@@ -8,7 +9,8 @@ import '../../components/Calendar_Timeline.dart';
 
 class ClientBooking extends StatefulWidget {
   final workshopInfo;
-  const ClientBooking({required this.workshopInfo});
+  final selectedServices;
+  const ClientBooking({required this.workshopInfo , required this.selectedServices});
 
   @override
   State<ClientBooking> createState() =>
@@ -129,9 +131,12 @@ class _ClientBookingState extends State<ClientBooking> {
             onPressed: () {
               if (selectedList.isNotEmpty) {
                 selectedList.forEach((key, value) {
-                  bookAppointment(key);
+                  bookAppointment(key, widget.selectedServices);
                 });
-                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ClientAppointments()));
               } else {
                 showDialog(
                   context: context,
@@ -165,19 +170,20 @@ class _ClientBookingState extends State<ClientBooking> {
     Map allDayAppointments = {};
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedNow = formatter.format(selectedDate);
-    // appointments.sort((a, b) => a['datetime'].compareTo(b['datetime']));
     for (var i = 0; i < appointments.length; i++) {
       var appointmentDate = DateTime.fromMillisecondsSinceEpoch(
           appointments[i]['datetime'].seconds * 1000);
       String formattedAppointmentDate = formatter.format(appointmentDate);
       if (formattedAppointmentDate == formattedNow) {
-        var timestamp = appointments[i]['datetime'];
-        var date =
-            DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
-        if (allDayAppointments.containsKey(date)) {
-          allDayAppointments[date].add(appointments[i]);
-        } else {
-          allDayAppointments[date] = [appointments[i]];
+        if (appointmentDate.isAfter(DateTime.now())) {
+          var timestamp = appointments[i]['datetime'];
+          var date =
+          DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+          if (allDayAppointments.containsKey(date)) {
+            allDayAppointments[date].add(appointments[i]);
+          } else {
+            allDayAppointments[date] = [appointments[i]];
+          }
         }
       }
     }

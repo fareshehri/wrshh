@@ -106,13 +106,13 @@ Future<String> getSerialFromUserId(String? userID) async {
 }
 
 
-void bookAppointment(String id) async {
+void bookAppointment(String id, List selectedServices) async {
   var serial = await getSerialFromUserId(_auth.currentUser!.email);
   _firestore.collection('Appointments').doc(id).update({
     'clientID': _auth.currentUser!.email,
     'serial': serial,
     'status': 'booked',
-    // TODO: add services
+    'services': selectedServices,
   });
 }
 
@@ -230,6 +230,17 @@ Future<bool> checkRateStatus(String appointmentID) async {
 Future<bool> checkPaymentStatus(String appointmentID) async {
   final appointmentDB =
   await _firestore.collection('Appointments').doc(appointmentID).get();
-  var payment = appointmentDB.data()!['payment'];
-  return payment != 0;
+  return  appointmentDB.data()!['paid'];
+}
+
+
+Future<List<String>> getServicesFromDB(String adminEmail) async {
+  List<String> servicesDB = [];
+  final temp = await _firestore.collection('workshopAdmins').doc(adminEmail).get();
+  var counter = 0;
+  for (var element in temp["services"]["service"]) {
+    servicesDB.add('$element | ${temp["services"]["price"][counter]} SAR');
+    counter++;
+  }
+  return servicesDB;
 }

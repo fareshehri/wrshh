@@ -38,7 +38,8 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
     'overallRate': 0,
     'numberOfRates': 0,
     'logo': '',
-    'technicianEmail': ''
+    'technicianEmail': '',
+    'adminEmail': '',
   };
 
   var serial = '';
@@ -83,6 +84,7 @@ class _GoogleMapsState extends State<MyGoogleMaps> {
               workshopInfo['logo'] = workshops[workshop]['logoURL'];
               workshopInfo['technicianEmail'] =
                   workshops[workshop]['technicianEmail'];
+              workshopInfo['adminEmail'] = workshops[workshop]['adminEmail'];
 
               pinPillPosition = pinVisiblePosition;
 

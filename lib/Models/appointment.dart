@@ -4,7 +4,7 @@ class Appointment {
   late String serial;
   late String clientID;
   late String status;
-  late String service;
+  late List service;
   late double price;
   late String datetime;
   late double rate;

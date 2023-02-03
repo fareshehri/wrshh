@@ -199,6 +199,12 @@ getWorkshopAppointmentsByDate(DateTime date) async {
   appointments[workshopName].addAll(AppointmentsDB.docs);
   return appointments;
 }
+getClientName(String clientID) async {
+ var clientName = '';
+  var client = await _firestore.collection('users').doc(clientID).get();
+ clientName = client['name'];
+  return clientName;
+}
 
 getWorkshopFinishedAppointments() async {
   Map appointments = {};

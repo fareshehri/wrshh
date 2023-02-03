@@ -74,7 +74,7 @@ class _ReportPageState extends State<ReportPage> {
             //Ppri.add(double.parse(element));
           }
           for (var i = 0; i < pcounter; i++) {
-            products.add(Product(pro[i], Ppri[i], 15));
+            products.add(Product(pro[i], double.parse(Ppri[i].toString()), 15));
           }
           print(1);
         

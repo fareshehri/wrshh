@@ -17,11 +17,14 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
       var date = DateTime.fromMillisecondsSinceEpoch(
           appointment.data()['datetime'].seconds * 1000);
       final String dateFormatted = formatter.format(date);
+      var serialNumber = appointment.data()['serial'];
+      if (serialNumber == null || serialNumber == '') {
+        serialNumber = 'Not Booked';
+      }
       cards.add(
         AppointmentsCard(
-          // logoURL: workshopName.first,
           itemID: appointment.data()['workshopID'],
-          itemName: workshopName,
+          itemName: cardType == 'Workshop' ? serialNumber : cardType == 'WorkshopInvoice' ? serialNumber : workshopName,
           cardType: cardType,
           appointment: Appointment(
             appointmentID: appointment.id,
@@ -29,7 +32,7 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
             serial: appointment.data()['serial'],
             clientID: appointment.data()['clientID'],
             status: appointment.data()['status'],
-            service: appointment.data()['service'],
+            service: appointment.data()['services'],
             price: double.parse(appointment.data()['price'].toString()),
             datetime: dateFormatted,
             rate: double.parse(appointment.data()['rate'].toString()),
