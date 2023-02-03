@@ -452,8 +452,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                               var request = await HttpClient().getUrl(Uri.parse(reportURL));
                               var response = await request.close();
                               var bytes = await consolidateHttpClientResponseBytes(response);
-                              if(defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android){downloadApp(bytes);}
-                              else{downloadWeb(bytes);}
+                              if(kIsWeb){downloadWeb(bytes);}
+                              else{downloadApp(bytes);}
                             } catch (e) {
                               print(e);
                             }
