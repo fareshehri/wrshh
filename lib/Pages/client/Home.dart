@@ -1,7 +1,5 @@
-import 'package:booking_calendar/booking_calendar.dart';
 import 'package:wrshh/Pages/guest/welcome.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
-import 'package:wrshh/Services/Auth/workshopTechnician_database.dart';
 import 'package:wrshh/Services/Maps/googleMapsPart.dart';
 import 'package:wrshh/Pages/client/Account.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +41,8 @@ class _HomeState extends State<Home> {
     Colors.transparent,
     Colors.transparent
   ];
+
+  bool serialChecker = false;
 
   var titlename = ['Home', 'Maintenance', 'Bookings'];
 
@@ -129,7 +129,7 @@ class _HomeState extends State<Home> {
                   )),
                   // const SizedBox(height: 1,),
                   // SizedBox(child: Image.asset('images/wallpaper2.jpg',fit: BoxFit.contain,)),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Form(
@@ -140,7 +140,7 @@ class _HomeState extends State<Home> {
                           decoration: kTextFieldDecoratopn.copyWith(
                               hintText: 'Enter any serial number',
                               labelText: 'Serial number',
-                              prefixIcon: Icon(Icons.search)),
+                              prefixIcon: const Icon(Icons.search)),
                           onChanged: (val) {
                             setState(() {
                               serial = val;
@@ -153,7 +153,9 @@ class _HomeState extends State<Home> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter serial Number';
+                              return 'Please enter Serial Number';
+                            } else if (value.length < 9 || value.length > 10) {
+                              return 'Please enter a valid Serial Number';
                             }
                             return null;
                           },
@@ -164,16 +166,30 @@ class _HomeState extends State<Home> {
                             if (_formKey.currentState!.validate()) {
                               // If the form is valid, display a snackbar. In the real world,
                               // you'd often call a server or save the information in a database.
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Processing Data')),
-                              );
 
                               // FIX Change getAppointmentsByVIN to getAppointmentsBySerial
-                              var appointmentsDB =
+                              Map appointmentsDB =
                                   await getAppointmentsBySerial(serial);
                               setState(() {
-                                appointments = appointmentsDB;
+                                if (appointmentsDB.isEmpty) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return const AlertDialog(
+                                            title: Text(
+                                                'Serial Number Don\'t Exist in Our Database'),
+                                            icon: Icon(Icons.warning),
+                                            iconColor: Colors.red);
+                                      });
+                                  serialChecker = false;
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Processing Data')),
+                                  );
+                                  appointments = appointmentsDB;
+                                  serialChecker = true;
+                                }
                               });
                             }
                           },
@@ -187,9 +203,12 @@ class _HomeState extends State<Home> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Column(
-                          children: buildAppointmentsCards(
-                              appointments, 'HistorySerial'),
+                        Visibility(
+                          visible: serialChecker,
+                          child: Column(
+                            children: buildAppointmentsCards(
+                                appointments, 'HistorySerial'),
+                          ),
                         ),
                       ],
                     ),
