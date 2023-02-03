@@ -206,6 +206,66 @@ getClientName(String clientID) async {
   return clientName;
 }
 
+getWorkshopTechInfo(String email) async {
+  return await _firestore.collection('workshopTechnicians').doc(email).get();
+}
+
+
+Future<String> updateUserPassword(String password) async {
+  String result = 'success';
+  try {
+    await _auth.currentUser!.updatePassword(password);
+  } catch (e) {
+    result = e.toString();
+  }
+  return result;
+}
+
+
+Future<String> updateWorkshopTechEmail(String email, Map data) async {
+  String result = 'success';
+  try {
+    await _auth.currentUser!.updateEmail(email);
+    _firestore.collection('workshopTechnicians').doc(data['email']).delete();
+    _firestore.collection('workshopTechnicians').doc(email).set({
+      'email': email,
+      'name': data['name'],
+      'phoneNumber': data['phoneNumber'],
+      'city': data['city'],
+    });
+    var workshops = await _firestore.collection('workshops')
+        .where('technicianEmail', isEqualTo: data['email'])
+        .get();
+    for (var workshop in workshops.docs) {
+      await _firestore.collection('workshops').doc(workshop.id).update(
+        {
+          'technicianEmail': email,
+        },
+      );
+    }
+  } catch (e) {
+    result = e.toString();
+  }
+  return result;
+}
+
+Future<String> updateWorkshopTechInfo(Map userData) async {
+  String result = 'success';
+  try {
+    await _firestore.collection('workshopTechnicians').doc(userData['email']).update(
+      {
+        'name': userData['name'],
+        'phoneNumber': userData['phoneNumber'],
+      },
+    );
+  } catch (e) {
+    result = e.toString();
+  }
+  return result;
+}
+
+
+
 getWorkshopFinishedAppointments() async {
   Map appointments = {};
   final AppointmentsDB = await _firestore

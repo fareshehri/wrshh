@@ -6,7 +6,7 @@ import 'package:wrshh/Pages/workshopTechnician/add_schedule.dart';
 import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
-import '../../components/Calendar_Timeline.dart';
+import 'edit_account.dart';
 import 'make_invoice.dart';
 
 class WorkshopTechnicianHome extends StatefulWidget {
@@ -58,8 +58,13 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
             ListTile(
               hoverColor: tc[_selectedIndex],
               leading: const Icon(Icons.manage_accounts),
-              title: const Text('Services'),
-              onTap: () {},
+              title: const Text('Edit Profile'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>  EditAccount()));
+              },
             ),
             ListTile(
               hoverColor: tc[_selectedIndex],
