@@ -25,7 +25,6 @@ class StateServices extends State<Services> {
   List subsFromDB = []; /// List to Hold DB Sub Services
 
   List<Service> mainKeysIndexed = []; /// List to carry Selected Main Services data (of Type Service)
-  List finalSend = []; /// List to carry The Selected Main Services and their subs (of Type Map)
   String selectedKey = ''; /// To check the selected Sub-Service name
 
   List mainsControllers =[]; /// List of Controllers for Main Services
@@ -555,11 +554,24 @@ class StateServices extends State<Services> {
                 colour: kDarkColor,
                 onPressed: () {
                   setState(() {
-                    checkAll();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content:
-                            Text('Services is Updates!')));
+                    bool checker = checkPrices();
+                    if (checker) {
+                      checkAll();
+                      showDialog(context: context, builder: (context) {
+                        return const AlertDialog(
+                            title: Text('Services Updated!'),
+                            icon: Icon(Icons.done),
+                            iconColor: Colors.green);
+                      });
+                    }
+                    else {
+                      showDialog(context: context, builder: (context) {
+                        return const AlertDialog(
+                            title: Text('Enter Correct Prices'),
+                            icon: Icon(Icons.warning),
+                            iconColor: Colors.red);
+                      });
+                    }
                   });
                 },
               ),
@@ -571,9 +583,37 @@ class StateServices extends State<Services> {
     }
   }
 
+  /// Check if user Left prices Fields blank
+  bool checkPrices() {
+    bool subCheck = true;
+    bool mainCheck = true;
+    for (int i=0; i < mainsControllers.length; i++) {
+      if (selectedSubIndexes[i]['value']) {
+        if (mainsControllers[i].text == '') {
+          mainCheck = false;
+        }
+      }
+    }
+    for (int i=0; i < selectedSubIndexes.length; i++) {
+      if (selectedSubIndexes[i]['value']) {
+        List tempKeys = selectedSubIndexes[i]['subs'].keys.toList();
+        for (int j=0; j < tempKeys.length; j++) {
+          if (selectedSubIndexes[i]['subs'][tempKeys[j]].keys.first) {
+            if (controllers[i][j].text == '') {
+              subCheck = false;
+            }
+          }
+        }
+      }
+    }
+
+   return subCheck && mainCheck;
+  }
+
   /// Finalize services and sub-services and their prices assignments
   void checkAll() {
     handlePrices();
+    List finalSend = []; /// List to carry The Selected Main Services and their subs (of Type Map)
     /// Get all Selected Sub-services data
     for (int i=0; i < selectedSubIndexes.length; i++) {
       if (selectedSubIndexes[i]['value']) {
@@ -586,6 +626,7 @@ class StateServices extends State<Services> {
     for (int i=0; i < mainKeysIndexed.length; i++) {
       temp.add(mainKeysIndexed[i].name);
     }
+
     for (int i=0; i < mainsControllers.length; i++) {
       if (temp.contains(mainSer[i].name)) {
         mainKeysIndexed[mainKeysIndexed.indexWhere((element) => element.name == mainSer[i].name)].price = int.parse(mainsControllers[i].text);
@@ -595,12 +636,9 @@ class StateServices extends State<Services> {
 
     /// All of the rest is to Separate Main and Sub Services and their prices for DB Type
     var finalSubsNames = {};
-    // finalSubsNames.clear();
     var finalSubsPrices = {};
-    // finalSubsPrices.clear();
     List tNames = [];
     List tPrices = [];
-
     for (int i=0; i < finalSend.length; i++) {
       var temp = finalSend[i]['subs'].keys.toList();
       tNames = [];
@@ -614,6 +652,7 @@ class StateServices extends State<Services> {
       finalSubsNames[mainKeysIndexed[i].name] = tNames;
       finalSubsPrices[mainKeysIndexed[i].name] = tPrices;
     }
+
     List finalM = [];
     List finalP = [];
     for (int i=0; i < mainKeysIndexed.length; i++) {
@@ -624,6 +663,7 @@ class StateServices extends State<Services> {
     services['SubPrices'] = finalSubsPrices;
     services['service'] = finalM;
     services['price'] = finalP;
+
     updateServices(services);
   }
 
