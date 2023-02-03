@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 
 import 'package:rate/rate.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+// import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
@@ -441,10 +441,10 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height * 0.7,
-                        child: SfPdfViewer.network(
-                          reportURL,
-                          enableDoubleTapZooming: true,
-                        ),
+                        // child: SfPdfViewer.network(
+                        //   reportURL,
+                        //   enableDoubleTapZooming: true,
+                        // ),
                       ),
                       ElevatedButton(
                         onPressed: () async{
@@ -452,8 +452,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                               var request = await HttpClient().getUrl(Uri.parse(reportURL));
                               var response = await request.close();
                               var bytes = await consolidateHttpClientResponseBytes(response);
-                              if(kIsWeb){downloadWeb(bytes);}
-                              else{downloadApp(bytes);}
+                              // if(kIsWeb){downloadWeb(bytes);}
+                              downloadApp(bytes);
                             } catch (e) {
                               print(e);
                             }
@@ -491,7 +491,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                 const Duration(seconds: 2), () => Navigator.pop(context));
           }
         },
-        child: Text('Show Report'),
+        child: Text('Show Report',
+        textAlign: TextAlign.center,),
         style: kButtonsStyle,
       ),
     );
@@ -544,7 +545,10 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       buttons.insert(1, SizedBox(width: 10));
     }
     if (buttons.length > 2){
-      buttons.insert(2, SizedBox(width: 10));
+      buttons.insert(3, SizedBox(width: 10));
+    }
+    if (buttons.length > 5){
+      buttons.insert(6, SizedBox(width: 10));
     }
 
     return buttons;

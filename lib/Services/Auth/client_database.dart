@@ -19,6 +19,20 @@ Future<String> updateUserEmail(String email, Map data) async {
   } catch (e) {
     result = e.toString();
   }
+  try {
+    await _firestore
+        .collection('Appointments')
+        .where('clientID', isEqualTo: data['email'])
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        _firestore.collection('Appointments').doc(element.id).update({
+          'clientID': email,
+        });
+      }
+    });
+  } catch (e) {
+  }
   return result;
 }
 
@@ -60,7 +74,6 @@ Future<Map<String, dynamic>> getWorkshopsFromDB() async {
   return workshopsData;
 }
 
-
 Future<List> getAppointmentsFromDB(String workshopID) async {
   List appointments = [];
   await _firestore
@@ -89,7 +102,6 @@ Future<String> getSerial() async {
   return serial;
 }
 
-
 Future<Map<String, dynamic>?> getCarInfoBySerial(String serial) async {
   var carInfo = await _firestore.collection('serial').doc(serial).get();
   return carInfo.data();
@@ -105,7 +117,6 @@ Future<String> getSerialFromUserId(String? userID) async {
   return serial;
 }
 
-
 void bookAppointment(String id, List selectedServices) async {
   var serial = await getSerialFromUserId(_auth.currentUser!.email);
   _firestore.collection('Appointments').doc(id).update({
@@ -116,9 +127,8 @@ void bookAppointment(String id, List selectedServices) async {
   });
 }
 
-
-
-void rateAppointment(String appointmentID, String workshopID, double rating) async {
+void rateAppointment(
+    String appointmentID, String workshopID, double rating) async {
   _firestore.collection('Appointments').doc(appointmentID).update({
     'rate': rating,
   });
@@ -142,7 +152,6 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
   return workshopName;
 }
 
-
 Future<Map> getUserAppointmentsFromDB() async {
   final User? user = _auth.currentUser;
   Map appointments = {};
@@ -152,7 +161,7 @@ Future<Map> getUserAppointmentsFromDB() async {
       .get();
   for (var appointment in Appointmentss.docs) {
     var workshopName =
-    await getWorkshopNameFromDB(appointment.data()['workshopID']);
+        await getWorkshopNameFromDB(appointment.data()['workshopID']);
     // if workshopName is not in appointments.keys add it
     if (!appointments.keys.contains(workshopName)) {
       appointments[workshopName] = [];
@@ -168,13 +177,14 @@ cancelAppointment(String appointmentID) async {
     'status': 'available',
     'clientID': '',
     'serial': '',
+    'services': [],
   });
 }
 
 getAppointmentReport(String appointmentID) async {
   String report = '';
   var appointment =
-  await _firestore.collection('Appointments').doc(appointmentID).get();
+      await _firestore.collection('Appointments').doc(appointmentID).get();
   if (appointment['reportURL'] != "") {
     report = appointment['reportURL'];
   }
@@ -190,7 +200,7 @@ getAppointmentsBySerial(String serial) async {
       .get();
   for (var appointment in Appointmentss.docs) {
     var workshopName =
-    await getWorkshopNameFromDB(appointment.data()['workshopID']);
+        await getWorkshopNameFromDB(appointment.data()['workshopID']);
     // if workshopName is not in appointments.keys add it
     if (!appointments.keys.contains(workshopName)) {
       appointments[workshopName] = [];
@@ -211,17 +221,16 @@ getWorkshopLogoFromDB(String workshopID) async {
   return workshopLogo;
 }
 
-
 Future<bool> checkReportStatus(String appointmentID) async {
   final appointmentDB =
-  await _firestore.collection('Appointments').doc(appointmentID).get();
+      await _firestore.collection('Appointments').doc(appointmentID).get();
   var reportURL = appointmentDB.data()!['reportURL'];
   return reportURL != '';
 }
 
 Future<bool> checkRateStatus(String appointmentID) async {
   final appointmentDB =
-  await _firestore.collection('Appointments').doc(appointmentID).get();
+      await _firestore.collection('Appointments').doc(appointmentID).get();
   var rate = appointmentDB.data()!['rate'];
   return rate != 0;
 }
@@ -229,14 +238,14 @@ Future<bool> checkRateStatus(String appointmentID) async {
 // change this
 Future<bool> checkPaymentStatus(String appointmentID) async {
   final appointmentDB =
-  await _firestore.collection('Appointments').doc(appointmentID).get();
-  return  appointmentDB.data()!['paid'];
+      await _firestore.collection('Appointments').doc(appointmentID).get();
+  return appointmentDB.data()!['paid'];
 }
-
 
 Future<List<String>> getServicesFromDB(String adminEmail) async {
   List<String> servicesDB = [];
-  final temp = await _firestore.collection('workshopAdmins').doc(adminEmail).get();
+  final temp =
+      await _firestore.collection('workshopAdmins').doc(adminEmail).get();
   var counter = 0;
   for (var element in temp["services"]["service"]) {
     servicesDB.add('$element | ${temp["services"]["price"][counter]} SAR');
@@ -244,6 +253,7 @@ Future<List<String>> getServicesFromDB(String adminEmail) async {
   }
   return servicesDB;
 }
+
 Future<bool> checkFutureAppointment() async {
   final User? user = _auth.currentUser;
   final Appointmentss = await _firestore

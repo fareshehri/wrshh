@@ -125,6 +125,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                       labelText: 'Branch Name',
                       prefixIcon: const Icon(Icons.car_repair),
                     ),
+                    enabled: false,
                     initialValue: workshop.workshopName,
                     textAlign: TextAlign.center,
                   ),

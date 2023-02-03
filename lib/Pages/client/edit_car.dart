@@ -34,7 +34,6 @@ class _EditCarInfoState extends State<EditCarInfo> {
   var visin = false;
   bool gotPath = false;
 
-
 //Get data from firestore
   Future _getData() async {
     final client = await getUserInfo();
@@ -67,8 +66,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
           visin = true;
         }
       });
-    }
-    else {
+    } else {
       title = "Add Car Information";
       welcomeMsg = "Hello $name, Please add your car information";
       setState(() {
@@ -242,7 +240,6 @@ class _EditCarInfoState extends State<EditCarInfo> {
                             child: DropdownButton(
                                 menuMaxHeight: 200,
                                 value: _selectedB,
-
                                 borderRadius: BorderRadius.circular(16),
                                 items: _selectbrand
                                     .map(
@@ -402,52 +399,60 @@ class _EditCarInfoState extends State<EditCarInfo> {
                           //in try we want to change the car to registered car
                           //in catch we will add a new car to database
                           try {
-                            final x = await FirebaseFirestore.instance
-                                .collection('serial')
-                                .doc(_serial)
-                                .get();
-
-                            if (x.exists &&
-                                (x['carModel'] != _selectedC ||
-                                    x['carManufacturer'] != _selectedB ||
-                                    x['otherBrand'] != ob ||
-                                    x['otherCar'] != oc)) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'The serial is already registered and the data is not matching or please contact us')),
-                              );
+                            bool isBooked = await checkFutureAppointment();
+                            if (isBooked) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      'You can not change your car because you have an appointment')));
                             } else {
-                              if (_formKey.currentState!.validate()) {
-                                //if brand is chosen clear ob
-                                if (_selectedB != 'Other') {
-                                  ob = "";
-                                  oc = "";
-                                }
-                                Map<String, String> saved = {
-                                  'carManufacturer': _selectedB,
-                                  'carModel': _selectedC,
-                                  'carYear': _currentSelectedYear.toString(),
-                                  'otherBrand': ob,
-                                  'otherCar': oc,
-                                };
-                                FirebaseFirestore.instance
-                                    .collection('serial')
-                                    .doc(_serial)
-                                    .set(saved);
-                                FirebaseFirestore.instance
-                                    .collection('clients')
-                                    .doc(email)
-                                    .update({'serial': _serial});
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
+                              final x = await FirebaseFirestore.instance
+                                  .collection('serial')
+                                  .doc(_serial)
+                                  .get();
+
+                              if (x.exists &&
+                                  (x['carModel'] != _selectedC ||
+                                      x['carManufacturer'] != _selectedB ||
+                                      x['otherBrand'] != ob ||
+                                      x['otherCar'] != oc)) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Car Changed')),
+                                  const SnackBar(
+                                      content: Text(
+                                          'The serial is already registered and the data is not matching or please contact us')),
                                 );
-                                Future.delayed(
-                                  const Duration(seconds: 2),
-                                  () => Navigator.pop(context),
-                                );
+                              } else {
+                                if (_formKey.currentState!.validate()) {
+                                  //if brand is chosen clear ob
+                                  if (_selectedB != 'Other') {
+                                    ob = "";
+                                    oc = "";
+                                  }
+                                  Map<String, String> saved = {
+                                    'carManufacturer': _selectedB,
+                                    'carModel': _selectedC,
+                                    'carYear': _currentSelectedYear.toString(),
+                                    'otherBrand': ob,
+                                    'otherCar': oc,
+                                  };
+                                  FirebaseFirestore.instance
+                                      .collection('serial')
+                                      .doc(_serial)
+                                      .set(saved);
+                                  FirebaseFirestore.instance
+                                      .collection('clients')
+                                      .doc(email)
+                                      .update({'serial': _serial});
+                                  // If the form is valid, display a snackbar. In the real world,
+                                  // you'd often call a server or save the information in a database.
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Car Changed')),
+                                  );
+                                  Future.delayed(
+                                    const Duration(seconds: 2),
+                                    () => Navigator.pop(context),
+                                  );
+                                }
                               }
                             }
                           } catch (e) {
