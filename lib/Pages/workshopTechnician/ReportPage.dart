@@ -44,6 +44,8 @@ class _ReportPageState extends State<ReportPage> {
     List Spri = [];
     List pro = [];
     List Ppri = [];
+    var temp1;
+    var temp2;
     // Step ####### correct
     //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
     final workshopDB = await _firestore.collection('workshops').doc(widget.app.workshopID).get();
@@ -53,6 +55,8 @@ class _ReportPageState extends State<ReportPage> {
         setState(() {
           //Services
           serv = value["services"];
+          temp1=serv["SubServices"];
+          temp2=serv["SubPrices"];
           for (var element in serv["service"]) {
             ser.add(element);
             scounter++;
@@ -65,24 +69,25 @@ class _ReportPageState extends State<ReportPage> {
           }
           //Products
           for (var element in serv["SubServices"].keys) {
-            serv["SubServices"][element].forEach((e){pro.add(e);});
-            //pro.add(element);
+            print(element);
+            for(var i=0 ; i< serv["SubServices"][element].length;i++){
+            pro.add(serv["SubServices"][element][i]);
+            Ppri.add(serv["SubPrices"][element][i]);
             pcounter++;
-          }
-          for (var element in serv["SubPrices"].keys) {
-            serv["SubPrices"][element].forEach((e){Ppri.add(e);});
-            //Ppri.add(double.parse(element));
+            }
+            
           }
           for (var i = 0; i < pcounter; i++) {
-            products.add(Product(pro[i], double.parse(Ppri[i].toString()), 15));
+            products.add(Product(pro[i], Ppri[i], 15));
           }
-          print(1);
+
         
         });
       },
     );
     setState(() {
       gotPath = true;
+
     });
   }
 
@@ -342,7 +347,7 @@ class _ReportPageState extends State<ReportPage> {
                                       fin,
                                       det,
                                       widget.app.workshopID,
-                                      widget.app.serial);
+                                      widget.app.serial,mileage);
                                   await service.savePdfFile(widget.app, mileage,
                                       finser, getTotal(), data);
                                   setState(() {

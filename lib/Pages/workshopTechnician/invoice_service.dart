@@ -26,17 +26,32 @@ class CustomRow {
 class PdfInvoiceService {
 
 
-  Future<Uint8List> createInvoice(List<Product> soldProducts,det,String WorkshopId,String serialNo) async {
+  Future<Uint8List> createInvoice(List<Product> soldProducts,det,String WorkshopId,String serialNo,var mileage) async {
+    var manu;
+    var mak;
 //  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
     // Step #################### correct
     final serial = await _firestore.collection('serial').doc(serialNo).get();
     //final workshop =await _firestore.collection('workshops').where('adminEmail', isEqualTo: WorkshopId).get();
-
+     if(serial['carManufacturer']=='other'){
+      manu=serial['otherBrand'];
+      mak=serial['otherCar'];
+    }
+    else{
+      manu=serial['carManufacturer'];
+      mak=serial['carModel'];
+    }
     var e="";
     if(det!=""){
       e="Maintenance Details: ";
     }
+
+    final workshop = await _firestore.collection('workshops').doc(WorkshopId).get();
+    var email = workshop.data()!['technicianEmail'];
+    final workshopt = await _firestore.collection('workshopTechnicians').doc(email).get();
+
+
     final pdf = pw.Document();
 
     // Step Calc
@@ -99,25 +114,25 @@ class PdfInvoiceService {
                   pw.Column(
                     // Step ####### correct
                     children: [
-                      pw.Text("Customer Name"),
-                      pw.Text("Customer Address"),
-                      pw.Text("Customer City"),
+                      pw.Text("Manufacturer: $manu"),
+                      pw.Text("Model: $mak"),
+                      pw.Text("Year: ${serial['carYear']}"),
                     ],
                   ),
                   pw.Column(
                     children: [
-                      pw.Text("Max Weber"),
-                      pw.Text("Weird Street Name 1"),
-                      pw.Text("77662 Not my City"),
-                      pw.Text("Vat-id: 123456"),
-                      pw.Text("Invoice-Nr: 00001")
+                      pw.Text("Workshop: ${workshop['workshopName']}"),
+                      pw.Text("Technician: ${workshopt['name']}"),
+                      pw.Text("Contact: ${workshopt['phoneNumber']}"),
+                      pw.Text("Serial Number: $serialNo"),
+                      pw.Text("Odometer: $mileage"),
                     ],
                   )
                 ],
               ),
               pw.SizedBox(height: 50),
               pw.Text(
-                  "Dear Customer, thanks for buying at Flutter Explained, feel free to see the list of items below."),
+                  "Dear Customer, thanks for Trusting us at ${workshop['workshopName']}, the list below contains requested Services & Products."),
               pw.SizedBox(height: 25),
               itemColumn(elements),
               pw.Row(children: [
@@ -126,11 +141,11 @@ class PdfInvoiceService {
               ]
       ),
               pw.SizedBox(height: 25),
-              pw.Text("Thanks for your trust, and till the next time."),
+              pw.Text(" "),
               pw.SizedBox(height: 25),
-              pw.Text("Kind regards,"),
+              pw.Text(" "),
               pw.SizedBox(height: 25),
-              pw.Text("Max Weber")
+              pw.Text("Thanks for your trust, and till the next time.")
             ],
           );
         },
