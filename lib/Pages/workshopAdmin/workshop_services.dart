@@ -556,6 +556,10 @@ class StateServices extends State<Services> {
                 onPressed: () {
                   setState(() {
                     checkAll();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                            Text('Services is Updates!')));
                   });
                 },
               ),
