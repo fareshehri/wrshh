@@ -65,23 +65,26 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
+                    SizedBox(
+                      height: 20.0,
+                    ),
                     Flex(
                         direction: Axis.horizontal,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Flexible(
-                            child: SizedBox(
-                              height: 200.0,
-                              child: Image.network(
-                                logoURL,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/images/loading.png',
-                                    width: 80,
-                                    height: 80,
-                                  );
-                                },
-                              ),
+                          ClipOval(
+                            child: Image.network(
+                              logoURL,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/loading.png',
+                                  width: 200,
+                                  height: 200,
+                                );
+                              },
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ]),
@@ -194,9 +197,10 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                                                 return const AlertDialog(
                                                   title: Center(
                                                       child: Text(
-                                                        'Name updated successfully',
-                                                        style: TextStyle(color: Colors.green),
-                                                      )),
+                                                    'Name updated successfully',
+                                                    style: TextStyle(
+                                                        color: Colors.green),
+                                                  )),
                                                 );
                                               });
                                         } else {
@@ -205,19 +209,22 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                     title: Center(
-                                                      child: Column(children: const [
-                                                        Icon(
-                                                          Icons.error,
-                                                          color: Colors.red,
-                                                          size: 50,
-                                                        ),
-                                                        Text(
-                                                          textAlign: TextAlign.center,
-                                                          'Something went wrong',
-                                                          style: TextStyle(color: Colors.red),
-                                                        ),
-                                                      ]),
-                                                    ));
+                                                  child:
+                                                      Column(children: const [
+                                                    Icon(
+                                                      Icons.error,
+                                                      color: Colors.red,
+                                                      size: 50,
+                                                    ),
+                                                    Text(
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      'Something went wrong',
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
+                                                  ]),
+                                                ));
                                               });
                                         }
                                       },

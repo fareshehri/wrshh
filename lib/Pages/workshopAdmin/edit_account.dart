@@ -6,7 +6,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 
 import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../components/avatar_upload.dart';
+import '../../components/avatar_update.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
 
@@ -24,7 +24,7 @@ class _EditAccountState extends State<EditAccount> {
   late String oldEmail;
   late String oldPhoneNumber;
   late String oldCity;
-  late final  services;
+  late final services;
   late String oldPassword;
   bool passwordEntered = false;
   bool nameChanged = false;
@@ -36,6 +36,7 @@ class _EditAccountState extends State<EditAccount> {
   late String newPhoneNumber;
   late String newCity;
   late String newPassword;
+  late String logoURL = '';
   bool gotPath = false;
 
   late File _pickedImage;
@@ -44,6 +45,7 @@ class _EditAccountState extends State<EditAccount> {
   Future _getData() async {
     final User? user = _auth.currentUser;
     final workshopAdmin = await getWorkshopAdminInfo(user!.email.toString());
+    var logoURLDB = await getWorkshopLogoURL();
     setState(() {
       oldName = workshopAdmin['name'];
       oldEmail = user.email!;
@@ -52,7 +54,7 @@ class _EditAccountState extends State<EditAccount> {
       oldCity = workshopAdmin['city'];
       services = workshopAdmin['services'];
       gotPath = true;
-
+      logoURL = logoURLDB;
     });
   }
 
@@ -89,13 +91,26 @@ class _EditAccountState extends State<EditAccount> {
           child: ListView(
             children: <Widget>[
               gap,
-              AvatarPhoto(
-
-                onImageSelected: (image) {
-                  setState(() {
-                    _logoChanged = true;
-                    _pickedImage = image;
-                  });
+              AvatarPhotoUpdate(
+                logoURL: logoURL,
+                onImageSelected: (image) async {
+                  _logoChanged = true;
+                  _pickedImage = image;
+                  var result = await updateWorkshopLogo(_pickedImage);
+                  if (result == 'success') {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Logo Updated Successfully'),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Error Updating Logo'),
+                      ),
+                    );
+                  }
+                  setState(() {});
                 },
               ),
               gap,
@@ -165,7 +180,7 @@ class _EditAccountState extends State<EditAccount> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title:
-                          const Center(child: Text('Enter your password')),
+                              const Center(child: Text('Enter your password')),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -184,7 +199,7 @@ class _EditAccountState extends State<EditAccount> {
                                     prefixIcon: Icon(Icons.lock)),
                                 textAlign: TextAlign.center,
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                    AutovalidateMode.onUserInteraction,
                                 obscureText: true,
                                 validator: passwordValidator,
                                 onChanged: (value) {
@@ -199,7 +214,7 @@ class _EditAccountState extends State<EditAccount> {
                                     prefixIcon: Icon(Icons.lock)),
                                 textAlign: TextAlign.center,
                                 autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                                    AutovalidateMode.onUserInteraction,
                                 obscureText: true,
                                 validator: passwordValidator,
                                 onChanged: (value) {
@@ -253,7 +268,7 @@ class _EditAccountState extends State<EditAccount> {
                                       prefixIcon: Icon(Icons.lock)),
                                   textAlign: TextAlign.center,
                                   autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
+                                      AutovalidateMode.onUserInteraction,
                                   obscureText: true,
                                   validator: passwordValidator,
                                   onChanged: (value) {
@@ -303,9 +318,9 @@ class _EditAccountState extends State<EditAccount> {
             return const AlertDialog(
               title: Center(
                   child: Text(
-                    'Password is incorrect',
-                    style: TextStyle(color: Colors.red),
-                  )),
+                'Password is incorrect',
+                style: TextStyle(color: Colors.red),
+              )),
             );
           });
     }
@@ -318,9 +333,9 @@ class _EditAccountState extends State<EditAccount> {
               return const AlertDialog(
                 title: Center(
                     child: Text(
-                      'Password updated successfully',
-                      style: TextStyle(color: Colors.green),
-                    )),
+                  'Password updated successfully',
+                  style: TextStyle(color: Colors.green),
+                )),
               );
             });
       } else {
@@ -329,19 +344,19 @@ class _EditAccountState extends State<EditAccount> {
             builder: (BuildContext context) {
               return AlertDialog(
                   title: Center(
-                    child: Column(children: const [
-                      Icon(
-                        Icons.error,
-                        color: Colors.red,
-                        size: 50,
-                      ),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Something went wrong',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ]),
-                  ));
+                child: Column(children: const [
+                  Icon(
+                    Icons.error,
+                    color: Colors.red,
+                    size: 50,
+                  ),
+                  Text(
+                    textAlign: TextAlign.center,
+                    'Something went wrong',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ]),
+              ));
             });
       }
     }
@@ -359,9 +374,9 @@ class _EditAccountState extends State<EditAccount> {
               return const AlertDialog(
                 title: Center(
                     child: Text(
-                      'Password is incorrect',
-                      style: TextStyle(color: Colors.red),
-                    )),
+                  'Password is incorrect',
+                  style: TextStyle(color: Colors.red),
+                )),
               );
             });
       }
@@ -370,8 +385,7 @@ class _EditAccountState extends State<EditAccount> {
           Map data = {
             'email': oldEmail,
             'name': nameChanged ? newName : oldName,
-            'phoneNumber':
-            newPhoneNumber.startsWith('+966')
+            'phoneNumber': newPhoneNumber.startsWith('+966')
                 ? newPhoneNumber
                 : '+966$newPhoneNumber',
             'city': cityChanged ? newCity : oldCity,
@@ -384,19 +398,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Account updated successfully',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Account updated successfully',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ]),
+                  ));
                 });
           } else {
             showDialog(
@@ -404,26 +418,26 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Something went wrong',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Something went wrong',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]),
+                  ));
                 });
           }
         }
         if (nameChanged || phoneNumberChanged || cityChanged) {
           Map data = {
             'email': emailChanged ? newEmail : oldEmail,
-            'phoneNumber':newPhoneNumber.startsWith('+966')
+            'phoneNumber': newPhoneNumber.startsWith('+966')
                 ? newPhoneNumber
                 : '+966$newPhoneNumber',
             'name': nameChanged ? newName : oldName,
@@ -437,19 +451,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Account updated successfully',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Account updated successfully',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ]),
+                  ));
                 });
           } else {
             showDialog(
@@ -457,19 +471,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Something went wrong',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Something went wrong',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]),
+                  ));
                 });
           }
         }

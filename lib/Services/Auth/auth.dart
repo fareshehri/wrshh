@@ -27,38 +27,6 @@ class AuthService {
     final user = _auth.currentUser;
     return user!.email!;
   }
-
-  // TODO: workshopTechnician
-  // Future<AppUser> getUser() async {
-  //   final User user = _auth.currentUser!;
-  //   final client = await _firestore.collection('clients').doc(user.email).get();
-  //   final workshop =
-  //       await _firestore.collection('workshopAdmins').doc(user.email).get();
-  //   if (client.exists) {
-  //     return ClientUser(
-  //       email: client['email'],
-  //       name: client['name'],
-  //       phoneNumber: client['phoneNumber'],
-  //       password: '',
-  //     );
-  //   } else if (workshop.exists) {
-  //     return WorkshopAdmin(
-  //       email: workshop['email'],
-  //       name: workshop['name'],
-  //       phoneNumber: workshop['phoneNumber'],
-  //       password: '',
-  //     );
-  //   } else {
-  //     return AppUser(
-  //       email: 'user.email',
-  //       name: 'user.displayName',
-  //       phoneNumber: 'user.phoneNumber',
-  //       password: '',
-  //       userType: '',
-  //     );
-  //   }
-  // }
-
   Future<UserCredential?> signInUser(String email, String password) async {
     UserCredential? userCredential;
     try{

@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -23,7 +22,7 @@ Future<void> addAppointmentsTable(
         DateTime appEndTime = startTime.add(Duration(minutes: duration));
         var appEndTimeF =
             DateFormat('yyyy-MM-dd hh:mm').parse(appEndTime.toString());
-        while (startTime.isBefore(endTimeF) ) {
+        while (startTime.isBefore(endTimeF)) {
           for (int c = 0; c < capacity; c++) {
             Map<String, dynamic> wp = {
               'workshopID': user?.uid,
@@ -57,7 +56,7 @@ Future<void> handleAppointmentsInDB() async {
   Query query = _firestore
       .collection("Appointments")
       .where("workshopID", isEqualTo: user?.uid)
-  .where("status", isEqualTo: 'available');
+      .where("status", isEqualTo: 'available');
 
   query.get().then((querySnapshot) {
     for (var document in querySnapshot.docs) {
@@ -84,54 +83,41 @@ Future<void> updateDatesHours(LinkedHashMap<String, dynamic> datesHours) async {
       .update({'Hours': datesHours});
 }
 
-changeDatesHoursStatus() async{
+changeDatesHoursStatus() async {
   final user = _auth.currentUser;
   final time = await _firestore.collection('workshops').doc(user?.uid).get();
   var hours = time['Hours'];
   DateTime temp = DateTime.now().add(Duration());
 
-  // if today is Saturday, change status for all days to false
   if (temp.weekday == 6) {
     hours['saturday'][0] = false;
-    // hours['sunday'][0] = false;
-    // hours['monday'][0] = false;
-    // hours['tuesday'][0] = false;
-    // hours['wednesday'][0] = false;
-    // hours['thursday'][0] = false;
-  }
-  // if today is Sunday, get remaining week days (6)
-  else if (temp.weekday == 7) {
-    hours['sunday'][0] = false;
-  }
-  // if today is Monday, get remaining week days (5)
-  else if (temp.weekday == 1) {
-    hours['sunday'][0] = false;
-    hours['monday'][0] = false;
-  }
-  // if today is Tuesday, get remaining week days (4)
-  else if (temp.weekday == 2) {
-    hours['sunday'][0] = false;
-    hours['monday'][0] = false;
-    hours['tuesday'][0] = false;
-  }
-  // if today is Wednesday, get remaining week days(3)
-  else if (temp.weekday == 3) {
-    hours['sunday'][0] = false;
-    hours['monday'][0] = false;
-    hours['tuesday'][0] = false;
-    hours['wednesday'][0] = false;
-
-  }
-  // if today is Thursday, get remaining week days(2)
-  else if (temp.weekday == 4) {
     hours['sunday'][0] = false;
     hours['monday'][0] = false;
     hours['tuesday'][0] = false;
     hours['wednesday'][0] = false;
     hours['thursday'][0] = false;
-  }
-  // if today is Friday, get remaining week days(1)
-  else if (temp.weekday == 5) {
+    hours['friday'][0] = false;
+  } else if (temp.weekday == 7) {
+    hours['sunday'][0] = false;
+  } else if (temp.weekday == 1) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+  } else if (temp.weekday == 2) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+  } else if (temp.weekday == 3) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+    hours['wednesday'][0] = false;
+  } else if (temp.weekday == 4) {
+    hours['sunday'][0] = false;
+    hours['monday'][0] = false;
+    hours['tuesday'][0] = false;
+    hours['wednesday'][0] = false;
+    hours['thursday'][0] = false;
+  } else if (temp.weekday == 5) {
     hours['sunday'][0] = false;
     hours['monday'][0] = false;
     hours['tuesday'][0] = false;
@@ -159,10 +145,7 @@ Future<int> getCapacity() async {
 
 Future<String> getWorkshopNameFromDB(String workshopID) async {
   String workshopName = '';
-  var workshop =  await _firestore
-      .collection('workshops')
-      .doc(workshopID)
-      .get();
+  var workshop = await _firestore.collection('workshops').doc(workshopID).get();
   workshopName = workshop['workshopName'];
   return workshopName;
 }
@@ -186,7 +169,8 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
 getWorkshopAppointmentsByDate(DateTime date) async {
   Map appointments = {};
   Timestamp startDate = Timestamp.fromDate(date);
-  Timestamp endDate = Timestamp.fromDate(date.add(Duration(hours: 23, minutes: 59)));
+  Timestamp endDate =
+      Timestamp.fromDate(date.add(Duration(hours: 23, minutes: 59)));
   final AppointmentsDB = await _firestore
       .collection('Appointments')
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
@@ -195,21 +179,21 @@ getWorkshopAppointmentsByDate(DateTime date) async {
       .orderBy('datetime', descending: false)
       .get();
   var workshopName = await getWorkshopNameFromDB(_auth.currentUser!.uid);
-    appointments[workshopName] = [];
+  appointments[workshopName] = [];
   appointments[workshopName].addAll(AppointmentsDB.docs);
   return appointments;
 }
+
 getClientName(String clientID) async {
- var clientName = '';
+  var clientName = '';
   var client = await _firestore.collection('users').doc(clientID).get();
- clientName = client['name'];
+  clientName = client['name'];
   return clientName;
 }
 
 getWorkshopTechInfo(String email) async {
   return await _firestore.collection('workshopTechnicians').doc(email).get();
 }
-
 
 Future<String> updateUserPassword(String password) async {
   String result = 'success';
@@ -220,7 +204,6 @@ Future<String> updateUserPassword(String password) async {
   }
   return result;
 }
-
 
 Future<String> updateWorkshopTechEmail(String email, Map data) async {
   String result = 'success';
@@ -233,7 +216,8 @@ Future<String> updateWorkshopTechEmail(String email, Map data) async {
       'phoneNumber': data['phoneNumber'],
       'city': data['city'],
     });
-    var workshops = await _firestore.collection('workshops')
+    var workshops = await _firestore
+        .collection('workshops')
         .where('technicianEmail', isEqualTo: data['email'])
         .get();
     for (var workshop in workshops.docs) {
@@ -252,7 +236,10 @@ Future<String> updateWorkshopTechEmail(String email, Map data) async {
 Future<String> updateWorkshopTechInfo(Map userData) async {
   String result = 'success';
   try {
-    await _firestore.collection('workshopTechnicians').doc(userData['email']).update(
+    await _firestore
+        .collection('workshopTechnicians')
+        .doc(userData['email'])
+        .update(
       {
         'name': userData['name'],
         'phoneNumber': userData['phoneNumber'],
@@ -263,8 +250,6 @@ Future<String> updateWorkshopTechInfo(Map userData) async {
   }
   return result;
 }
-
-
 
 getWorkshopFinishedAppointments() async {
   Map appointments = {};

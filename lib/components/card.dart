@@ -1,20 +1,10 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-
-
 import 'package:rate/rate.dart';
-
 import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/Home.dart';
 import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
-import 'package:wrshh/components/downApp.dart';
-
 import '../Services/Auth/client_database.dart';
-import 'package:dio/dio.dart';
 
 class AppointmentsCard extends StatefulWidget {
   final String? logoURL;
@@ -428,50 +418,6 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
           var reportURL =
               await getAppointmentReport(widget.appointment.appointmentID);
           if (reportURL != "") {
-            // await Permission.storage.request();
-            // await Permission.manageExternalStorage.request();
-            //
-            // Directory appDocDir = await getApplicationDocumentsDirectory();
-            // String appDocPath = appDocDir.path;
-            //
-            // final name = await OpenDocument.getNameFile(url: reportURL);
-            //
-            // // final path = await OpenDocument.getPathDocument(folderName: "Reports");
-            //
-            // var filePath = "$appDocPath/$name";
-            //
-            // final isCheck = await OpenDocument.checkDocument(filePath: filePath);
-            // Future<String> downloadFile(String filePath, String url) async {
-            //   // CancelToken cancelToken = CancelToken();
-            //   Dio dio = new Dio();
-            //   await dio.download(
-            //     url,
-            //     filePath,
-            //     onReceiveProgress: (count, total) {
-            //       debugPrint('---Download----Rec: $count, Total: $total');
-            //       setState(() {
-            //         // _platformVersion = ((count / total) * 100).toStringAsFixed(0) + "%";
-            //       });
-            //     },
-            //   );
-            //   return filePath;
-            // }
-            //
-            // try {
-            //   if (!isCheck) {
-            //     filePath = await downloadFile("$filePath", reportURL);
-            //   }
-            //
-            //   await OpenDocument.openDocument(filePath: filePath);
-            // } catch (e) {
-            //   print(e);
-            // }
-            // } on PlatformException catch (e) {
-            //   debugPrint("ERROR: message_${e.message} ---- detail_${e.details}");
-            // }
-
-
-
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -484,28 +430,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height * 0.7,
-                        // child: PDF.network(
-                        //   'https://raw.githubusercontent.com/FlutterInThai/Dart-for-Flutter-Sheet-cheet/master/Dart-for-Flutter-Cheat-Sheet.pdf',
-                        //   height: 500,
-                        //   width: 300,
-                        // )
+                        // child:
                       ),
-                      ElevatedButton(
-                        onPressed: () async{
-                            try {
-                              var request = await HttpClient().getUrl(Uri.parse(reportURL));
-                              var response = await request.close();
-                              var bytes = await consolidateHttpClientResponseBytes(response);
-                              // if(kIsWeb){downloadWeb(bytes);}
-                              downloadApp(bytes);
-                            } catch (e) {
-                              print(e);
-                            }
-
-                        },
-                        child: Text('Download'),
-                        style: kButtonsStyle,
-                      )
                     ],
                   ),
                 ),
@@ -535,8 +461,10 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                 const Duration(seconds: 2), () => Navigator.pop(context));
           }
         },
-        child: Text('Show Report',
-        textAlign: TextAlign.center,),
+        child: Text(
+          'Show Report',
+          textAlign: TextAlign.center,
+        ),
         style: kButtonsStyle,
       ),
     );
@@ -562,22 +490,22 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       if (widget.appointment.status == 'booked') {
         buttons.add(cancelButton);
       } else if (widget.appointment.status == 'finished') {
-        if (!isRated){
+        if (!isRated) {
           buttons.add(rateButton);
         }
-        if (isReported){
+        if (isReported) {
           buttons.add(reportButton);
         }
-        if (!isPaid){
+        if (!isPaid) {
           buttons.add(payButton);
         }
       }
     } else if (widget.cardType == 'HistorySerial') {
-      if (isReported){
+      if (isReported) {
         buttons.add(reportButton);
       }
     } else if (widget.cardType == 'WorkshopInvoice') {
-      if (!isReported){
+      if (!isReported) {
         buttons.add(uploadReportButton);
       }
     } else if (widget.cardType == 'Workshop') {
@@ -585,13 +513,13 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
         buttons.add(cancelButton);
       }
     }
-    if (buttons.length > 1){
+    if (buttons.length > 1) {
       buttons.insert(1, SizedBox(width: 10));
     }
-    if (buttons.length > 2){
+    if (buttons.length > 2) {
       buttons.insert(3, SizedBox(width: 10));
     }
-    if (buttons.length > 5){
+    if (buttons.length > 5) {
       buttons.insert(6, SizedBox(width: 10));
     }
 

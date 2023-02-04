@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 
+import '../../Services/Auth/workshopTechnician_database.dart';
 import '../../components/roundedButton.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
@@ -63,8 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your email',
-                  labelText: 'Email',
-                  prefixIcon: Icon(Icons.email)),
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email)),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
@@ -96,19 +97,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
 
                       try {
-                        final newUser = await AuthService().signInUser(email, password);
-                        if (newUser?.user?.email != null){
-                          var userType = await AuthService().getUserType(newUser?.user!.email!);
-                          if (userType == 'ClientUser'){
+                        final newUser =
+                            await AuthService().signInUser(email, password);
+                        if (newUser?.user?.email != null) {
+                          var userType = await AuthService()
+                              .getUserType(newUser?.user!.email!);
+                          if (userType == 'ClientUser') {
                             Navigator.pushNamed(context, Home.id);
-                          } else if (userType == 'workshopAdmin'){
+                          } else if (userType == 'workshopAdmin') {
                             Navigator.pushNamed(context, WorkshopAdminHome.id);
-                          } else if (userType == 'workshopTechnician'){
-                            print('technician');
-                            Navigator.pushNamed(context, WorkshopTechnicianHome.id);
-                          // } else if (userType == 'AdminUser'){
-                          //   Navigator.pushNamed(context, AHome.id);
-                          } else {
+                          } else if (userType == 'workshopTechnician') {
+                            changeDatesHoursStatus();
+                            Navigator.pushNamed(
+                                context, WorkshopTechnicianHome.id);
                           }
                         }
                       } catch (e) {

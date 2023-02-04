@@ -6,6 +6,7 @@ import 'package:wrshh/Pages/workshopTechnician/add_schedule.dart';
 import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
+import '../../Services/Auth/workshopTechnician_database.dart';
 import 'edit_account.dart';
 import 'make_invoice.dart';
 
@@ -55,6 +56,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
     // TODO: implement initState
     _selectedIndex = widget.index;
     super.initState();
+    changeDatesHoursStatus();
   }
 
   @override
