@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../components/buildCards.dart';
+import '../../Services/Auth/workshop_admin_database.dart';
+import '../../components/build_cards.dart';
 import 'add_workshop.dart';
 
 class ManageWorkshops extends StatefulWidget {

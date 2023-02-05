@@ -49,7 +49,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '856152766204',
     projectId: 'wrshhx',
     authDomain: 'wrshhx.firebaseapp.com',
-    databaseURL: 'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'wrshhx.appspot.com',
     measurementId: 'G-N418KMQVND',
   );
@@ -59,7 +60,8 @@ class DefaultFirebaseOptions {
     appId: '1:856152766204:android:ece8b213a36207f7b84979',
     messagingSenderId: '856152766204',
     projectId: 'wrshhx',
-    databaseURL: 'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'wrshhx.appspot.com',
   );
 
@@ -68,9 +70,11 @@ class DefaultFirebaseOptions {
     appId: '1:856152766204:ios:a784d63111e0e63bb84979',
     messagingSenderId: '856152766204',
     projectId: 'wrshhx',
-    databaseURL: 'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'wrshhx.appspot.com',
-    iosClientId: '856152766204-724ihtbn2vha26m0rn5pvae13v886f09.apps.googleusercontent.com',
+    iosClientId:
+        '856152766204-724ihtbn2vha26m0rn5pvae13v886f09.apps.googleusercontent.com',
     iosBundleId: 'com.example.wrshh',
   );
 
@@ -79,9 +83,11 @@ class DefaultFirebaseOptions {
     appId: '1:856152766204:ios:a784d63111e0e63bb84979',
     messagingSenderId: '856152766204',
     projectId: 'wrshhx',
-    databaseURL: 'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://wrshhx-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'wrshhx.appspot.com',
-    iosClientId: '856152766204-724ihtbn2vha26m0rn5pvae13v886f09.apps.googleusercontent.com',
+    iosClientId:
+        '856152766204-724ihtbn2vha26m0rn5pvae13v886f09.apps.googleusercontent.com',
     iosBundleId: 'com.example.wrshh',
   );
 }

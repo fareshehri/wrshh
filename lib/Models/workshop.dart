@@ -1,4 +1,3 @@
-
 class Workshop {
   late String? adminEmail;
   late String workshopUID;
@@ -10,7 +9,6 @@ class Workshop {
   late String logoURL;
   late int numOfRates;
   // late String technicalPhoneNumber;
-
 
   Workshop({
     // required this.name,
@@ -24,7 +22,6 @@ class Workshop {
     required this.logoURL,
     required this.numOfRates,
     // required this.technicalPhoneNumber,
-
 
     // required this.logo,
   });

@@ -9,10 +9,10 @@ class Account extends StatefulWidget {
   const Account({Key? key}) : super(key: key);
 
   @override
-  _AccountState createState() => _AccountState();
+  AccountState createState() => AccountState();
 }
 
-class _AccountState extends State<Account> {
+class AccountState extends State<Account> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +41,8 @@ class _AccountState extends State<Account> {
                         context,
                         rootNavigator: true,
                       ).push(MaterialPageRoute(
-                          builder: (BuildContext context) => const EditCarInfo()));
+                          builder: (BuildContext context) =>
+                              const EditCarInfo()));
                     });
                   }),
               ListTile(

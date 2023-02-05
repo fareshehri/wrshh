@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wrshh/Pages/workshopTechnician/schedule_data.dart';
 
-import 'package:wrshh/components/roundedButton.dart';
+import 'package:wrshh/components/rounded_button.dart';
 import 'package:wrshh/constants.dart';
-import '../../Services/Auth/workshopTechnician_database.dart';
+import '../../Services/Auth/workshop_technician_database.dart';
 import '../../components/booking_slot.dart';
 
 class AddSchedule extends StatefulWidget {
@@ -16,32 +16,59 @@ class AddSchedule extends StatefulWidget {
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-  TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0); ///Shift start time
-  TimeOfDay endTime = TimeOfDay(hour: 16, minute: 0); ///Shift finish time
-  late Map selectedDays = {}; ///Reference for days cards selection
+  // ignore: prefer_const_constructors
+  TimeOfDay startTime = TimeOfDay(hour: 8, minute: 0);
+
+  ///Shift start time
+  // ignore: prefer_const_constructors
+  TimeOfDay endTime = TimeOfDay(hour: 16, minute: 0);
+
+  ///Shift finish time
+  late Map selectedDays = {};
+
+  ///Reference for days cards selection
   late Map bookedDays = {};
 
-  bool gotPath = false; /// Retrieve from DB var temp
-  late int capacity = 0; /// Capacity
-  late int duration = 15; /// Duration
-  late LinkedHashMap<String,dynamic> datesHours; ///Contains Days and Shift hours
-  late List<DateTime> dates = []; /// Check Day of the week, and assign based on it
-  late Map<String,DateTime> selectedDates = {}; // Not yet
+  bool gotPath = false;
+
+  /// Retrieve from DB var temp
+  late int capacity = 0;
+
+  /// Capacity
+  late int duration = 15;
+
+  /// Duration
+  late LinkedHashMap<String, dynamic> datesHours;
+
+  ///Contains Days and Shift hours
+  late List<DateTime> dates = [];
+
+  /// Check Day of the week, and assign based on it
+  late Map<String, DateTime> selectedDates = {}; // Not yet
 
   /// Retrieve All information from DB
   Future call() async {
-    capacity = await getCapacity(); /// Retrieve Capacity
-    datesHours = await getDatesHours(); /// Retrieve Days and Shift hours
+    capacity = await getCapacity();
+
+    /// Retrieve Capacity
+    datesHours = await getDatesHours();
+
+    /// Retrieve Days and Shift hours
 
     setState(() {
-      gotPath = true; /// Allow the page to continue, after retrieving from DB
+      gotPath = true;
+
+      /// Allow the page to continue, after retrieving from DB
       for (var day in days) {
-        if (datesHours[day][0])
-          { /// Set Shift Start and End Time, if exists
-            startTime = TimeOfDay(hour: datesHours[day][1], minute: datesHours[day][2]);
-            endTime = TimeOfDay(hour: datesHours[day][3], minute: datesHours[day][4]);
-          }
+        if (datesHours[day][0]) {
+          /// Set Shift Start and End Time, if exists
+          startTime =
+              TimeOfDay(hour: datesHours[day][1], minute: datesHours[day][2]);
+          endTime =
+              TimeOfDay(hour: datesHours[day][3], minute: datesHours[day][4]);
+        }
       }
+
       /// Assign selected days from DB to selected Days cards reference
       populateDaysNames();
     });
@@ -50,16 +77,14 @@ class _AddScheduleState extends State<AddSchedule> {
   @override
   void initState() {
     super.initState();
-    try{
+    try {
       call();
       checkDaysDates();
       checkDays();
       changeDatesHoursStatus();
+    } catch (e) {
+      // print(e);
     }
-    catch (e) {
-      print(e);
-    }
-
   }
 
   /// Check Selected "enabled" days from DB and assign it to the list
@@ -68,24 +93,23 @@ class _AddScheduleState extends State<AddSchedule> {
       for (var t in days) {
         /// Assign selected days from DB to selected Days cards reference
         bookedDays[t] = datesHours[t][0];
-
       }
     });
   }
 
   /// Check day of the week, and assign allowed days given the day
   void checkDaysDates() {
-    DateTime temp = DateTime.now().add(Duration());
+    DateTime temp = DateTime.now().add(const Duration());
 
     // if today is Saturday, get remaining week days(7)
     if (temp.weekday == 6) {
-    dates.add(temp.add(const Duration(days: 1)));
-    dates.add(temp.add(const Duration(days: 2)));
-    dates.add(temp.add(const Duration(days: 3)));
-    dates.add(temp.add(const Duration(days: 4)));
-    dates.add(temp.add(const Duration(days: 5)));
-    dates.add(temp.add(const Duration(days: 6)));
-    dates.add(temp.add(const Duration(days: 7)));
+      dates.add(temp.add(const Duration(days: 1)));
+      dates.add(temp.add(const Duration(days: 2)));
+      dates.add(temp.add(const Duration(days: 3)));
+      dates.add(temp.add(const Duration(days: 4)));
+      dates.add(temp.add(const Duration(days: 5)));
+      dates.add(temp.add(const Duration(days: 6)));
+      dates.add(temp.add(const Duration(days: 7)));
     }
     // if today is Sunday, get remaining week days (6)
     else if (temp.weekday == 7) {
@@ -126,14 +150,13 @@ class _AddScheduleState extends State<AddSchedule> {
     else if (temp.weekday == 5) {
       dates.add(temp.add(const Duration(days: 1)));
     }
-
   }
 
   /// Helper Method, to check what days appear on the screen
   void checkDays() {
     List<String> check = [];
     for (var temp in days) {
-      for (int i=0; i < dates.length; i++) {
+      for (int i = 0; i < dates.length; i++) {
         if (temp == getDayName(dates[i])) {
           check.add(temp);
         }
@@ -141,8 +164,9 @@ class _AddScheduleState extends State<AddSchedule> {
     }
     days = check;
   }
+
   /// Check selected days, and Assign Time, and Disable not selected days
-  void checkAll(){
+  void checkAll() {
     setState(() {
       for (var day in days) {
         if (datesHours[day][0] == true) {
@@ -150,8 +174,7 @@ class _AddScheduleState extends State<AddSchedule> {
           datesHours[day][2] = startTime.minute;
           datesHours[day][3] = endTime.hour;
           datesHours[day][4] = endTime.minute;
-        }
-        else {
+        } else {
           datesHours[day][1] = 0;
           datesHours[day][2] = 0;
           datesHours[day][3] = 0;
@@ -166,15 +189,15 @@ class _AddScheduleState extends State<AddSchedule> {
       /// HERE
       selectedDates = {};
       for (var day in days) {
-        for (var selDay in selectedDays.keys){
-          if (datesHours[day][0] && (day == selDay)){
-            for (int i=0; i < dates.length; i++) {
+        for (var selDay in selectedDays.keys) {
+          if (datesHours[day][0] && (day == selDay)) {
+            for (int i = 0; i < dates.length; i++) {
               if (datesHours[selDay][0] && selDay == getDayName(dates[i])) {
-                dates[i] = DateTime(dates[i].year,dates[i].month,dates[i].day,startTime.hour,startTime.minute);
+                dates[i] = DateTime(dates[i].year, dates[i].month, dates[i].day,
+                    startTime.hour, startTime.minute);
                 selectedDates[selDay] = dates[i];
               }
             }
-
           }
         }
       }
@@ -198,11 +221,19 @@ class _AddScheduleState extends State<AddSchedule> {
       onTap: () {
         setState(() {
           if (selectedDays[day] == true) {
-            selectedDays[day] = false; /// Reference
-            datesHours[day][0] = false; /// Actual work
+            selectedDays[day] = false;
+
+            /// Reference
+            datesHours[day][0] = false;
+
+            /// Actual work
           } else {
-            selectedDays[day] = true; /// Reference
-            datesHours[day][0] = true; /// Actual work
+            selectedDays[day] = true;
+
+            /// Reference
+            datesHours[day][0] = true;
+
+            /// Actual work
           }
         });
       },
@@ -213,20 +244,19 @@ class _AddScheduleState extends State<AddSchedule> {
         fit: BoxFit.scaleDown,
         child: Center(
             child: Column(
-              children: [
-                Text(
-                  '${getDayName(dates[index])}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                Text(
-                  '${dates[index].day}/${dates[index].month}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            )
-        ),
+          children: [
+            Text(
+              getDayName(dates[index]),
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white),
+            ),
+            Text(
+              '${dates[index].day}/${dates[index].month}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
+        )),
       ),
     );
   }
@@ -259,8 +289,7 @@ class _AddScheduleState extends State<AddSchedule> {
     List<DropdownMenuItem<TimeOfDay>> dropdownItems = [];
     for (TimeOfDay time in timeRange) {
       var newItem = DropdownMenuItem(
-          value: time,
-          child: Text(convertTimeOfDayToHHMM(time)));
+          value: time, child: Text(convertTimeOfDayToHHMM(time)));
       dropdownItems.add(newItem);
     }
     return dropdownItems;
@@ -275,7 +304,6 @@ class _AddScheduleState extends State<AddSchedule> {
     }
     return dropdownItems;
   }
-
 
   List<DropdownMenuItem<int>> durationDropdown() {
     List<DropdownMenuItem<int>> dropdownItems = [];
@@ -295,8 +323,7 @@ class _AddScheduleState extends State<AddSchedule> {
           child: CircularProgressIndicator(),
         ),
       );
-    }
-    else {
+    } else {
       return Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
@@ -315,6 +342,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 ),
               ),
             ),
+
             /// Start & End Time parts
             FittedBox(
               fit: BoxFit.fitWidth,
@@ -344,6 +372,7 @@ class _AddScheduleState extends State<AddSchedule> {
                     ],
                   ),
                   const SizedBox(width: 25),
+
                   /// End Time Part
                   Row(
                     children: [
@@ -368,6 +397,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 ],
               ),
             ),
+
             /// Capacity part
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -393,7 +423,6 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                   ],
                 ),
-
                 const SizedBox(
                   width: 10,
                 ),
@@ -418,31 +447,28 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                   ],
                 ),
-
               ],
             ),
+
             /// Update Button part
             RoundedButton(
                 title: 'Add Schedule',
                 colour: kDarkColor,
                 onPressed: () {
                   if (endTime.hour < startTime.hour ||
-                       (endTime.hour == startTime.hour &&
+                      (endTime.hour == startTime.hour &&
                           endTime.minute < startTime.minute)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content:
-                        Text('End time should be greater than start time'),
+                            Text('End time should be greater than start time'),
                       ),
                     );
-                  }
-                  else {
+                  } else {
                     checkAll();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Add Schedule Done!'),
-                        )
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Add Schedule Done!'),
+                    ));
                   }
                 }),
           ],

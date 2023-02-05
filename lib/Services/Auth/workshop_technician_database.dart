@@ -20,8 +20,6 @@ Future<void> addAppointmentsTable(
             startTime.day, datesHours[day][3], datesHours[day][4]);
         var endTimeF = DateFormat('yyyy-MM-dd hh:mm').parse(endTime.toString());
         DateTime appEndTime = startTime.add(Duration(minutes: duration));
-        var appEndTimeF =
-            DateFormat('yyyy-MM-dd hh:mm').parse(appEndTime.toString());
         while (startTime.isBefore(endTimeF)) {
           for (int c = 0; c < capacity; c++) {
             Map<String, dynamic> wp = {
@@ -41,13 +39,11 @@ Future<void> addAppointmentsTable(
           }
           startTime = appEndTime;
           appEndTime = appEndTime.add(Duration(minutes: duration));
-          appEndTimeF =
-              DateFormat('yyyy-MM-dd hh:mm').parse(appEndTime.toString());
         }
       }
     }
   } catch (e) {
-    print('THIS IS THE ERROR: $e');
+    // print('THIS IS THE ERROR: $e');
   }
 }
 
@@ -87,7 +83,7 @@ changeDatesHoursStatus() async {
   final user = _auth.currentUser;
   final time = await _firestore.collection('workshops').doc(user?.uid).get();
   var hours = time['Hours'];
-  DateTime temp = DateTime.now().add(Duration());
+  DateTime temp = DateTime.now().add(const Duration());
 
   if (temp.weekday == 6) {
     hours['saturday'][0] = false;
@@ -138,7 +134,7 @@ Future<void> updateCapacity(int c) async {
 
 Future<int> getCapacity() async {
   final user = _auth.currentUser;
-  print('THIS IS THE USER: ${user?.uid}');
+  // print('THIS IS THE USER: ${user?.uid}');
   final cap = await _firestore.collection('workshops').doc(user?.uid).get();
   return cap['capacity'] as int;
 }
@@ -170,8 +166,8 @@ getWorkshopAppointmentsByDate(DateTime date) async {
   Map appointments = {};
   Timestamp startDate = Timestamp.fromDate(date);
   Timestamp endDate =
-      Timestamp.fromDate(date.add(Duration(hours: 23, minutes: 59)));
-  final AppointmentsDB = await _firestore
+      Timestamp.fromDate(date.add(const Duration(hours: 23, minutes: 59)));
+  final appointmentsDB = await _firestore
       .collection('Appointments')
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
       .where('datetime', isGreaterThanOrEqualTo: startDate)
@@ -180,7 +176,7 @@ getWorkshopAppointmentsByDate(DateTime date) async {
       .get();
   var workshopName = await getWorkshopNameFromDB(_auth.currentUser!.uid);
   appointments[workshopName] = [];
-  appointments[workshopName].addAll(AppointmentsDB.docs);
+  appointments[workshopName].addAll(appointmentsDB.docs);
   return appointments;
 }
 
@@ -253,23 +249,24 @@ Future<String> updateWorkshopTechInfo(Map userData) async {
 
 getWorkshopFinishedAppointments() async {
   Map appointments = {};
-  final AppointmentsDB = await _firestore
+  final appointmentsDB = await _firestore
       .collection('Appointments')
       .where('workshopID', isEqualTo: _auth.currentUser!.uid)
       .where('status', whereIn: ['finished', 'booked'])
       .where('reportURL', isEqualTo: '')
       .get();
 
-  if (AppointmentsDB.size == 0) {
+  if (appointmentsDB.size == 0) {
     return appointments;
   }
   var workshopName = await getWorkshopNameFromDB(_auth.currentUser!.uid);
   var dateFormat = DateFormat('yyyy-MM-dd');
   var today = dateFormat.format(DateTime.now());
-  var yesterday = dateFormat.format(DateTime.now().subtract(Duration(days: 1)));
-  var tomorrow = dateFormat.format(DateTime.now().add(Duration(days: 1)));
+  var yesterday =
+      dateFormat.format(DateTime.now().subtract(const Duration(days: 1)));
+  var tomorrow = dateFormat.format(DateTime.now().add(const Duration(days: 1)));
 
-  for (var appointment in AppointmentsDB.docs) {
+  for (var appointment in appointmentsDB.docs) {
     var appointmentDate =
         dateFormat.format(appointment.data()['datetime'].toDate());
     if (appointmentDate == today ||

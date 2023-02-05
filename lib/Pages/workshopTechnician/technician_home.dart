@@ -6,14 +6,14 @@ import 'package:wrshh/Pages/workshopTechnician/add_schedule.dart';
 import 'package:wrshh/Pages/workshopTechnician/view_appointments.dart';
 
 import '../../Services/Auth/auth.dart';
-import '../../Services/Auth/workshopTechnician_database.dart';
+import '../../Services/Auth/workshop_technician_database.dart';
 import 'edit_account.dart';
 import 'make_invoice.dart';
 
 class WorkshopTechnicianHome extends StatefulWidget {
   static const String id = 'WorkshopTechnicianHome';
-  late int index;
-  WorkshopTechnicianHome({Key? key, this.index = 0}) : super(key: key);
+  final int index;
+  const WorkshopTechnicianHome({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<WorkshopTechnicianHome> createState() => _WorkshopTechnicianHomeState();
@@ -21,7 +21,6 @@ class WorkshopTechnicianHome extends StatefulWidget {
 
 class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
   //vin
-  final _formKey = GlobalKey<FormState>();
   //styles
   var tc = [
     Colors.red[400],
@@ -74,7 +73,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>  EditAccount()));
+                        builder: (context) => const EditAccount()));
               },
             ),
             ListTile(
@@ -88,7 +87,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
                     context,
                     rootNavigator: true,
                   ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => WelcomeScreen(),
+                    builder: (BuildContext context) => const WelcomeScreen(),
                   ));
                 });
               },
@@ -119,13 +118,13 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
           builder: (context, snapshot) {
             if (_selectedIndex == 0) {
               //Main PAGE after listview try padding: EdgeInsets.all(8)
-              return ViewAppoinments();
+              return const ViewAppoinments();
             }
 
             if (_selectedIndex == 1) {
-              return MakeInvoice();
+              return const MakeInvoice();
             } else {
-              return AddSchedule();
+              return const AddSchedule();
             }
           },
         )),

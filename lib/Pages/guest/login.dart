@@ -1,23 +1,27 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 
-import '../../Services/Auth/workshopTechnician_database.dart';
-import '../../components/roundedButton.dart';
+import '../../Services/Auth/workshop_technician_database.dart';
+import '../../components/rounded_button.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
-import '../client/Home.dart';
-import '../workshopAdmin/workshopAdmin_Home.dart';
+import '../client/client_home.dart';
+import '../workshopAdmin/workshop_admin_home.dart';
 import '../workshopTechnician/technician_home.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 
+  const LoginScreen({super.key});
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool showSpinner = false;
@@ -30,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actionsIconTheme: IconThemeData(size: 24),
-        title: Text('Login'),
+        actionsIconTheme: const IconThemeData(size: 24),
+        title: const Text('Login'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
@@ -42,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
             key: _formKey,
             child: Column(
@@ -52,20 +56,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 Flexible(
                   child: Hero(
                     tag: 'logo',
-                    child: Container(
+                    child: SizedBox(
                       height: 200.0,
                       child: Image.asset('assets/images/Logo.png'),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 48.0,
                 ),
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your email',
                       labelText: 'Email',
-                      prefixIcon: Icon(Icons.email)),
+                      prefixIcon: const Icon(Icons.email)),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
@@ -78,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your password',
                       labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock)),
+                      prefixIcon: const Icon(Icons.lock)),
                   obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {

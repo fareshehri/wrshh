@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:wrshh/Services/Maps/adminBottomPill.dart';
 
-import '../Auth/workshopAdmin_database.dart';
-
+import '../Auth/client_database.dart';
+import 'bottom_pill.dart';
 
 /// Best Coverage on whole city
 const LatLng cityCenter = LatLng(24.736034794755817, 46.70245822383719);
@@ -14,15 +13,14 @@ const double pinVisiblePosition = 20;
 /// Hide pin info part speed
 const double pinInvisiblePosition = -250;
 
-class AdminGoogleMaps extends StatefulWidget {
-  Map userInfo = {};
-  AdminGoogleMaps({required this.userInfo});
+class MyGoogleMaps extends StatefulWidget {
+  const MyGoogleMaps({super.key});
 
   @override
-  _GoogleMapsState createState() => _GoogleMapsState();
+  GoogleMapsState createState() => GoogleMapsState();
 }
 
-class _GoogleMapsState extends State<AdminGoogleMaps> {
+class GoogleMapsState extends State<MyGoogleMaps> {
   /// Google Map Package Controller
   // late final Completer<GoogleMapController> _controller = Completer();
   late GoogleMapController _controller;
@@ -49,26 +47,25 @@ class _GoogleMapsState extends State<AdminGoogleMaps> {
 
   @override
   void initState() {
-    serial = widget.userInfo['serial'];
     super.initState();
     _asyncMethod();
   }
 
   _asyncMethod() async {
-    var workshops = await getUserWorkshopsFromDB();
+    var workshops = await getWorkshopsFromDB();
+    final clientSerial = await getSerial();
     setState(() {
-
+      serial = clientSerial;
     });
-
 
     _markers.clear();
 
     for (var workshop in workshops.keys) {
       String loc = workshops[workshop]['location'] as String;
       String name = workshops[workshop]['workshopName'];
-      List Loc = loc.split(',');
-      double lat = double.parse(Loc[0]);
-      double long = double.parse(Loc[1]);
+      List locL = loc.split(',');
+      double lat = double.parse(locL[0]);
+      double long = double.parse(locL[1]);
 
       _markers.add(Marker(
           markerId: MarkerId(name),
@@ -98,89 +95,85 @@ class _GoogleMapsState extends State<AdminGoogleMaps> {
     setState(() {
       gotPath = true;
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-   if (!gotPath){
-      return Scaffold(
+    if (!gotPath) {
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
       );
-   }
-   else{
-     if (serial == ""){
-       return const Scaffold(
-         body: Center(
-           child: Text("Please add your car information first",
-           style: TextStyle(
-             fontSize: 20,
-             fontWeight: FontWeight.bold,
-             color: Colors.red
-           ),),
-         ),
-       );
-     } else {
-       return Scaffold(
-         body: Stack(
-           children: [
-             /// The map
-             Positioned.fill(
-               child: GoogleMap(
-                 /// Attack _markers to Google map's markers
-                 markers: _markers,
+    } else {
+      if (serial == "") {
+        return const Scaffold(
+          body: Center(
+            child: Text(
+              "Please add your car information first",
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+            ),
+          ),
+        );
+      } else {
+        return Scaffold(
+          body: Stack(
+            children: [
+              /// The map
+              Positioned.fill(
+                child: GoogleMap(
+                  /// Attack _markers to Google map's markers
+                  markers: _markers,
 
-                 /// Map type (satellite, etc..)
-                 mapType: MapType.normal,
+                  /// Map type (satellite, etc..)
+                  mapType: MapType.normal,
 
-                 /// Enable zoom
-                 zoomControlsEnabled: true,
+                  /// Enable zoom
+                  zoomControlsEnabled: true,
 
-                 /// Remove the Device Location button
-                 myLocationButtonEnabled: false,
+                  /// Remove the Device Location button
+                  myLocationButtonEnabled: false,
 
-                 /// Initial Camera Position
-                 initialCameraPosition: const CameraPosition(
-                   /// Target area (coordinates)
-                   target: cityCenter,
+                  /// Initial Camera Position
+                  initialCameraPosition: const CameraPosition(
+                    /// Target area (coordinates)
+                    target: cityCenter,
 
-                   /// Zoom level
-                   zoom: 11.75,
-                 ),
+                    /// Zoom level
+                    zoom: 11.75,
+                  ),
 
-                 /// On Map Create
-                 onMapCreated: (GoogleMapController controller) {
-                   /// Attach Previously Stated Controller
-                   _controller = controller;
+                  /// On Map Create
+                  onMapCreated: (GoogleMapController controller) {
+                    /// Attach Previously Stated Controller
+                    _controller = controller;
 
-                   /// showPinsOnMap() Method call
-                   // showPinsOnMap();
-                 },
+                    /// showPinsOnMap() Method call
+                    // showPinsOnMap();
+                  },
 
-                 /// On Map tap (Anywhere than the pins)
-                 onTap: (LatLng loc) {
-                   setState(() {
-                     /// Hide pin info
-                     pinPillPosition = pinInvisiblePosition;
-                   });
-                 },
-               ),
-             ),
+                  /// On Map tap (Anywhere than the pins)
+                  onTap: (LatLng loc) {
+                    setState(() {
+                      /// Hide pin info
+                      pinPillPosition = pinInvisiblePosition;
+                    });
+                  },
+                ),
+              ),
 
-             /// Bottom pill
-             BottomPill(
-               pinPillPosition: pinPillPosition,
-               workshopInfo: workshopInfo,
-               userInfo: widget.userInfo,
-               rate: double.parse(workshopInfo['overallRate'].toString()),
-             ),
-           ],
-         ),
-       );
-     }
-   }
+              /// Bottom pill
+              BottomPill(
+                pinPillPosition: pinPillPosition,
+                workshopInfo: workshopInfo,
+                rate: double.parse(workshopInfo['overallRate'].toString()),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 
   /// Registered Workshops pins
@@ -199,7 +192,7 @@ class _GoogleMapsState extends State<AdminGoogleMaps> {
 
                 /// Zoom when tapped
                 _controller.animateCamera(CameraUpdate.newLatLngZoom(
-                    LatLng(24.700789, 46.654955), 18));
+                    const LatLng(24.700789, 46.654955), 18));
               });
             }),
       );
@@ -219,7 +212,7 @@ class _GoogleMapsState extends State<AdminGoogleMaps> {
 
                 /// Zoom when tapped
                 _controller.animateCamera(CameraUpdate.newLatLngZoom(
-                    LatLng(24.700935, 46.654500), 18));
+                    const LatLng(24.700935, 46.654500), 18));
               });
             }),
       );
@@ -239,7 +232,7 @@ class _GoogleMapsState extends State<AdminGoogleMaps> {
 
                 /// Zoom when tapped
                 _controller.animateCamera(CameraUpdate.newLatLngZoom(
-                    LatLng(24.704790, 46.806561), 18));
+                    const LatLng(24.704790, 46.806561), 18));
               });
             }),
       );

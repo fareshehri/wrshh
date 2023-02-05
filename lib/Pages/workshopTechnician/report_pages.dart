@@ -1,16 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:wrshh/Models/appointment.dart';
-import 'package:wrshh/Pages/client/Home.dart';
-import 'package:wrshh/Pages/workshopTechnician/make_invoice.dart';
 import 'package:wrshh/Pages/workshopTechnician/technician_home.dart';
-
 import '/Models/product.dart';
 import 'invoice_service.dart';
 
@@ -25,72 +19,65 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> {
   bool gotPath = false;
   final PdfInvoiceService service = PdfInvoiceService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   // Step #################### correct
-  //Get Products from Report.dart add it here
+  //Get Products from report_main.dart add it here
   List<Product> products = [];
   List<Product> services = [];
   var det = "";
-  var mileage;
+  late String mileage;
   List<Uint8List?> file = [];
   List<Product> fin = [];
 
-
   Future _getServices() async {
     // Step
-// init var serv for services || var ser for service || var Spri for service price || var  pro for products || var Ppri for product price
-    var serv;
-    var scounter = 0;
-    var pcounter = 0;
+// init var serv for services || var ser for service || var sPri for service price || var  pro for products || var pPri for product price
+    Map serv;
+    int sCounter = 0;
+    int pCounter = 0;
     List ser = [];
-    List Spri = [];
+    List sPri = [];
     List pro = [];
-    List Ppri = [];
-    var temp1;
-    var temp2;
+    List pPri = [];
     // Step ####### correct
     //final wService = await _firestore.collection('workshopAdmin').doc(widget.Wid).get().then((value)
-    final workshopDB = await _firestore.collection('workshops').doc(widget.app.workshopID).get();
+    final workshopDB = await _firestore
+        .collection('workshops')
+        .doc(widget.app.workshopID)
+        .get();
     var email = workshopDB.data()!['adminEmail'];
     await _firestore.collection('workshopAdmins').doc(email).get().then(
       (value) {
         setState(() {
           //Services
           serv = value["services"];
-          temp1=serv["SubServices"];
-          temp2=serv["SubPrices"];
           for (var element in serv["service"]) {
             ser.add(element);
-            scounter++;
+            sCounter++;
           }
           for (var element in serv["price"]) {
-            Spri.add(double.parse(element.toString()));
+            sPri.add(double.parse(element.toString()));
           }
-          for (var i = 0; i < scounter; i++) {
-            services.add(Product(ser[i], Spri[i], 15));
+          for (var i = 0; i < sCounter; i++) {
+            services.add(Product(ser[i], sPri[i], 15));
           }
           //Products
           for (var element in serv["SubServices"].keys) {
-            print(element);
-            for(var i=0 ; i< serv["SubServices"][element].length;i++){
-            pro.add(serv["SubServices"][element][i]);
-            Ppri.add(serv["SubPrices"][element][i]);
-            pcounter++;
+            // print(element);
+            for (var i = 0; i < serv["SubServices"][element].length; i++) {
+              pro.add(serv["SubServices"][element][i]);
+              pPri.add(serv["SubPrices"][element][i]);
+              pCounter++;
             }
-            
           }
-          for (var i = 0; i < pcounter; i++) {
-            products.add(Product(pro[i], double.parse(Ppri[i].toString()), 15));
+          for (var i = 0; i < pCounter; i++) {
+            products.add(Product(pro[i], double.parse(pPri[i].toString()), 15));
           }
-
-        
         });
       },
     );
     setState(() {
       gotPath = true;
-
     });
   }
 
@@ -106,7 +93,7 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     if (!gotPath) {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -123,29 +110,29 @@ class _ReportPageState extends State<ReportPage> {
             children: [
 // Step
 // Services
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Services',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               SizedBox(
                 height: 100,
                 child: ListView.builder(
-                  itemBuilder: (context, Sercounter) {
-                    final currentService = services[Sercounter];
+                  itemBuilder: (context, serCounter) {
+                    final currentService = services[serCounter];
                     return Row(
                       children: [
                         Expanded(child: Text(currentService.name)),
                         Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                   "Price: ${currentService.price.toStringAsFixed(2)} ﷼"),
                               Text(
                                   "VAT ${currentService.vatInPercent.toStringAsFixed(0)} %")
                             ],
-                            crossAxisAlignment: CrossAxisAlignment.center,
                           ),
                         ),
                         Expanded(
@@ -190,29 +177,29 @@ class _ReportPageState extends State<ReportPage> {
               ),
 // Step
 // Products
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Products',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               SizedBox(
                 height: 100,
                 child: ListView.builder(
-                  itemBuilder: (context, Procounter) {
-                    final currentProduct = products[Procounter];
+                  itemBuilder: (context, proCounter) {
+                    final currentProduct = products[proCounter];
                     return Row(
                       children: [
                         Expanded(child: Text(currentProduct.name)),
                         Expanded(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                   "Price: ${currentProduct.price.toStringAsFixed(2)} ﷼"),
                               Text(
                                   "VAT ${currentProduct.vatInPercent.toStringAsFixed(0)} %")
                             ],
-                            crossAxisAlignment: CrossAxisAlignment.center,
                           ),
                         ),
                         Expanded(
@@ -271,7 +258,7 @@ class _ReportPageState extends State<ReportPage> {
                     TextFormField(
                       onChanged: (value) => mileage = value,
                       maxLines: 2,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter Car Mileage/Odometer'),
                       inputFormatters: <TextInputFormatter>[
@@ -295,7 +282,7 @@ class _ReportPageState extends State<ReportPage> {
                     TextFormField(
                       onChanged: (value) => det = value,
                       maxLines: 3,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter Maintenance Comments'),
                       // validator: (value) {
@@ -350,7 +337,8 @@ class _ReportPageState extends State<ReportPage> {
                                       fin,
                                       det,
                                       widget.app.workshopID,
-                                      widget.app.serial,mileage);
+                                      widget.app.serial,
+                                      mileage);
                                   await service.savePdfFile(widget.app, mileage,
                                       finser, getTotal(), data);
                                   setState(() {
@@ -359,11 +347,15 @@ class _ReportPageState extends State<ReportPage> {
                                           content: Text(
                                               'Invoice Created Successfully')),
                                     );
-                                    Future.delayed(const Duration(seconds: 2),
+                                    Future.delayed(
+                                        const Duration(seconds: 2),
                                         () => Navigator.push(context,
-                                            MaterialPageRoute(builder: (context) {
-                                          return WorkshopTechnicianHome(index: 1,);
-                                        })));
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return const WorkshopTechnicianHome(
+                                                index: 1,
+                                              );
+                                            })));
                                   });
                                 }
                               } catch (e) {

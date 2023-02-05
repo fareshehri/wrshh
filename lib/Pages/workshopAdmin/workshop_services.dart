@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:wrshh/Pages/workshopAdmin/services_data.dart';
-import 'package:wrshh/Services/Auth/workshopAdmin_database.dart';
-import '../../components/roundedButton.dart';
+import 'package:wrshh/Services/Auth/workshop_admin_database.dart';
+import '../../components/rounded_button.dart';
 import '../../constants.dart';
 
 class Services extends StatefulWidget {

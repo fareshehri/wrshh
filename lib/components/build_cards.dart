@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:wrshh/Models/workshop.dart';
-import 'package:wrshh/components/workshopsCards.dart';
+import 'package:wrshh/components/workshops_cards.dart';
 
 import '../Models/appointment.dart';
 import 'card.dart';
@@ -12,7 +12,6 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
   // loop through the appointments and create a card for each one
   for (var workshopName in appointments.keys) {
     for (var appointment in appointments[workshopName]) {
-
       final DateFormat formatter = DateFormat.yMd().add_jm();
       var date = DateTime.fromMillisecondsSinceEpoch(
           appointment.data()['datetime'].seconds * 1000);
@@ -24,7 +23,11 @@ List<Widget> buildAppointmentsCards(Map appointments, String cardType) {
       cards.add(
         AppointmentsCard(
           itemID: appointment.data()['workshopID'],
-          itemName: cardType == 'Workshop' ? serialNumber : cardType == 'WorkshopInvoice' ? serialNumber : workshopName,
+          itemName: cardType == 'Workshop'
+              ? serialNumber
+              : cardType == 'WorkshopInvoice'
+                  ? serialNumber
+                  : workshopName,
           cardType: cardType,
           appointment: Appointment(
             appointmentID: appointment.id,

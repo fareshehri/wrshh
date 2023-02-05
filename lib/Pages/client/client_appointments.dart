@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../Services/Auth/client_database.dart';
-import '../../Services/Auth/workshopTechnician_database.dart';
-import '../../components/buildCards.dart';
+import '../../components/build_cards.dart';
 
 class ClientAppointments extends StatefulWidget {
+  const ClientAppointments({super.key});
+
   @override
   State<ClientAppointments> createState() => _ClientAppointmentsState();
 }
@@ -36,7 +36,7 @@ class _ClientAppointmentsState extends State<ClientAppointments> {
     );
   }
 
-  Widget getBody(){
+  Widget getBody() {
     if (appointments.isEmpty) {
       return const Center(
         child: Text('You have no appointments',
@@ -45,12 +45,10 @@ class _ClientAppointmentsState extends State<ClientAppointments> {
               color: Colors.grey,
             )),
       );
-    }
-    else{
+    } else {
       return ListView(
         children: buildAppointmentsCards(appointments, 'Bookings'),
       );
     }
   }
-
 }

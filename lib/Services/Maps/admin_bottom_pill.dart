@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:rate/rate.dart';
+// ignore_for_file: use_build_context_synchronously
 
-import '../../Pages/client/client_book.dart';
-import '../../Pages/client/service_select.dart';
+import 'package:flutter/material.dart';
+
+import '../../Pages/workshopAdmin/admin_service_select.dart';
 import '../Auth/client_database.dart';
 
 class BottomPill extends StatelessWidget {
@@ -11,11 +11,13 @@ class BottomPill extends StatelessWidget {
     required this.pinPillPosition,
     required this.workshopInfo,
     required this.rate,
+    required this.userInfo,
   }) : super(key: key);
 
   final double pinPillPosition;
   final Map<String, dynamic> workshopInfo;
   final double rate;
+  final Map userInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,8 @@ class BottomPill extends StatelessWidget {
       /// Transition from the bottom
       bottom: pinPillPosition,
       child: Container(
-        margin: EdgeInsets.only(top: 20, bottom: 5, left: 14, right: 14),
-        padding: EdgeInsets.all(15),
+        margin: const EdgeInsets.only(top: 20, bottom: 5, left: 14, right: 14),
+        padding: const EdgeInsets.all(15),
 
         /// Unnecessary details
         decoration: BoxDecoration(
@@ -48,7 +50,7 @@ class BottomPill extends StatelessWidget {
             ]),
         child: Column(
           children: [
-            NewDes(),
+            newDes(),
 
             // /// upper lower pill
             // upperLowerPill(),
@@ -64,7 +66,7 @@ class BottomPill extends StatelessWidget {
     );
   }
 
-  Row NewDes() {
+  Row newDes() {
     return Row(children: [
       Stack(
         /// "Rendered" area is only the stack?
@@ -87,7 +89,7 @@ class BottomPill extends StatelessWidget {
           )),
         ],
       ),
-      SizedBox(
+      const SizedBox(
         width: 10,
       ),
       Column(
@@ -95,9 +97,9 @@ class BottomPill extends StatelessWidget {
         children: [
           Text(
             workshopInfo['workshopName'],
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Row(
@@ -105,23 +107,23 @@ class BottomPill extends StatelessWidget {
             children: [
               for (int i = 0; i < 5; i++)
                 if (i < rate.round())
-                  Icon(
+                  const Icon(
                     Icons.star,
                     color: Colors.green,
                     size: 20,
                   )
                 else
-                  Icon(
+                  const Icon(
                     Icons.star_border,
                     color: Colors.green,
                     size: 20,
                   ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               FittedBox(
                 fit: BoxFit.fitHeight,
                 child: Text('based on ${workshopInfo['numberOfRates']} rates',
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 12, color: Colors.black)),
+                    style: const TextStyle(fontSize: 12, color: Colors.black)),
               ),
             ],
           ),
@@ -153,7 +155,7 @@ class BottomPill extends StatelessWidget {
           ),
 
           /// Area next to Logo part
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
           Expanded(
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,56 +218,56 @@ class BottomPill extends StatelessWidget {
   // }
 
   ///Book button pill
-  Container bookButtonPill(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            bool isBooked = await checkFutureAppointment();
-                            if (isBooked) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      'You have already booked an appointment')));
-                            } else {
-                              /// Navigate to the bookPage() function
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SeviceSelection(
-                                        workshopInfo: workshopInfo,
-                                      )));
-                            }
-                          },
+  Column bookButtonPill(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          bool isBooked = await checkFutureAppointment();
+                          if (isBooked) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'You have already booked an appointment')));
+                          } else {
+                            /// Navigate to the bookPage() function
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AdminSeviceSelection(
+                                      workshopInfo: workshopInfo,
+                                      userInformation: userInfo,
+                                    )));
+                          }
+                        },
 
-                          /// Button Style
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(11.0),
-                            minimumSize: const Size(100, 50),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0)),
-                          ),
+                        /// Button Style
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(11.0),
+                          minimumSize: const Size(100, 50),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0)),
+                        ),
 
-                          /// Text on Button
-                          child: const Text("Book",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    )),
-              ),
-            ],
-          )
-        ],
-      ),
+                        /// Text on Button
+                        child: const Text("Book",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold)),
+                      )
+                    ],
+                  )),
+            ),
+          ],
+        )
+      ],
     );
   }
 }

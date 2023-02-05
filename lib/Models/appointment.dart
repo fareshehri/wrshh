@@ -21,6 +21,6 @@ class Appointment {
       required this.price,
       required this.datetime,
       required this.rate,
-      required this.reportURL
-      ,required this.odometer});
+      required this.reportURL,
+      required this.odometer});
 }

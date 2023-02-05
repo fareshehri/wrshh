@@ -1,3 +1,5 @@
+// ignore_for_file: implementation_imports
+
 import 'package:calendar_timeline/src/day_item.dart';
 import 'package:calendar_timeline/src/month_item.dart';
 import 'package:calendar_timeline/src/util/utils.dart';
@@ -32,24 +34,24 @@ class CalendarTimeline extends StatefulWidget {
     this.locale,
     this.showYears = false,
   })  : assert(
-  initialDate.difference(firstDate).inDays >= 0,
-  'initialDate must be on or after firstDate',
-  ),
-        assert(
-        !initialDate.isAfter(lastDate),
-        'initialDate must be on or before lastDate',
+          initialDate.difference(firstDate).inDays >= 0,
+          'initialDate must be on or after firstDate',
         ),
         assert(
-        !firstDate.isAfter(lastDate),
-        'lastDate must be on or after firstDate',
+          !initialDate.isAfter(lastDate),
+          'initialDate must be on or before lastDate',
         ),
         assert(
-        selectableDayPredicate == null || selectableDayPredicate(initialDate),
-        'Provided initialDate must satisfy provided selectableDayPredicate',
+          !firstDate.isAfter(lastDate),
+          'lastDate must be on or after firstDate',
         ),
         assert(
-        locale == null || dateTimeSymbolMap().containsKey(locale),
-        "Provided locale value doesn't exist",
+          selectableDayPredicate == null || selectableDayPredicate(initialDate),
+          'Provided initialDate must satisfy provided selectableDayPredicate',
+        ),
+        assert(
+          locale == null || dateTimeSymbolMap().containsKey(locale),
+          "Provided locale value doesn't exist",
         ),
         super(key: key);
   final DateTime initialDate;
@@ -79,7 +81,6 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
   final ItemScrollController _controllerYear = ItemScrollController();
   final ItemScrollController _controllerMonth = ItemScrollController();
   final ItemScrollController _controllerDay = ItemScrollController();
-
 
   int? _yearSelectedIndex;
   int? _monthSelectedIndex;
@@ -193,8 +194,8 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
     } else {
       _monthSelectedIndex = _months.indexOf(
         _months.firstWhere(
-              (monthDate) =>
-          monthDate.year == _selectedDate.year &&
+          (monthDate) =>
+              monthDate.year == _selectedDate.year &&
               monthDate.month == _selectedDate.month,
         ),
       );
@@ -288,17 +289,16 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
     widget.onDateSelected(_selectedDate);
   }
 
-
   bool _isSelectedDay(int index) =>
       _monthSelectedIndex != null &&
-          (index == _daySelectedIndex || index == _indexOfDay(_selectedDate));
+      (index == _daySelectedIndex || index == _indexOfDay(_selectedDate));
 
   int _indexOfDay(DateTime date) {
     try {
       return _days.indexOf(
         _days.firstWhere(
-              (dayDate) =>
-          dayDate.day == date.day &&
+          (dayDate) =>
+              dayDate.day == date.day &&
               dayDate.month == date.month &&
               dayDate.year == date.year,
         ),
@@ -354,7 +354,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                   shrink: widget.shrink,
                 ),
                 if (index == _years.length - 1)
-                // Last element to take space to do scroll to left side
+                  // Last element to take space to do scroll to left side
                   SizedBox(
                     width: MediaQuery.of(context).size.width -
                         widget.leftMargin -
@@ -412,7 +412,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                   activeColor: widget.activeBackgroundDayColor,
                 ),
                 if (index == _months.length - 1)
-                // Last element to take space to do scroll to left side
+                  // Last element to take space to do scroll to left side
                   SizedBox(
                     width: MediaQuery.of(context).size.width -
                         widget.leftMargin -
@@ -443,7 +443,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
         itemBuilder: (BuildContext context, int index) {
           final currentDay = _days[index];
           final shortName =
-          DateFormat.E(_locale).format(currentDay).capitalize();
+              DateFormat.E(_locale).format(currentDay).capitalize();
           return Row(
             children: <Widget>[
               DayItem(
@@ -463,7 +463,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 shrink: widget.shrink,
               ),
               if (index == _days.length - 1)
-              // Last element to take space to do scroll to left side
+                // Last element to take space to do scroll to left side
                 SizedBox(
                   width: MediaQuery.of(context).size.width -
                       widget.leftMargin -

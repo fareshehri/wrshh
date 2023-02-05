@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 
 class Service {
   final int id;
-  late  String name;
-  late  bool check;
+  late String name;
+  late bool check;
 
-  Service({
-    required this.id,
-    required this.name,
-    required this.check
-  });
+  Service({required this.id, required this.name, required this.check});
 }
 
 List<TimeOfDay> timeRange = [
@@ -73,6 +69,27 @@ List<String> days = [
   'saturday'
 ];
 
-List<int> capacityList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+List<int> capacityList = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20
+];
 
 List<int> durationList = [15, 30, 45, 60];

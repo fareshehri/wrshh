@@ -32,6 +32,7 @@ Future<String> updateUserEmail(String email, Map data) async {
       }
     });
   } catch (e) {
+    //
   }
   return result;
 }
@@ -81,9 +82,9 @@ Future<List> getAppointmentsFromDB(String workshopID) async {
       .where('workshopID', isEqualTo: workshopID)
       .get()
       .then((value) {
-    value.docs.forEach((element) {
+    for (var element in value.docs) {
       appointments.add(element);
-    });
+    }
   });
 
   return appointments;
@@ -155,11 +156,11 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
 Future<Map> getUserAppointmentsFromDB() async {
   final User? user = _auth.currentUser;
   Map appointments = {};
-  final Appointmentss = await _firestore
+  final appointmentsS = await _firestore
       .collection('Appointments')
       .where('clientID', isEqualTo: user!.email)
       .get();
-  for (var appointment in Appointmentss.docs) {
+  for (var appointment in appointmentsS.docs) {
     var workshopName =
         await getWorkshopNameFromDB(appointment.data()['workshopID']);
     // if workshopName is not in appointments.keys add it
@@ -193,12 +194,12 @@ getAppointmentReport(String appointmentID) async {
 
 getAppointmentsBySerial(String serial) async {
   Map appointments = {};
-  final Appointmentss = await _firestore
+  final appointmentsS = await _firestore
       .collection('Appointments')
       .where('serial', isEqualTo: serial)
       .where('status', isEqualTo: 'finished')
       .get();
-  for (var appointment in Appointmentss.docs) {
+  for (var appointment in appointmentsS.docs) {
     var workshopName =
         await getWorkshopNameFromDB(appointment.data()['workshopID']);
     // if workshopName is not in appointments.keys add it
@@ -256,12 +257,12 @@ Future<List<String>> getServicesFromDB(String adminEmail) async {
 
 Future<bool> checkFutureAppointment() async {
   final User? user = _auth.currentUser;
-  final Appointmentss = await _firestore
+  final appointmentsS = await _firestore
       .collection('Appointments')
       .where('clientID', isEqualTo: user!.email)
       .where('status', isEqualTo: 'booked')
       .get();
-  if (Appointmentss.docs.isEmpty) {
+  if (appointmentsS.docs.isEmpty) {
     return false;
   }
   return true;

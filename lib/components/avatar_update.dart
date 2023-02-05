@@ -1,7 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,9 +9,10 @@ import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 
 class AvatarPhotoUpdate extends StatefulWidget {
-  late Function(File image) onImageSelected;
-  late String logoURL;
-  AvatarPhotoUpdate({required this.onImageSelected, required this.logoURL});
+  final Function(File image) onImageSelected;
+  final String logoURL;
+  const AvatarPhotoUpdate(
+      {super.key, required this.onImageSelected, required this.logoURL});
 
   @override
   State<AvatarPhotoUpdate> createState() => _AvatarPhotoState();
@@ -69,23 +70,24 @@ class _AvatarPhotoState extends State<AvatarPhotoUpdate> {
                     fit: BoxFit.cover,
                     width: 140,
                     height: 140,
-                  ) : Image.network(
-              widget.logoURL,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  'assets/images/loading.png',
-                  width: 140,
-                  height: 140,
-                );
-              },
-              width: 140,
-              height: 140,
-              fit: BoxFit.cover,
-            ),
+                  )
+                : Image.network(
+                    widget.logoURL,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/loading.png',
+                        width: 140,
+                        height: 140,
+                      );
+                    },
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         TextButton.icon(
-            style: TextButton.styleFrom(primary: kLightColor),
+            style: TextButton.styleFrom(foregroundColor: kLightColor),
             onPressed: () async {
               final picker = ImagePicker();
               final pickedImage =

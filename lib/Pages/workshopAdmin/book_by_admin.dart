@@ -1,31 +1,34 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
-import 'package:wrshh/Pages/workshopAdmin/workshopAdmin_Home.dart';
+import 'package:wrshh/Pages/workshopAdmin/workshop_admin_home.dart';
 import 'package:wrshh/components/booking_slot.dart';
 import 'package:intl/intl.dart';
-import 'package:wrshh/components/roundedButton.dart';
+import 'package:wrshh/components/rounded_button.dart';
 import 'package:wrshh/constants.dart';
 import '../../Services/Auth/client_database.dart';
-import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../components/Calendar_Timeline.dart';
+import '../../Services/Auth/workshop_admin_database.dart';
+import '../../components/calendar_time_line.dart';
 
 class AdminBooking extends StatefulWidget {
-  final workshopInfo;
-  final selectedServices;
-  final userInformation;
+  final Map workshopInfo;
+  final List selectedServices;
+  final Map userInformation;
   const AdminBooking(
-      {required this.workshopInfo, required this.selectedServices, required this.userInformation});
+      {super.key,
+      required this.workshopInfo,
+      required this.selectedServices,
+      required this.userInformation});
 
   @override
-  State<AdminBooking> createState() =>
-      _ClientBookingState(workshopInfo: workshopInfo);
+  State<AdminBooking> createState() => _ClientBookingState();
 }
 
 class _ClientBookingState extends State<AdminBooking> {
-  final workshopInfo;
+  late final Map workshopInfo;
   late List appointments;
   bool gotPath = false;
   Map selectedList = {};
-  _ClientBookingState({required this.workshopInfo});
 
   DateTime selectedDate = DateTime.now();
 
@@ -34,6 +37,7 @@ class _ClientBookingState extends State<AdminBooking> {
     // TODO: implement initState
     _asyncMethod();
     super.initState();
+    workshopInfo = widget.workshopInfo;
   }
 
   _asyncMethod() async {
@@ -134,7 +138,8 @@ class _ClientBookingState extends State<AdminBooking> {
             onPressed: () {
               if (selectedList.isNotEmpty) {
                 selectedList.forEach((key, value) {
-                  bookAppointmentByAdmin(key, widget.userInformation,widget.selectedServices);
+                  bookAppointmentByAdmin(
+                      key, widget.userInformation, widget.selectedServices);
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -142,10 +147,10 @@ class _ClientBookingState extends State<AdminBooking> {
                 );
                 Future.delayed(const Duration(seconds: 2), () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => WorkshopAdminHome(),
-                  ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WorkshopAdminHome(),
+                      ));
                 });
               } else {
                 showDialog(
@@ -256,7 +261,7 @@ class _ClientBookingState extends State<AdminBooking> {
       isPauseTime: false,
       child: Center(
         child: Text(
-          '$dateFormatted',
+          dateFormatted,
           style: const TextStyle(color: Colors.white),
         ),
       ),

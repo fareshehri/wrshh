@@ -1,19 +1,19 @@
 import 'package:wrshh/Pages/guest/welcome.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
-import 'package:wrshh/Services/Maps/googleMapsPart.dart';
+import 'package:wrshh/Services/Maps/google_maps_part.dart';
 import 'package:wrshh/Pages/client/Account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 import '../../Services/Auth/client_database.dart';
-import '../../components/buildCards.dart';
+import '../../components/build_cards.dart';
 import '../../constants.dart';
 import 'client_appointments.dart';
 
 class Home extends StatefulWidget {
   static const String id = 'Home_screen';
-  late int index;
-  Home({Key? key, this.index = 0}) : super(key: key);
+  final int index;
+  const Home({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -55,11 +55,11 @@ class _HomeState extends State<Home> {
 
 //date picker
   DateTime selectedDate = DateTime.now();
-@override
+  @override
   void initState() {
     // TODO: implement initState
-  _selectedIndex = widget.index;
-  super.initState();
+    _selectedIndex = widget.index;
+    super.initState();
   }
 
   @override
@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
                     context,
                     rootNavigator: true,
                   ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => WelcomeScreen(),
+                    builder: (BuildContext context) => const WelcomeScreen(),
                   ));
                 });
               },
@@ -228,7 +228,7 @@ class _HomeState extends State<Home> {
             if (_selectedIndex == 1) {
               return const MyGoogleMaps();
             } else {
-              return ClientAppointments();
+              return const ClientAppointments();
             }
           },
         )),

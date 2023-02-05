@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,51 +21,51 @@ class _EditCarInfoState extends State<EditCarInfo> {
   //get data
   late String name;
   late String email;
-  var carsserial;
+  late String carSerial;
 
   //set values
   var ob = "";
   var oc = "";
   String _selectedB = 'Chevrolet';
   String _selectedC = 'Groove';
-  var _serial;
+  late String _serial;
   var _currentSelectedYear = 2023;
 
   //set views
-  var viscar = true;
-  var visin = false;
+  var visCar = true;
+  var visIn = false;
   bool gotPath = false;
 
-//Get data from firestore
+//Get data from fireStore
   Future _getData() async {
     final client = await getUserInfo();
     setState(() {
       name = client!['name'];
-      carsserial = client['serial'];
+      carSerial = client['serial'];
       email = client['email'];
     });
     await _getCar();
   }
 
-//Get data from firestore
+//Get data from fireStore
   Future _getCar() async {
-    if (carsserial != "") {
+    if (carSerial != "") {
       serialExists = true;
       title = "Change Car";
-      welcomeMsg = "Hello $name, Here is your car information ($carsserial)";
+      welcomeMsg = "Hello $name, Here is your car information ($carSerial)";
       final serial =
-          await getCarInfoBySerial(carsserial); //get car info by serial
+          await getCarInfoBySerial(carSerial); //get car info by serial
       setState(() {
         _selectedB = serial!['carManufacturer'];
         _selectedC = serial['carModel'];
         _currentSelectedYear = int.parse(serial['carYear']);
         ob = serial['otherBrand'];
         oc = serial['otherCar'];
-        _serial = carsserial;
+        _serial = carSerial;
         gotPath = true;
         if (_selectedB == 'Other') {
-          viscar = false;
-          visin = true;
+          visCar = false;
+          visIn = true;
         }
       });
     } else {
@@ -118,7 +120,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
               .collection('clients')
               .doc(email)
               .update({'serial': _serial});
-          // If the form is valid, display a snackbar. In the real world,
+          // If the form is valid, display a snackBar. In the real world,
           // you'd often call a server or save the information in a database.
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -143,7 +145,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
     //dropdown fill
     List<int> year = [for (var i = 1960; i <= 2023; i++) i];
 
-//wait for values from firestore
+//wait for values from fireStore
     if (!gotPath) {
       return const Scaffold(
         body: Center(
@@ -154,9 +156,9 @@ class _EditCarInfoState extends State<EditCarInfo> {
 
 //when values are stored
     else {
-      //set inital dropdown values
-      var _selectbrand = cars.keys;
-      var _selectcar = cars[_selectedB];
+      //set initial dropdown values
+      var selectBrand = cars.keys;
+      var selectCar = cars[_selectedB];
 
       return Scaffold(
           appBar: AppBar(
@@ -168,22 +170,22 @@ class _EditCarInfoState extends State<EditCarInfo> {
             iconTheme: IconThemeData(color: Colors.lightBlue[300], size: 24),
           ),
           body: Container(
-              margin: EdgeInsets.fromLTRB(25, 50, 25, 50),
+              margin: const EdgeInsets.fromLTRB(25, 50, 25, 50),
               child: ListView(children: [
                 Text(
                   welcomeMsg,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Visibility(
                   visible: serialExists,
                   child: Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     width: MediaQuery.of(context).size.width * 0.9,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -205,7 +207,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                           color: Colors.red[700],
                           size: 24,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
                         SizedBox(
@@ -222,7 +224,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Form(
@@ -241,7 +243,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                 menuMaxHeight: 200,
                                 value: _selectedB,
                                 borderRadius: BorderRadius.circular(16),
-                                items: _selectbrand
+                                items: selectBrand
                                     .map(
                                       (map) => DropdownMenuItem(
                                           value: map, child: Text(map)),
@@ -257,12 +259,12 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                     //set final based on second dropdown
                                     //change views
                                     if (_selectedB == "Other") {
-                                      viscar = false;
-                                      visin = true;
+                                      visCar = false;
+                                      visIn = true;
                                       _selectedB = val.toString();
                                     } else {
-                                      viscar = true;
-                                      visin = false;
+                                      visCar = true;
+                                      visIn = false;
                                     }
                                   });
                                 }),
@@ -273,7 +275,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                       //select car
                       //if car brand is chosen
                       Visibility(
-                        visible: viscar,
+                        visible: visCar,
                         child: Row(
                           children: [
                             const Text('Car Model',
@@ -284,7 +286,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                   menuMaxHeight: 200,
                                   borderRadius: BorderRadius.circular(16),
                                   value: _selectedC,
-                                  items: _selectcar!
+                                  items: selectCar!
                                       .map(
                                         (map) => DropdownMenuItem(
                                             value: map, child: Text(map)),
@@ -303,7 +305,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
 
                       //if Other is chosen
                       Visibility(
-                          visible: visin,
+                          visible: visIn,
                           child: Column(
                             children: [
                               TextFormField(
@@ -358,8 +360,8 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                 items: year
                                     .map(
                                       (map) => DropdownMenuItem(
-                                          child: Text(map.toString()),
-                                          value: map),
+                                          value: map,
+                                          child: Text(map.toString())),
                                     )
                                     .toList(),
                                 onChanged: (val) {
@@ -371,13 +373,13 @@ class _EditCarInfoState extends State<EditCarInfo> {
                         ],
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
 
-                      //get stored serial number ( carsserial ) and updated when changed with new serial number ( _serial )
+                      //get stored serial number ( carSerial ) and updated when changed with new serial number ( _serial )
                       TextFormField(
-                        initialValue: carsserial,
+                        initialValue: carSerial,
                         onChanged: (value) => _serial = value,
                         decoration: kTextFieldDecoratopn.copyWith(
                             hintText: 'Car Serial Number',
@@ -388,7 +390,9 @@ class _EditCarInfoState extends State<EditCarInfo> {
                         ],
                         maxLength: 9,
                         validator: (value) {
-                          if (value == null || value.isEmpty || value.length != 9) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length != 9) {
                             return 'Please enter Serial Number';
                           }
                           return null;
@@ -402,9 +406,10 @@ class _EditCarInfoState extends State<EditCarInfo> {
                           try {
                             bool isBooked = await checkFutureAppointment();
                             if (isBooked) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                      'You can not change your car because you have an appointment')));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'You can not change your car because you have an appointment')));
                             } else {
                               final x = await FirebaseFirestore.instance
                                   .collection('serial')
@@ -443,7 +448,7 @@ class _EditCarInfoState extends State<EditCarInfo> {
                                       .collection('clients')
                                       .doc(email)
                                       .update({'serial': _serial});
-                                  // If the form is valid, display a snackbar. In the real world,
+                                  // If the form is valid, display a snackBar. In the real world,
                                   // you'd often call a server or save the information in a database.
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(

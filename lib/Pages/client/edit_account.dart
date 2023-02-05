@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -75,7 +77,7 @@ class _EditAccountState extends State<EditAccount> {
         iconTheme: IconThemeData(color: Colors.lightBlue[300], size: 24),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -85,7 +87,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                   hintText: 'Enter your email',
                   labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.email),
                 ),
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
@@ -101,7 +103,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your name',
                     labelText: 'Name',
-                    prefixIcon: Icon(Icons.person)),
+                    prefixIcon: const Icon(Icons.person)),
                 textAlign: TextAlign.center,
                 initialValue: oldName,
                 onChanged: (value) {
@@ -115,7 +117,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your phone number',
                     labelText: 'Phone Number',
-                    prefixIcon: Icon(Icons.phone)),
+                    prefixIcon: const Icon(Icons.phone)),
                 countries: const ['SA'],
                 initialCountryCode: 'SA',
                 initialValue: oldPhoneNumber,
@@ -129,7 +131,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your city',
                     labelText: 'City',
-                    prefixIcon: Icon(Icons.location_city)),
+                    prefixIcon: const Icon(Icons.location_city)),
                 textAlign: TextAlign.center,
                 enabled: false,
                 initialValue: oldCity,
@@ -162,7 +164,7 @@ class _EditAccountState extends State<EditAccount> {
                                 decoration: kTextFieldDecoratopn.copyWith(
                                     hintText: 'Enter your password',
                                     labelText: 'Password',
-                                    prefixIcon: Icon(Icons.lock)),
+                                    prefixIcon: const Icon(Icons.lock)),
                                 textAlign: TextAlign.center,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -177,7 +179,7 @@ class _EditAccountState extends State<EditAccount> {
                                 decoration: kTextFieldDecoratopn.copyWith(
                                     hintText: 'Enter new password',
                                     labelText: 'New Password',
-                                    prefixIcon: Icon(Icons.lock)),
+                                    prefixIcon: const Icon(Icons.lock)),
                                 textAlign: TextAlign.center,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -204,7 +206,7 @@ class _EditAccountState extends State<EditAccount> {
                       },
                     );
                   },
-                  child: Text('Change Password')),
+                  child: const Text('Change Password')),
               ElevatedButton.icon(
                 onPressed: () {
                   // Validate returns true if the form is valid, or false otherwise.
@@ -231,7 +233,7 @@ class _EditAccountState extends State<EditAccount> {
                                   decoration: kTextFieldDecoratopn.copyWith(
                                       hintText: 'Enter your password',
                                       labelText: 'Password',
-                                      prefixIcon: Icon(Icons.lock)),
+                                      prefixIcon: const Icon(Icons.lock)),
                                   textAlign: TextAlign.center,
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
@@ -310,19 +312,19 @@ class _EditAccountState extends State<EditAccount> {
             builder: (BuildContext context) {
               return AlertDialog(
                   title: Center(
-                    child: Column(children: const [
-                      Icon(
-                        Icons.error,
-                        color: Colors.red,
-                        size: 50,
-                      ),
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Something went wrong',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ]),
-                  ));
+                child: Column(children: const [
+                  Icon(
+                    Icons.error,
+                    color: Colors.red,
+                    size: 50,
+                  ),
+                  Text(
+                    textAlign: TextAlign.center,
+                    'Something went wrong',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ]),
+              ));
             });
       }
     }
@@ -364,19 +366,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Account updated successfully',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Account updated successfully',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ]),
+                  ));
                 });
           } else {
             showDialog(
@@ -384,19 +386,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Something went wrong',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Something went wrong',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]),
+                  ));
                 });
           }
         }
@@ -417,19 +419,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Account updated successfully',
-                            style: TextStyle(color: Colors.green),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Account updated successfully',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ]),
+                  ));
                 });
           } else {
             showDialog(
@@ -437,19 +439,19 @@ class _EditAccountState extends State<EditAccount> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                       title: Center(
-                        child: Column(children: const [
-                          Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                          Text(
-                            textAlign: TextAlign.center,
-                            'Something went wrong',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ]),
-                      ));
+                    child: Column(children: const [
+                      Icon(
+                        Icons.error,
+                        color: Colors.red,
+                        size: 50,
+                      ),
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Something went wrong',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ]),
+                  ));
                 });
           }
         }

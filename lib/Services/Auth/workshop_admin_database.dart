@@ -9,7 +9,7 @@ final _firestore = FirebaseFirestore.instance;
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 void bookAppointmentByAdmin(String id, Map user, List selectedServices) async {
-  print(id);
+  // print(id);
   _firestore.collection('Appointments').doc(id).update({
     'clientID': user['email'],
     'serial': user['serial'],
@@ -142,7 +142,9 @@ getTechnicianNameFromDB(String technicianID) async {
         .get()
         .then((value) => technicianName = value.data()?['name']);
     return technicianName;
-  } catch (e) {}
+  } catch (e) {
+    //
+  }
   return '';
 }
 

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class AppUser {
   late String email;
   late String password;
@@ -15,8 +13,6 @@ class AppUser {
       required this.password,
       this.city = 'Al Riyadh',
       required this.userType});
-
-
 }
 
 class ClientUser extends AppUser {
@@ -26,7 +22,6 @@ class ClientUser extends AppUser {
       required super.name,
       required super.password,
       super.userType = 'ClientUser'});
-
 }
 
 class WorkshopAdmin extends AppUser {
@@ -47,7 +42,6 @@ class WorkshopTech extends AppUser {
     required super.password,
     super.userType = 'WorkshopTech',
   });
-
 }
 
 class AdminUser extends AppUser {
@@ -57,7 +51,6 @@ class AdminUser extends AppUser {
       required super.name,
       required super.password,
       super.userType = 'AdminUser'});
-
 }
 
 // class Workshop {

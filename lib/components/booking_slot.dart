@@ -58,8 +58,6 @@ class BookingSlot extends StatelessWidget {
   }
 }
 
-
-
 class DaySlot extends StatelessWidget {
   const DaySlot({
     Key? key,
@@ -105,13 +103,12 @@ class DaySlot extends StatelessWidget {
     return (hideBreakSlot != null && hideBreakSlot == true && isPauseTime)
         ? const SizedBox()
         : GestureDetector(
-      onTap: (!isBooked && !isPauseTime) ? onTap : null,
-      child: CommonCard(
-          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          padding:
-          const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          color: getSlotColor(),
-          child: child),
-    );
+            onTap: (!isBooked && !isPauseTime) ? onTap : null,
+            child: CommonCard(
+                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                color: getSlotColor(),
+                child: child),
+          );
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../Services/Auth/workshopTechnician_database.dart';
-import '../../components/Calendar_Timeline.dart';
-import '../../components/buildCards.dart';
+import '../../Services/Auth/workshop_technician_database.dart';
+import '../../components/build_cards.dart';
 
 class MakeInvoice extends StatefulWidget {
   const MakeInvoice({Key? key}) : super(key: key);
@@ -39,17 +38,18 @@ class _MakeInvoiceState extends State<MakeInvoice> {
         children: [
           Expanded(
             child: ListView(
-              children: widgets.length == 0
+              children: widgets.isEmpty
                   ? [
-                const Center(
-                    child: Text('No Appointments Found',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.grey,),
-                    )
-                )
-              ]
+                      const Center(
+                          child: Text(
+                        'No Appointments Found',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.grey,
+                        ),
+                      ))
+                    ]
                   : widgets,
             ),
           ),
@@ -57,5 +57,4 @@ class _MakeInvoiceState extends State<MakeInvoice> {
       ),
     );
   }
-
 }

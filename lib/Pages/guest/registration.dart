@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,31 +9,33 @@ import '../../Services/Auth/auth.dart';
 import '../../components/avatar_upload.dart';
 import '../../components/icon_content.dart';
 import '../../components/reusable_card.dart';
-import '../../components/roundedButton.dart';
+import '../../components/rounded_button.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
-import '../client/Home.dart';
-import '../workshopAdmin/workshopAdmin_Home.dart';
+import '../client/client_home.dart';
+import '../workshopAdmin/workshop_admin_home.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
 
+  const RegistrationScreen({super.key});
+
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  RegistrationScreenState createState() => RegistrationScreenState();
 }
 
-enum accType {
+enum AccType {
   client,
   workshop,
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
+class RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
 
   var gap = const SizedBox(height: 8.0);
 
-  accType selectedType = accType.client;
+  AccType selectedType = AccType.client;
 
   bool showSpinner = false;
   late String email;
@@ -49,13 +53,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actionsIconTheme: IconThemeData(size: 24),
-        title: Text('Register'),
+        actionsIconTheme: const IconThemeData(size: 24),
+        title: const Text('Register'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.black,
@@ -66,7 +69,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Form(
             key: _formKey,
             child: ListView(
@@ -94,13 +97,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       child: ReusableCard(
                         onPress: () {
                           setState(() {
-                            selectedType = accType.client;
+                            selectedType = AccType.client;
                           });
                         },
-                        colour: selectedType == accType.client
+                        colour: selectedType == AccType.client
                             ? kDarkColor
                             : kLightColor,
-                        cardChild: IconContent(
+                        cardChild: const IconContent(
                           // client icon
                           icon: IconData(0xeb93, fontFamily: 'MaterialIcons'),
                           label: 'Client',
@@ -111,13 +114,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       child: ReusableCard(
                         onPress: () {
                           setState(() {
-                            selectedType = accType.workshop;
+                            selectedType = AccType.workshop;
                           });
                         },
-                        colour: selectedType == accType.workshop
+                        colour: selectedType == AccType.workshop
                             ? kDarkColor
                             : kLightColor,
-                        cardChild: IconContent(
+                        cardChild: const IconContent(
                           icon: IconData(0xe83a, fontFamily: 'MaterialIcons'),
                           label: 'Workshop',
                         ),
@@ -127,7 +130,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 Center(
                   child: Text(
-                      'Sign Up as a ${selectedType == accType.client ? 'Client' : 'Workshop Admin'}',
+                      'Sign Up as a ${selectedType == AccType.client ? 'Client' : 'Workshop Admin'}',
                       style: const TextStyle(
                         fontSize: 18.0,
                         color: Colors.black,
@@ -135,7 +138,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 gap,
                 Visibility(
-                  visible: accType.workshop == selectedType,
+                  visible: AccType.workshop == selectedType,
                   child: Column(
                     children: [
                       AvatarPhoto(
@@ -154,7 +157,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your email',
                     labelText: 'Email',
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.email),
                   ),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
@@ -168,7 +171,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your password',
                       labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock)),
+                      prefixIcon: const Icon(Icons.lock)),
                   obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {
@@ -181,7 +184,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your name',
                       labelText: 'Name',
-                      prefixIcon: Icon(Icons.person)),
+                      prefixIcon: const Icon(Icons.person)),
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     name = value;
@@ -193,7 +196,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your phone number',
                       labelText: 'Phone Number',
-                      prefixIcon: Icon(Icons.phone)),
+                      prefixIcon: const Icon(Icons.phone)),
                   countries: const ['SA'],
                   initialCountryCode: 'SA',
                   onChanged: (phone) {
@@ -205,17 +208,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your city',
                       labelText: 'City',
-                      prefixIcon: Icon(Icons.location_city)),
+                      prefixIcon: const Icon(Icons.location_city)),
                   textAlign: TextAlign.center,
                   enabled: false,
                   initialValue: 'Al Riyadh',
-
                 ),
                 RoundedButton(
                   title: 'Register',
                   colour: kLightColor,
                   onPressed: () async {
-                    if (!_load && accType.workshop == selectedType) {
+                    if (!_load && AccType.workshop == selectedType) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Please upload your logo'),
@@ -227,8 +229,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       setState(() {
                         showSpinner = true;
                       });
-                      var newUser;
-                      if (accType.client == selectedType) {
+                      AppUser newUser;
+                      if (AccType.client == selectedType) {
                         newUser = ClientUser(
                           email: email,
                           password: password,
@@ -252,7 +254,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             showSpinner = false;
                           });
                         }
-                      } else if (accType.workshop == selectedType) {
+                      } else if (AccType.workshop == selectedType) {
                         newUser = WorkshopAdmin(
                           email: email,
                           password: password,

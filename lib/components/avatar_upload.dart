@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -9,9 +10,9 @@ import 'package:image_picker/image_picker.dart';
 import '../constants.dart';
 
 class AvatarPhoto extends StatefulWidget {
-  late Function(File image) onImageSelected;
+  final Function(File image) onImageSelected;
 
-  AvatarPhoto({required this.onImageSelected});
+  const AvatarPhoto({super.key, required this.onImageSelected});
 
   @override
   State<AvatarPhoto> createState() => _AvatarPhotoState();
@@ -64,22 +65,21 @@ class _AvatarPhotoState extends State<AvatarPhoto> {
           backgroundColor: kBorderColor,
           child: ClipOval(
             child: !_load
-                ? CircleAvatar(
+                ? const CircleAvatar(
                     radius: 70,
                     backgroundColor: kLightColor,
-                    child:  const Icon(
+                    child: Icon(
                       Icons.add_a_photo,
                       size: 50,
                       color: Colors.white,
-                    )
-                  )
+                    ))
                 : !kIsWeb
                     ? Image.file(File(_pickedImage.path))
                     : Image.network(_pickedImage.path),
           ),
         ),
         TextButton.icon(
-          style: TextButton.styleFrom(primary: kDarkColor),
+          style: TextButton.styleFrom(foregroundColor: kDarkColor),
           onPressed: () async {
             final picker = ImagePicker();
             final pickedImage =

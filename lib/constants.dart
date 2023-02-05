@@ -7,7 +7,9 @@ const kBorderColor = Color(0xFF4d4d4d);
 const kTextFieldDecoratopn = InputDecoration(
   hintText: 'Enter a value',
   hintStyle: TextStyle(color: Colors.grey),
-  labelStyle: TextStyle(color: Colors.black87,),
+  labelStyle: TextStyle(
+    color: Colors.black87,
+  ),
   floatingLabelAlignment: FloatingLabelAlignment.center,
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   border: OutlineInputBorder(

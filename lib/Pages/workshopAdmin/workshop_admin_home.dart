@@ -19,7 +19,6 @@ class WorkshopAdminHome extends StatefulWidget {
 
 class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
   //vin
-  final _formKey = GlobalKey<FormState>();
   //styles
   var tc = [
     Colors.red[400],
@@ -81,7 +80,7 @@ class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
                     context,
                     rootNavigator: true,
                   ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => WelcomeScreen(),
+                    builder: (BuildContext context) => const WelcomeScreen(),
                   ));
                 });
               },
@@ -117,14 +116,14 @@ class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
                     MediaQuery.of(context).padding.top -
                     kToolbarHeight,
                 width: MediaQuery.of(context).size.width * 0.9,
-                child: ManageWorkshops(),
+                child: const ManageWorkshops(),
               );
             }
 
             if (_selectedIndex == 1) {
-              return CreateBooking();
+              return const CreateBooking();
             } else {
-              return Services();
+              return const Services();
             }
           },
         )),

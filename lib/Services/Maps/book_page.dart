@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:booking_calendar/booking_calendar.dart';
 
-class bookPage extends StatefulWidget {
-  const bookPage({Key? key}) : super(key: key);
+class BookPage extends StatefulWidget {
+  const BookPage({Key? key}) : super(key: key);
 
   @override
-  State<bookPage> createState() => _bookPageState();
+  State<BookPage> createState() => _BookPageState();
 }
 
-class _bookPageState extends State<bookPage> {
-
+class _BookPageState extends State<BookPage> {
   // Specify current Date/Time
   final now = DateTime.now();
-  // Craete Mock Booking Schedule
+  // Create Mock Booking Schedule
   late BookingService mockBookingService;
 
   // Hourly Appointments Set
@@ -42,7 +41,7 @@ class _bookPageState extends State<bookPage> {
     await Future.delayed(const Duration(seconds: 1));
     converted.add(DateTimeRange(
         start: newBooking.bookingStart, end: newBooking.bookingEnd));
-    print('${newBooking.toJson()} has been uploaded');
+    // print('${newBooking.toJson()} has been uploaded');
   }
 
   // List to add Booking Picked/Unavailable Periods
@@ -50,17 +49,21 @@ class _bookPageState extends State<bookPage> {
 
   // Add Mock Picked Bookings
   List<DateTimeRange> convertStreamResultMock({required dynamic streamResult}) {
-    ///here you can parse the streamresult and convert to [List<DateTimeRange>]
+    ///here you can parse the streamResult and convert to [List<DateTimeRange>]
     ///take care this is only mock, so if you add today as disabledDays it will still be visible on the first load
     ///disabledDays will properly work with real data
     DateTime first = now;
     DateTime second = now.add(const Duration(minutes: 55));
     DateTime third = now.subtract(const Duration(minutes: 240));
     DateTime fourth = now.subtract(const Duration(minutes: 500));
-    converted.add(DateTimeRange(start: first, end: now.add(const Duration(minutes: 30))));
-    converted.add(DateTimeRange(start: second, end: second.add(const Duration(minutes: 23))));
-    converted.add(DateTimeRange(start: third, end: third.add(const Duration(minutes: 15))));
-    converted.add(DateTimeRange(start: fourth, end: fourth.add(const Duration(minutes: 50))));
+    converted.add(
+        DateTimeRange(start: first, end: now.add(const Duration(minutes: 30))));
+    converted.add(DateTimeRange(
+        start: second, end: second.add(const Duration(minutes: 23))));
+    converted.add(DateTimeRange(
+        start: third, end: third.add(const Duration(minutes: 15))));
+    converted.add(DateTimeRange(
+        start: fourth, end: fourth.add(const Duration(minutes: 50))));
     return converted;
   }
 
@@ -87,12 +90,12 @@ class _bookPageState extends State<bookPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
             ),
           ),
           body: Center(
             child: BookingCalendar(
-              // Craete Mock Booking Schedule
+              // Create Mock Booking Schedule
               bookingService: mockBookingService,
               // Add Mock Picked Bookings
               convertStreamResultToDateTimeRanges: convertStreamResultMock,

@@ -1,30 +1,30 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
-import 'package:wrshh/Pages/client/Home.dart';
-import 'package:wrshh/Pages/client/client_appointments.dart';
+import 'package:wrshh/Pages/client/client_home.dart';
 import 'package:wrshh/components/booking_slot.dart';
 import 'package:intl/intl.dart';
-import 'package:wrshh/components/roundedButton.dart';
+import 'package:wrshh/components/rounded_button.dart';
 import 'package:wrshh/constants.dart';
 import '../../Services/Auth/client_database.dart';
-import '../../components/Calendar_Timeline.dart';
+import '../../components/calendar_time_line.dart';
 
 class ClientBooking extends StatefulWidget {
-  final workshopInfo;
-  final selectedServices;
+  final Map workshopInfo;
+  final List selectedServices;
   const ClientBooking(
-      {required this.workshopInfo, required this.selectedServices});
+      {super.key, required this.workshopInfo, required this.selectedServices});
 
   @override
-  State<ClientBooking> createState() =>
-      _ClientBookingState(workshopInfo: workshopInfo);
+  State<ClientBooking> createState() => _ClientBookingState();
 }
 
 class _ClientBookingState extends State<ClientBooking> {
-  final workshopInfo;
+  late final Map workshopInfo;
   late List appointments;
   bool gotPath = false;
   Map selectedList = {};
-  _ClientBookingState({required this.workshopInfo});
+  // _ClientBookingState({required this.workshopInfo});
 
   DateTime selectedDate = DateTime.now();
 
@@ -33,6 +33,7 @@ class _ClientBookingState extends State<ClientBooking> {
     // TODO: implement initState
     _asyncMethod();
     super.initState();
+    workshopInfo = widget.workshopInfo;
   }
 
   _asyncMethod() async {
@@ -70,7 +71,7 @@ class _ClientBookingState extends State<ClientBooking> {
                 // setState(() {
                 selectedDate = date;
                 (context as Element).reassemble();
-
+                // (context as Element)
                 // });
               },
               leftMargin: 20,
@@ -140,7 +141,7 @@ class _ClientBookingState extends State<ClientBooking> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Home(
+                        builder: (context) => const Home(
                               index: 2,
                             )),
                   );
@@ -254,7 +255,7 @@ class _ClientBookingState extends State<ClientBooking> {
       isPauseTime: false,
       child: Center(
         child: Text(
-          '$dateFormatted',
+          dateFormatted,
           style: const TextStyle(color: Colors.white),
         ),
       ),

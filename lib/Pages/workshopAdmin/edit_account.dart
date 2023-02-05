@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 
-import '../../Services/Auth/workshopAdmin_database.dart';
+import '../../Services/Auth/workshop_admin_database.dart';
 import '../../components/avatar_update.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
@@ -24,7 +26,7 @@ class _EditAccountState extends State<EditAccount> {
   late String oldEmail;
   late String oldPhoneNumber;
   late String oldCity;
-  late final services;
+  late final Map services;
   late String oldPassword;
   bool passwordEntered = false;
   bool nameChanged = false;
@@ -40,7 +42,6 @@ class _EditAccountState extends State<EditAccount> {
   bool gotPath = false;
 
   late File _pickedImage;
-  bool _logoChanged = false;
 
   Future _getData() async {
     final User? user = _auth.currentUser;
@@ -85,7 +86,7 @@ class _EditAccountState extends State<EditAccount> {
         iconTheme: IconThemeData(color: Colors.lightBlue[300], size: 24),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -94,7 +95,6 @@ class _EditAccountState extends State<EditAccount> {
               AvatarPhotoUpdate(
                 logoURL: logoURL,
                 onImageSelected: (image) async {
-                  _logoChanged = true;
                   _pickedImage = image;
                   var result = await updateWorkshopLogo(_pickedImage);
                   if (result == 'success') {
@@ -119,7 +119,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                   hintText: 'Enter your email',
                   labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.email),
                 ),
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.emailAddress,
@@ -135,7 +135,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your name',
                     labelText: 'Name',
-                    prefixIcon: Icon(Icons.person)),
+                    prefixIcon: const Icon(Icons.person)),
                 textAlign: TextAlign.center,
                 initialValue: oldName,
                 onChanged: (value) {
@@ -149,7 +149,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your phone number',
                     labelText: 'Phone Number',
-                    prefixIcon: Icon(Icons.phone)),
+                    prefixIcon: const Icon(Icons.phone)),
                 countries: const ['SA'],
                 initialCountryCode: 'SA',
                 initialValue: oldPhoneNumber,
@@ -163,7 +163,7 @@ class _EditAccountState extends State<EditAccount> {
                 decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter your city',
                     labelText: 'City',
-                    prefixIcon: Icon(Icons.location_city)),
+                    prefixIcon: const Icon(Icons.location_city)),
                 textAlign: TextAlign.center,
                 enabled: false,
                 initialValue: oldCity,
@@ -196,7 +196,7 @@ class _EditAccountState extends State<EditAccount> {
                                 decoration: kTextFieldDecoratopn.copyWith(
                                     hintText: 'Enter your password',
                                     labelText: 'Password',
-                                    prefixIcon: Icon(Icons.lock)),
+                                    prefixIcon: const Icon(Icons.lock)),
                                 textAlign: TextAlign.center,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -211,7 +211,7 @@ class _EditAccountState extends State<EditAccount> {
                                 decoration: kTextFieldDecoratopn.copyWith(
                                     hintText: 'Enter new password',
                                     labelText: 'New Password',
-                                    prefixIcon: Icon(Icons.lock)),
+                                    prefixIcon: const Icon(Icons.lock)),
                                 textAlign: TextAlign.center,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
@@ -238,7 +238,7 @@ class _EditAccountState extends State<EditAccount> {
                       },
                     );
                   },
-                  child: Text('Change Password')),
+                  child: const Text('Change Password')),
               ElevatedButton.icon(
                 onPressed: () {
                   // Validate returns true if the form is valid, or false otherwise.
@@ -265,7 +265,7 @@ class _EditAccountState extends State<EditAccount> {
                                   decoration: kTextFieldDecoratopn.copyWith(
                                       hintText: 'Enter your password',
                                       labelText: 'Password',
-                                      prefixIcon: Icon(Icons.lock)),
+                                      prefixIcon: const Icon(Icons.lock)),
                                   textAlign: TextAlign.center,
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,

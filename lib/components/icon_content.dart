@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
-
 class IconContent extends StatelessWidget {
-  IconContent({required this.icon, required this.label});
+  const IconContent({super.key, required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -19,12 +16,12 @@ class IconContent extends StatelessWidget {
           color: Colors.white,
           size: 60.0,
         ),
-        SizedBox(
+        const SizedBox(
           height: 15.0,
         ),
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18.0,
             color: Colors.white,
           ),

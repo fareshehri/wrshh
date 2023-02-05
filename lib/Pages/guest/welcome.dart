@@ -1,19 +1,23 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:wrshh/Pages/guest/registration.dart';
 
-import '../../components/roundedButton.dart';
+import '../../components/rounded_button.dart';
 import '../../constants.dart';
 import 'login.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const String id = 'welcome_screen';
 
+  const WelcomeScreen({super.key});
+
   @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
+  WelcomeScreenState createState() => WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
+class WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation animation;
@@ -23,11 +27,11 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
 
     controller = AnimationController(
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
       vsync: this,
     );
-    animation = ColorTween(begin: kDarkColor, end: Colors.white)
-        .animate(controller);
+    animation =
+        ColorTween(begin: kDarkColor, end: Colors.white).animate(controller);
     controller.forward();
     controller.addListener(() {
       setState(() {});
@@ -45,7 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     return Scaffold(
       backgroundColor: animation.value,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,17 +58,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               children: <Widget>[
                 Hero(
                   tag: 'logo',
-                  child: Container(
+                  child: SizedBox(
                     height: 60.0,
                     child: Image.asset('assets/images/Logo.png'),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 30.0,
                 ),
                 TypewriterAnimatedTextKit(
-                  text: ['Wrshh'],
-                  textStyle: TextStyle(
+                  text: const ['Wrshh'],
+                  textStyle: const TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,
                     color: Colors.black54,
@@ -72,7 +76,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 48.0,
             ),
             RoundedButton(

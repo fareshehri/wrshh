@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:rate/rate.dart';
 import 'package:wrshh/Models/appointment.dart';
-import 'package:wrshh/Pages/client/Home.dart';
+import 'package:wrshh/Pages/client/client_home.dart';
 import 'package:wrshh/Pages/client/payment_page.dart';
-import 'package:wrshh/Pages/workshopTechnician/ReportPage.dart';
+import 'package:wrshh/Pages/workshopTechnician/report_pages.dart';
 import '../Services/Auth/client_database.dart';
 
 class AppointmentsCard extends StatefulWidget {
@@ -16,6 +18,7 @@ class AppointmentsCard extends StatefulWidget {
   final String cardType;
 
   const AppointmentsCard({
+    super.key,
     this.logoURL,
     required this.itemName,
     required this.appointment,
@@ -50,9 +53,9 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
 
   _asyncMethod() async {
     var appointmentlogo = await getWorkshopLogoFromDB(widget.itemID!);
-    isReported = await checkReportStatus(widget.appointment.appointmentID!);
-    isRated = await checkRateStatus(widget.appointment.appointmentID!);
-    isPaid = await checkPaymentStatus(widget.appointment.appointmentID!);
+    isReported = await checkReportStatus(widget.appointment.appointmentID);
+    isRated = await checkRateStatus(widget.appointment.appointmentID);
+    isPaid = await checkPaymentStatus(widget.appointment.appointmentID);
     setState(() {
       logoURL = appointmentlogo;
     });
@@ -215,14 +218,14 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                                                 ),
                                                                 const SizedBox(
                                                                     height: 10),
-                                                                Center(
+                                                                const Center(
                                                                   child:
                                                                       FittedBox(
                                                                     fit: BoxFit
                                                                         .fitHeight,
                                                                     child: Text(
                                                                       'Services',
-                                                                      style: const TextStyle(
+                                                                      style: TextStyle(
                                                                           fontSize:
                                                                               20,
                                                                           fontWeight: FontWeight
@@ -277,15 +280,15 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                                         ),
                                       );
                                     },
-                                    child: Text('Show Details'),
                                     style: ElevatedButton.styleFrom(
-                                      primary: Colors.pink,
-                                      onPrimary: Colors.white,
+                                      foregroundColor: Colors.white,
+                                      backgroundColor: Colors.pink,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(32.0),
                                       ),
                                     ),
+                                    child: const Text('Show Details'),
                                   )),
                             ],
                           ),
@@ -297,8 +300,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
   }
 
   ButtonStyle kButtonsStyle = ElevatedButton.styleFrom(
-    primary: Colors.pink,
-    onPrimary: Colors.white,
+    foregroundColor: Colors.white,
+    backgroundColor: Colors.pink,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(32.0),
     ),
@@ -309,11 +312,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
     var payButton = Expanded(
       child: ElevatedButton(
         onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => PaymentPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const PaymentPage()));
         },
-        child: Text('Pay'),
         style: kButtonsStyle,
+        child: const Text('Pay'),
       ),
     );
 
@@ -324,31 +327,33 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Confirmation"),
-                content:
-                    Text("Are you sure you want to cancel this appointment?"),
+                title: const Text("Confirmation"),
+                content: const Text(
+                    "Are you sure you want to cancel this appointment?"),
                 actions: [
                   TextButton(
-                    child: Text("No"),
+                    child: const Text("No"),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
                   TextButton(
-                    child: Text("Yes"),
+                    child: const Text("Yes"),
                     onPressed: () {
                       cancelAppointment(widget.appointment.appointmentID);
                       Navigator.pop(context);
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Home()));
                     },
                   ),
                 ],
               );
             });
       },
-      child: Text('Cancel Booking'),
       style: kButtonsStyle,
+      child: const Text('Cancel Booking'),
     ));
 
     var rateButton = Expanded(
@@ -373,12 +378,12 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                     ),
                     child: Column(
                       children: [
-                        Text('Rate this appointment',
+                        const Text('Rate this appointment',
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black)),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Rate(
                           iconSize: 40,
                           color: Colors.green,
@@ -398,8 +403,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                               Navigator.pop(context);
                             }
                           },
-                          child: Text('Submit'),
                           style: kButtonsStyle,
+                          child: const Text('Submit'),
                         )
                       ],
                     )),
@@ -407,8 +412,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
             ),
           );
         },
-        child: Text('Rate'),
         style: kButtonsStyle,
+        child: const Text('Rate'),
       ),
     );
 
@@ -423,7 +428,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
               MaterialPageRoute(
                 builder: (context) => Scaffold(
                   appBar: AppBar(
-                    title: Text('Report'),
+                    title: const Text('Report'),
                   ),
                   backgroundColor: Colors.white,
                   body: Column(
@@ -461,11 +466,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                 const Duration(seconds: 2), () => Navigator.pop(context));
           }
         },
-        child: Text(
+        style: kButtonsStyle,
+        child: const Text(
           'Show Report',
           textAlign: TextAlign.center,
         ),
-        style: kButtonsStyle,
       ),
     );
 
@@ -481,8 +486,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
             ),
           );
         },
-        child: Text('Upload Report'),
         style: kButtonsStyle,
+        child: const Text('Upload Report'),
       ),
     );
 
@@ -514,18 +519,18 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       }
     }
     if (buttons.length > 1) {
-      buttons.insert(1, SizedBox(width: 10));
+      buttons.insert(1, const SizedBox(width: 10));
     }
     if (buttons.length > 2) {
-      buttons.insert(3, SizedBox(width: 10));
+      buttons.insert(3, const SizedBox(width: 10));
     }
     if (buttons.length > 5) {
-      buttons.insert(6, SizedBox(width: 10));
+      buttons.insert(6, const SizedBox(width: 10));
     }
 
     return buttons;
   }
 
-  var kTextStyle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black);
+  var kTextStyle = const TextStyle(
+      fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black);
 }

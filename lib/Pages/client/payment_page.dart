@@ -1,11 +1,15 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 
 class PaymentPage extends StatefulWidget {
+  const PaymentPage({super.key});
+
   @override
-  _PaymentPageState createState() => _PaymentPageState();
+  PaymentPageState createState() => PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage> {
+class PaymentPageState extends State<PaymentPage> {
   final _formKey = GlobalKey<FormState>();
   late String _cardNumber;
   late String _expiryDate;
@@ -15,10 +19,10 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Payment"),
+        title: const Text("Payment"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -30,11 +34,11 @@ class _PaymentPageState extends State<PaymentPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Card Number",
                           prefixIcon: Icon(Icons.credit_card),
                         ),
@@ -46,11 +50,11 @@ class _PaymentPageState extends State<PaymentPage> {
                         },
                         onSaved: (value) => _cardNumber = value!,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16.0,
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Expiry Date",
                           prefixIcon: Icon(Icons.date_range),
                         ),
@@ -62,11 +66,11 @@ class _PaymentPageState extends State<PaymentPage> {
                         },
                         onSaved: (value) => _expiryDate = value!,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 16.0,
                       ),
                       TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "CVV",
                           prefixIcon: Icon(Icons.security),
                         ),
@@ -82,7 +86,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32.0,
               ),
               ElevatedButton(
@@ -92,7 +96,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     // Process the payment here
                   }
                 },
-                child: Text("Pay"),
+                child: const Text("Pay"),
               ),
             ],
           ),

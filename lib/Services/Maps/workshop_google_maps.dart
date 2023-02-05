@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class WorkshopGoogleMaps extends StatefulWidget {
-  late final String location;
-  WorkshopGoogleMaps({required this.location});
+  final String location;
+  const WorkshopGoogleMaps({super.key, required this.location});
   @override
-  _MapPageState createState() => _MapPageState();
+  MapPageState createState() => MapPageState();
 }
 
-class _MapPageState extends State<WorkshopGoogleMaps> {
+class MapPageState extends State<WorkshopGoogleMaps> {
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
 
@@ -26,9 +26,9 @@ class _MapPageState extends State<WorkshopGoogleMaps> {
       _center = LatLng(double.parse(widget.location.split(',')[0]),
           double.parse(widget.location.split(',')[1]));
       _markers.add(Marker(
-        markerId: MarkerId('1'),
+        markerId: const MarkerId('1'),
         position: _center,
-        infoWindow: InfoWindow(
+        infoWindow: const InfoWindow(
           title: 'Workshop',
           snippet: 'Workshop',
         ),

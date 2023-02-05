@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import '../../Models/workshop.dart';
-import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../Services/Maps/WorkshopGoogleMaps.dart';
+import '../../Services/Auth/workshop_admin_database.dart';
+import '../../Services/Maps/workshop_google_maps.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
 
@@ -11,22 +13,21 @@ class WorkshopDetails extends StatefulWidget {
   final Workshop workshop;
 
   const WorkshopDetails({
+    super.key,
     required this.workshop,
   });
 
   @override
-  State<WorkshopDetails> createState() =>
-      _WorkshopDetailsState(workshop: workshop);
+  State<WorkshopDetails> createState() => _WorkshopDetailsState();
 }
 
 class _WorkshopDetailsState extends State<WorkshopDetails> {
-  Workshop workshop;
-  _WorkshopDetailsState({required this.workshop});
+  late Workshop workshop;
 
   final _formKey = GlobalKey<FormState>();
 
   var gap = const SizedBox(height: 8.0);
-  late var technicianInfo;
+  late Map technicianInfo;
   bool showSpinner = false;
   late String logoURL = workshop.logoURL;
   bool gotPath = false;
@@ -36,6 +37,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
     // TODO: implement initState
     super.initState();
     _asyncMethod();
+    workshop = widget.workshop;
   }
 
   _asyncMethod() async {
@@ -65,7 +67,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                 key: _formKey,
                 child: ListView(
                   children: <Widget>[
-                    SizedBox(
+                    const SizedBox(
                       height: 20.0,
                     ),
                     Flex(
@@ -94,7 +96,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                     TextFormField(
                       decoration: kTextFieldDecoratopn.copyWith(
                         labelText: 'Technical email',
-                        prefixIcon: Icon(Icons.email),
+                        prefixIcon: const Icon(Icons.email),
                       ),
                       textAlign: TextAlign.center,
                       initialValue: technicianInfo['email'],
@@ -105,7 +107,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                     TextFormField(
                       decoration: kTextFieldDecoratopn.copyWith(
                           labelText: 'Technical name',
-                          prefixIcon: Icon(Icons.person)),
+                          prefixIcon: const Icon(Icons.person)),
                       initialValue: technicianInfo['name'],
                       enabled: false,
                       textAlign: TextAlign.center,
@@ -114,7 +116,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                     IntlPhoneField(
                       decoration: kTextFieldDecoratopn.copyWith(
                           labelText: 'Technical phone Number',
-                          prefixIcon: Icon(Icons.phone)),
+                          prefixIcon: const Icon(Icons.phone)),
                       countries: const ['SA'],
                       initialCountryCode: 'SA',
                       initialValue: technicianInfo['phoneNumber']
@@ -135,19 +137,19 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                       },
                       validator: workshopNameValidator,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24.0,
                     ),
                     TextFormField(
                       decoration: kTextFieldDecoratopn.copyWith(
                           hintText: 'Enter your city',
                           labelText: 'City',
-                          prefixIcon: Icon(Icons.location_city)),
+                          prefixIcon: const Icon(Icons.location_city)),
                       textAlign: TextAlign.center,
                       enabled: false,
                       initialValue: 'Al Riyadh',
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24.0,
                     ),
                     // location from google maps
@@ -158,11 +160,11 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                         location: workshop.location,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 24.0,
                     ),
                     ElevatedButton(
-                      child: Text('Update Branch Name'),
+                      child: const Text('Update Branch Name'),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           showDialog(
@@ -170,7 +172,7 @@ class _WorkshopDetailsState extends State<WorkshopDetails> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Center(child: Text('Confirmaion')),
-                                content: Text(
+                                content: const Text(
                                     "Are you sure you want to Update Branch Name?"),
                                 actions: [
                                   TextButton(

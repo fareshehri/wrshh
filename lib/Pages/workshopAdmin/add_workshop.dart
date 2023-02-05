@@ -1,12 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:wrshh/Services/Auth/auth.dart';
 
 import '../../Models/user.dart';
-import '../../Services/Auth/workshopAdmin_database.dart';
-import '../../Services/Maps/googleMapMyLoc.dart';
-import '../../components/roundedButton.dart';
+import '../../Services/Auth/workshop_admin_database.dart';
+import '../../Services/Maps/google_map_my_loc.dart';
+import '../../components/rounded_button.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
 
@@ -17,7 +19,7 @@ class AddWorkshop extends StatefulWidget {
   State<AddWorkshop> createState() => _AddWorkshopState();
 }
 
-enum accType {
+enum AccType {
   client,
   workshop,
 }
@@ -27,7 +29,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
 
   var gap = const SizedBox(height: 8.0);
 
-  accType selectedType = accType.client;
+  AccType selectedType = AccType.client;
 
   bool showSpinner = false;
   late String adminEmail;
@@ -102,7 +104,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                   decoration: kTextFieldDecoratopn.copyWith(
                     hintText: 'Enter technician email',
                     labelText: 'Technician email',
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.email),
                   ),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.emailAddress,
@@ -116,7 +118,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter technician password',
                       labelText: 'Technician password',
-                      prefixIcon: Icon(Icons.lock)),
+                      prefixIcon: const Icon(Icons.lock)),
                   obscureText: true,
                   textAlign: TextAlign.center,
                   onChanged: (value) {
@@ -129,7 +131,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter technician name',
                       labelText: 'Technician name',
-                      prefixIcon: Icon(Icons.person)),
+                      prefixIcon: const Icon(Icons.person)),
                   textAlign: TextAlign.center,
                   onChanged: (value) {
                     name = value;
@@ -141,7 +143,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter technician phone number',
                       labelText: 'Technician phone Number',
-                      prefixIcon: Icon(Icons.phone)),
+                      prefixIcon: const Icon(Icons.phone)),
                   countries: const ['SA'],
                   initialCountryCode: 'SA',
                   onChanged: (phone) {
@@ -161,14 +163,14 @@ class _AddWorkshopState extends State<AddWorkshop> {
                   },
                   validator: workshopNameValidator,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24.0,
                 ),
                 TextFormField(
                   decoration: kTextFieldDecoratopn.copyWith(
                       hintText: 'Enter your city',
                       labelText: 'City',
-                      prefixIcon: Icon(Icons.location_city)),
+                      prefixIcon: const Icon(Icons.location_city)),
                   textAlign: TextAlign.center,
                   enabled: false,
                   initialValue: 'Al Riyadh',
@@ -181,7 +183,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                         setState(() {
                           showSpinner = true;
                         });
-                        var newUser;
+                        WorkshopTech newUser;
                         newUser = WorkshopTech(
                           email: email,
                           password: password,
@@ -195,7 +197,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                           context,
                           rootNavigator: true,
                         ).push(MaterialPageRoute(
-                          builder: (BuildContext context) => googleMapMyLoc(
+                          builder: (BuildContext context) => GoogleMapMyLoc(
                             adminEmail: adminEmail,
                             userInfo: newUser,
                             workshopName: workshop,
