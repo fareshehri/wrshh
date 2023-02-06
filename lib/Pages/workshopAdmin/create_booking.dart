@@ -4,7 +4,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../../Services/Auth/workshop_admin_database.dart';
-import '../../Services/Maps/google_maps_part_admin';
+import 'package:wrshh/Services/Maps/google_maps_part_admin.dart';
 import '../../components/rounded_button.dart';
 import '../../components/validators.dart';
 import '../../constants.dart';
