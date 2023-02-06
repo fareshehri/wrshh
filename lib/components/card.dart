@@ -6,7 +6,7 @@ import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/client_home.dart';
 import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/report_pages.dart';
-import 'package:wrshh/components/PDFPage.dart';
+import 'package:wrshh/components/pdf_page.dart';
 import '../Services/Auth/client_database.dart';
 
 class AppointmentsCard extends StatefulWidget {

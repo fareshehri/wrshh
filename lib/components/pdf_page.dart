@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:internet_file/internet_file.dart';
 import 'package:pdfx/pdfx.dart';
@@ -40,12 +42,12 @@ class _PDFPageState extends State<PDFPage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Report'),
+          title: const Text('Report'),
         ),
         backgroundColor: Colors.white,
         body: Column(
           children: [
-            Container(
+            SizedBox(
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: PdfView(
                   controller: PdfController(
