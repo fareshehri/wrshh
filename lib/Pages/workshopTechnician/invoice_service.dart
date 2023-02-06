@@ -195,7 +195,8 @@ class PdfInvoiceService {
           'reportURL': url,
           'status': "finished",
           'services': ser,
-          'price': double.parse(tot)
+          'price': double.parse(tot),
+          'odometer':mileage
         },
       ).onError((error, stackTrace) => null);
       // print('1');
