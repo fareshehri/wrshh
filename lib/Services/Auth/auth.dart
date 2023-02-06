@@ -43,10 +43,14 @@ class AuthService {
 
   Future<String> getUserType(String? email) async {
     final user = _auth.currentUser;
-    final client =
-        await _firestore.collection('clients').doc(user!.email?.toLowerCase()).get();
-    final workshopAdmin =
-        await _firestore.collection('workshopAdmins').doc(user.email?.toLowerCase()).get();
+    final client = await _firestore
+        .collection('clients')
+        .doc(user!.email?.toLowerCase())
+        .get();
+    final workshopAdmin = await _firestore
+        .collection('workshopAdmins')
+        .doc(user.email?.toLowerCase())
+        .get();
     final workshopTechnician = await _firestore
         .collection('workshopTechnicians')
         .doc(user.email?.toLowerCase())
@@ -80,13 +84,16 @@ class AuthService {
           'service': ['Check Up'],
           'price': [0],
           'SubPrices': {
-            'Check up': [0]
+            'Check Up': [0]
           },
           'SubServices': {
-            'Check up': ['Tyre Pressure']
+            'Check Up': ['Tyre Pressure']
           }
         } as LinkedHashMap<String, dynamic>;
-        _firestore.collection('workshopAdmins').doc(user.email.toLowerCase()).set(
+        _firestore
+            .collection('workshopAdmins')
+            .doc(user.email.toLowerCase())
+            .set(
           {
             'email': user.email.toLowerCase(),
             'phoneNumber': user.phoneNumber,
@@ -110,7 +117,10 @@ class AuthService {
               email: user.email, password: user.password);
 
       if (userCredential.user?.email != null) {
-        _firestore.collection('workshopTechnicians').doc(user.email.toLowerCase()).set(
+        _firestore
+            .collection('workshopTechnicians')
+            .doc(user.email.toLowerCase())
+            .set(
           {
             'email': user.email.toLowerCase(),
             'phoneNumber': user.phoneNumber,
@@ -162,8 +172,10 @@ class AuthService {
 
   void uploadLogo(File logo, String email) async {
     try {
-      final ref =
-          FirebaseStorage.instance.ref().child('workshopLogo').child(email.toLowerCase());
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('workshopLogo')
+          .child(email.toLowerCase());
       await ref.putFile(logo);
     } catch (e) {
       //

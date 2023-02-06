@@ -374,12 +374,12 @@ class StateServices extends State<Services> {
                       controller: mainsControllers[selectedMainServiceID],
                       inputFormatters: [FilteringTextInputFormatter.allow(RegExp("[0-9]+"))],
                       maxLength: 5,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
+                      decoration: InputDecoration(
+                          border: const UnderlineInputBorder(),
                           iconColor: Colors.green,
-                          icon: Icon(Icons.attach_money),
-                          labelText: 'Enter Service Price (SAR)',
-                          focusedBorder: OutlineInputBorder()
+                          icon: const Icon(Icons.attach_money),
+                          labelText: 'Enter ${mainServices.firstWhere((element) => element.id == selectedMainServiceID).name}\'s Price (SAR)',
+                          focusedBorder: const OutlineInputBorder()
                       ),
                       onChanged: (price) {
                         setState(() {
