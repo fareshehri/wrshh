@@ -42,6 +42,8 @@ class PaymentPageState extends State<PaymentPage> {
                           labelText: "Card Number",
                           prefixIcon: Icon(Icons.credit_card),
                         ),
+                        maxLength: 16,
+                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value!.trim().isEmpty) {
                             return 'Please enter your card number';
@@ -58,9 +60,33 @@ class PaymentPageState extends State<PaymentPage> {
                           labelText: "Expiry Date",
                           prefixIcon: Icon(Icons.date_range),
                         ),
+                        maxLength: 5,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value!.trim().isEmpty) {
                             return 'Please enter the expiry date';
+                          } else if (value.length >= 3) {
+                            try{
+                              if (int.parse(value.substring(0, 2)) > 12 ||
+                                  int.parse(value.substring(0, 2)) < 1) {
+                                return 'Please enter a valid month';
+                              }
+                            } catch (e){
+                              return 'Please enter a valid month';
+                            }
+                           if (value.substring(2, 3) != "/"){
+                             return 'Please enter the expiry date in the format MM/YY';
+                           }
+                           if (value.length == 5){
+                             try{
+                               if (int.parse(value.substring(3, 5)) < 10){
+                                 return 'Please enter a valid year';
+                               }
+                              } catch (e){
+                                return 'Please enter a valid year';
+
+                             }
+                           }
                           }
                           return null;
                         },
@@ -74,6 +100,8 @@ class PaymentPageState extends State<PaymentPage> {
                           labelText: "CVV",
                           prefixIcon: Icon(Icons.security),
                         ),
+                        keyboardType: TextInputType.number,
+                        maxLength: 3,
                         validator: (value) {
                           if (value!.trim().isEmpty) {
                             return 'Please enter the CVV number';
