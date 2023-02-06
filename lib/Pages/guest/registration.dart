@@ -232,7 +232,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                       AppUser newUser;
                       if (AccType.client == selectedType) {
                         newUser = ClientUser(
-                          email: email,
+                          email: email.toLowerCase(),
                           password: password,
                           phoneNumber: phoneNumber,
                           name: name,
@@ -256,7 +256,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                         }
                       } else if (AccType.workshop == selectedType) {
                         newUser = WorkshopAdmin(
-                          email: email,
+                          email: email.toLowerCase(),
                           password: password,
                           phoneNumber: phoneNumber,
                           name: name,
@@ -267,7 +267,7 @@ class RegistrationScreenState extends State<RegistrationScreen> {
                           var user = await AuthService().signUpUser(newUser);
                           if (user!.user?.uid != null) {
                             AuthService()
-                                .uploadLogo(_pickedImage, newUser.email);
+                                .uploadLogo(_pickedImage, newUser.email.toLowerCase());
                             Navigator.pushNamed(context, WorkshopAdminHome.id);
                           }
                         } catch (e) {

@@ -38,7 +38,7 @@ class _EditAccountState extends State<EditAccount> {
 
   Future _getData() async {
     final User? user = _auth.currentUser;
-    final workshopAdmin = await getWorkshopTechInfo(user!.email.toString());
+    final workshopAdmin = await getWorkshopTechInfo(user!.email.toString().toLowerCase());
     setState(() {
       oldName = workshopAdmin['name'];
       oldEmail = user.email!;
@@ -247,7 +247,7 @@ class _EditAccountState extends State<EditAccount> {
                               TextButton(
                                 child: const Text("No"),
                                 onPressed: () {
-                                  newEmail = oldEmail;
+                                  newEmail = oldEmail.toLowerCase();
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -276,7 +276,7 @@ class _EditAccountState extends State<EditAccount> {
   void updatePassword() async {
     UserCredential? userCredential;
     try {
-      userCredential = await AuthService().signInUser(oldEmail, oldPassword);
+      userCredential = await AuthService().signInUser(oldEmail.toLowerCase(), oldPassword);
     } catch (e) {
       showDialog(
           context: context,
@@ -332,7 +332,7 @@ class _EditAccountState extends State<EditAccount> {
     if (_formKey.currentState!.validate()) {
       late UserCredential? userCredential;
       try {
-        userCredential = await AuthService().signInUser(oldEmail, oldPassword);
+        userCredential = await AuthService().signInUser(oldEmail.toLowerCase(), oldPassword);
       } catch (e) {
         showDialog(
             context: context,
@@ -349,14 +349,14 @@ class _EditAccountState extends State<EditAccount> {
       if (userCredential?.user?.email != null) {
         if (emailChanged) {
           Map data = {
-            'email': oldEmail,
+            'email': oldEmail.toLowerCase(),
             'name': nameChanged ? newName : oldName,
             'phoneNumber': newPhoneNumber.startsWith('+966')
                 ? newPhoneNumber
                 : '+966$newPhoneNumber',
             'city': cityChanged ? newCity : oldCity,
           };
-          String result = await updateWorkshopTechEmail(newEmail, data);
+          String result = await updateWorkshopTechEmail(newEmail.toLowerCase(), data);
           if (result == 'success') {
             showDialog(
                 context: context,
@@ -401,7 +401,7 @@ class _EditAccountState extends State<EditAccount> {
         }
         if (nameChanged || phoneNumberChanged || cityChanged) {
           Map data = {
-            'email': emailChanged ? newEmail : oldEmail,
+            'email': emailChanged ? newEmail.toLowerCase() : oldEmail.toLowerCase(),
             'phoneNumber': newPhoneNumber.startsWith('+966')
                 ? newPhoneNumber
                 : '+966$newPhoneNumber',

@@ -44,14 +44,13 @@ class AuthService {
   Future<String> getUserType(String? email) async {
     final user = _auth.currentUser;
     final client =
-        await _firestore.collection('clients').doc(user!.email).get();
+        await _firestore.collection('clients').doc(user!.email?.toLowerCase()).get();
     final workshopAdmin =
-        await _firestore.collection('workshopAdmins').doc(user.email).get();
+        await _firestore.collection('workshopAdmins').doc(user.email?.toLowerCase()).get();
     final workshopTechnician = await _firestore
         .collection('workshopTechnicians')
-        .doc(user.email)
+        .doc(user.email?.toLowerCase())
         .get();
-    final admin = await _firestore.collection('admins').doc(user.email).get();
 
     return client.exists
         ? 'ClientUser'
@@ -59,19 +58,17 @@ class AuthService {
             ? 'workshopAdmin'
             : workshopTechnician.exists
                 ? 'workshopTechnician'
-                : admin.exists
-                    ? 'AdminUser'
-                    : 'none';
+                : 'none';
   }
 
   Future<UserCredential?> signUpUser(AppUser user) async {
     final newUser = await _auth.createUserWithEmailAndPassword(
-        email: user.email, password: user.password);
+        email: user.email.toLowerCase(), password: user.password);
     if (newUser.user?.email != null) {
       if (user.userType == 'ClientUser') {
         _firestore.collection('clients').doc(user.email).set(
           {
-            'email': user.email,
+            'email': user.email.toLowerCase(),
             'phoneNumber': user.phoneNumber,
             'name': user.name,
             'city': user.city,
@@ -89,22 +86,13 @@ class AuthService {
             'Check up': ['Tyre Pressure']
           }
         } as LinkedHashMap<String, dynamic>;
-        _firestore.collection('workshopAdmins').doc(user.email).set(
+        _firestore.collection('workshopAdmins').doc(user.email.toLowerCase()).set(
           {
-            'email': user.email,
+            'email': user.email.toLowerCase(),
             'phoneNumber': user.phoneNumber,
             'name': user.name,
             'city': user.city,
             'services': services,
-          },
-        );
-      } else if (user.userType == 'AdminUser') {
-        _firestore.collection('admins').doc(user.email).set(
-          {
-            'email': user.email,
-            'phoneNumber': user.phoneNumber,
-            'name': user.name,
-            'city': user.city,
           },
         );
       }
@@ -122,9 +110,9 @@ class AuthService {
               email: user.email, password: user.password);
 
       if (userCredential.user?.email != null) {
-        _firestore.collection('workshopTechnicians').doc(user.email).set(
+        _firestore.collection('workshopTechnicians').doc(user.email.toLowerCase()).set(
           {
-            'email': user.email,
+            'email': user.email.toLowerCase(),
             'phoneNumber': user.phoneNumber,
             'name': user.name,
             'city': user.city,
@@ -155,8 +143,8 @@ class AuthService {
       'saturday': [false, 0, 0, 0, 0],
     } as LinkedHashMap<String, dynamic>;
     Map<String, dynamic> wp = {
-      'adminEmail': workshop.adminEmail,
-      'technicianEmail': workshop.technicianEmail,
+      'adminEmail': workshop.adminEmail?.toLowerCase(),
+      'technicianEmail': workshop.technicianEmail.toLowerCase(),
       'workshopName': workshop.workshopName,
       'location': workshop.location,
       'city': 'Al Riyadh',
@@ -175,7 +163,7 @@ class AuthService {
   void uploadLogo(File logo, String email) async {
     try {
       final ref =
-          FirebaseStorage.instance.ref().child('workshopLogo').child(email);
+          FirebaseStorage.instance.ref().child('workshopLogo').child(email.toLowerCase());
       await ref.putFile(logo);
     } catch (e) {
       //
@@ -188,7 +176,7 @@ class AuthService {
       await FirebaseStorage.instance
           .ref()
           .child('workshopLogo')
-          .child(email)
+          .child(email.toLowerCase())
           .getDownloadURL()
           .then((value) => url = value);
     } catch (e) {

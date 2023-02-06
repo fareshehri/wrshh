@@ -10,7 +10,7 @@ Future<String> updateUserEmail(String email, Map data) async {
     await _auth.currentUser!.updateEmail(email);
     _firestore.collection('clients').doc(data['email']).delete();
     _firestore.collection('clients').doc(email).set({
-      'email': email,
+      'email': email.toLowerCase(),
       'name': data['name'],
       'phoneNumber': data['phoneNumber'],
       'city': data['city'],
@@ -22,12 +22,12 @@ Future<String> updateUserEmail(String email, Map data) async {
   try {
     await _firestore
         .collection('Appointments')
-        .where('clientID', isEqualTo: data['email'])
+        .where('clientID', isEqualTo: data['email'].toLowerCase())
         .get()
         .then((value) {
       for (var element in value.docs) {
         _firestore.collection('Appointments').doc(element.id).update({
-          'clientID': email,
+          'clientID': email.toLowerCase(),
         });
       }
     });
@@ -40,7 +40,7 @@ Future<String> updateUserEmail(String email, Map data) async {
 Future<String> updateUserInfo(Map userData) async {
   String result = 'success';
   try {
-    await _firestore.collection('clients').doc(userData['email']).update(
+    await _firestore.collection('clients').doc(userData['email'].toLowerCase()).update(
       {
         'name': userData['name'],
         'phoneNumber': userData['phoneNumber'],
@@ -63,7 +63,7 @@ Future<String> updateUserPassword(String password) async {
 }
 
 getClientInfo(String email) async {
-  return await _firestore.collection('clients').doc(email).get();
+  return await _firestore.collection('clients').doc(email.toLowerCase()).get();
 }
 
 Future<Map<String, dynamic>> getWorkshopsFromDB() async {
@@ -92,13 +92,13 @@ Future<List> getAppointmentsFromDB(String workshopID) async {
 
 Future<Map<String, dynamic>?> getUserInfo() async {
   var user = _auth.currentUser;
-  var userInfo = await _firestore.collection('clients').doc(user!.email).get();
+  var userInfo = await _firestore.collection('clients').doc(user!.email?.toLowerCase()).get();
   return userInfo.data();
 }
 
 Future<String> getSerial() async {
   var user = _auth.currentUser;
-  var userInfo = await _firestore.collection('clients').doc(user!.email).get();
+  var userInfo = await _firestore.collection('clients').doc(user!.email?.toLowerCase()).get();
   var serial = userInfo.data()!['serial'];
   return serial;
 }
@@ -119,7 +119,7 @@ Future<String> getSerialFromUserId(String? userID) async {
 }
 
 void bookAppointment(String id, List selectedServices) async {
-  var serial = await getSerialFromUserId(_auth.currentUser!.email);
+  var serial = await getSerialFromUserId(_auth.currentUser!.email?.toLowerCase());
   _firestore.collection('Appointments').doc(id).update({
     'clientID': _auth.currentUser!.email,
     'serial': serial,
@@ -158,7 +158,7 @@ Future<Map> getUserAppointmentsFromDB() async {
   Map appointments = {};
   final appointmentsS = await _firestore
       .collection('Appointments')
-      .where('clientID', isEqualTo: user!.email)
+      .where('clientID', isEqualTo: user!.email?.toLowerCase())
       .get();
   for (var appointment in appointmentsS.docs) {
     var workshopName =
@@ -246,7 +246,7 @@ Future<bool> checkPaymentStatus(String appointmentID) async {
 Future<List<String>> getServicesFromDB(String adminEmail) async {
   List<String> servicesDB = [];
   final temp =
-      await _firestore.collection('workshopAdmins').doc(adminEmail).get();
+      await _firestore.collection('workshopAdmins').doc(adminEmail.toLowerCase()).get();
   var counter = 0;
   for (var element in temp["services"]["service"]) {
     servicesDB.add('$element | ${temp["services"]["price"][counter]} SAR');
@@ -259,7 +259,7 @@ Future<bool> checkFutureAppointment() async {
   final User? user = _auth.currentUser;
   final appointmentsS = await _firestore
       .collection('Appointments')
-      .where('clientID', isEqualTo: user!.email)
+      .where('clientID', isEqualTo: user!.email?.toLowerCase())
       .where('status', isEqualTo: 'booked')
       .get();
   if (appointmentsS.docs.isEmpty) {

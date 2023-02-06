@@ -185,7 +185,7 @@ class _AddWorkshopState extends State<AddWorkshop> {
                         });
                         WorkshopTech newUser;
                         newUser = WorkshopTech(
-                          email: email,
+                          email: email.toLowerCase(),
                           password: password,
                           phoneNumber: phoneNumber,
                           name: name,

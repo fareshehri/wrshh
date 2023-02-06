@@ -146,22 +146,6 @@ Future<String> getWorkshopNameFromDB(String workshopID) async {
   return workshopName;
 }
 
-// Future<Map> getBookedAppointmentsFromDB(String email) async {
-//   Map appointments = {};
-//   final Appointmentss = await _firestore.collection('Appointment').get();
-//   for (var appointment in Appointmentss.docs) {
-//     if (appointment.data()['booked'] == true) {
-//       var workshopName =
-//       await getWorkshopNameFromDB(appointment.data()['workshopID']);
-//       if (!appointments.keys.contains(workshopName)) {
-//         appointments[workshopName] = [];
-//       }
-//       appointments[workshopName].add(appointment.data());
-//     }
-//   }
-//   return appointments;
-// }
-
 getWorkshopAppointmentsByDate(DateTime date) async {
   Map appointments = {};
   Timestamp startDate = Timestamp.fromDate(date);
@@ -188,7 +172,7 @@ getClientName(String clientID) async {
 }
 
 getWorkshopTechInfo(String email) async {
-  return await _firestore.collection('workshopTechnicians').doc(email).get();
+  return await _firestore.collection('workshopTechnicians').doc(email.toLowerCase()).get();
 }
 
 Future<String> updateUserPassword(String password) async {
@@ -204,22 +188,22 @@ Future<String> updateUserPassword(String password) async {
 Future<String> updateWorkshopTechEmail(String email, Map data) async {
   String result = 'success';
   try {
-    await _auth.currentUser!.updateEmail(email);
-    _firestore.collection('workshopTechnicians').doc(data['email']).delete();
-    _firestore.collection('workshopTechnicians').doc(email).set({
-      'email': email,
+    await _auth.currentUser!.updateEmail(email.toLowerCase());
+    _firestore.collection('workshopTechnicians').doc(data['email'].toLowerCase()).delete();
+    _firestore.collection('workshopTechnicians').doc(email.toLowerCase()).set({
+      'email': email.toLowerCase(),
       'name': data['name'],
       'phoneNumber': data['phoneNumber'],
       'city': data['city'],
     });
     var workshops = await _firestore
         .collection('workshops')
-        .where('technicianEmail', isEqualTo: data['email'])
+        .where('technicianEmail', isEqualTo: data['email'].toLowerCase())
         .get();
     for (var workshop in workshops.docs) {
       await _firestore.collection('workshops').doc(workshop.id).update(
         {
-          'technicianEmail': email,
+          'technicianEmail': email.toLowerCase(),
         },
       );
     }
@@ -234,7 +218,7 @@ Future<String> updateWorkshopTechInfo(Map userData) async {
   try {
     await _firestore
         .collection('workshopTechnicians')
-        .doc(userData['email'])
+        .doc(userData['email'].toLowerCase())
         .update(
       {
         'name': userData['name'],
@@ -284,7 +268,7 @@ getWorkshopFinishedAppointments() async {
 // get workshop from workshopID
 Future<String> getAdminEmailfromDB(String workshopID) async {
   final workshopDB = await _firestore.collection('workshops').doc().get();
-  var email = workshopDB.data()!['adminEmail'];
+  var email = workshopDB.data()!['adminEmail'].toLowerCase();
   return email;
 }
 

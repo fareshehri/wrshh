@@ -11,7 +11,7 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 void bookAppointmentByAdmin(String id, Map user, List selectedServices) async {
   // print(id);
   _firestore.collection('Appointments').doc(id).update({
-    'clientID': user['email'],
+    'clientID': user['email'].toLowerCase(),
     'serial': user['serial'],
     'status': 'booked',
     'services': selectedServices,
@@ -44,13 +44,13 @@ getWorkshopLogoFromDB(String workshopID) async {
 }
 
 getWorkshopAdminInfo(String email) async {
-  return await _firestore.collection('workshopAdmins').doc(email).get();
+  return await _firestore.collection('workshopAdmins').doc(email.toLowerCase()).get();
 }
 
 Future<String> updateWorkshopAdminInfo(Map userData) async {
   String result = 'success';
   try {
-    await _firestore.collection('workshopAdmins').doc(userData['email']).update(
+    await _firestore.collection('workshopAdmins').doc(userData['email'].toLowerCase()).update(
       {
         'name': userData['name'],
         'phoneNumber': userData['phoneNumber'],
@@ -66,7 +66,7 @@ Future<String> updateWorkshopAdminInfo(Map userData) async {
 updateWorkshopName(String name, String technicianEmail) async {
   var result = 'success';
   try {
-    await _firestore.collection('workshops').doc(technicianEmail).update(
+    await _firestore.collection('workshops').doc(technicianEmail.toLowerCase()).update(
       {
         'workshopName': name,
       },
@@ -80,10 +80,10 @@ updateWorkshopName(String name, String technicianEmail) async {
 Future<String> updateWorkshopAdminEmail(String email, Map data) async {
   String result = 'success';
   try {
-    await _auth.currentUser!.updateEmail(email);
-    _firestore.collection('workshopAdmins').doc(data['email']).delete();
-    _firestore.collection('workshopAdmins').doc(email).set({
-      'email': email,
+    await _auth.currentUser!.updateEmail(email.toLowerCase());
+    _firestore.collection('workshopAdmins').doc(data['email'].toLowerCase()).delete();
+    _firestore.collection('workshopAdmins').doc(email.toLowerCase()).set({
+      'email': email.toLowerCase(),
       'name': data['name'],
       'phoneNumber': data['phoneNumber'],
       'city': data['city'],
@@ -91,12 +91,12 @@ Future<String> updateWorkshopAdminEmail(String email, Map data) async {
     });
     var workshops = await _firestore
         .collection('workshops')
-        .where('adminEmail', isEqualTo: data['email'])
+        .where('adminEmail', isEqualTo: data['email'].toLowerCase())
         .get();
     for (var workshop in workshops.docs) {
       await _firestore.collection('workshops').doc(workshop.id).update(
         {
-          'adminEmail': email,
+          'adminEmail': email.toLowerCase(),
         },
       );
     }
@@ -180,7 +180,7 @@ getWorkshopLogoURL() async {
 }
 
 updateWorkshopLogo(File logo) async {
-  String email = _auth.currentUser!.email!;
+  String email = _auth.currentUser!.email!.toLowerCase();
   String result = 'success';
   try {
     FirebaseStorage.instance.ref().child('workshopLogo').child(email).delete();

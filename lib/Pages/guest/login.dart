@@ -102,7 +102,7 @@ class LoginScreenState extends State<LoginScreen> {
 
                       try {
                         final newUser =
-                            await AuthService().signInUser(email, password);
+                            await AuthService().signInUser(email.toLowerCase(), password);
                         if (newUser?.user?.email != null) {
                           var userType = await AuthService()
                               .getUserType(newUser?.user!.email!);

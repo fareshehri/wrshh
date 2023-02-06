@@ -38,7 +38,7 @@ class _EditAccountState extends State<EditAccount> {
 
   Future _getData() async {
     final User? user = _auth.currentUser;
-    final client = await getClientInfo(user!.email.toString());
+    final client = await getClientInfo(user!.email.toString().toLowerCase());
     setState(() {
       oldName = client['name'];
       oldEmail = user.email!;
@@ -351,7 +351,7 @@ class _EditAccountState extends State<EditAccount> {
       if (userCredential?.user?.email != null) {
         if (emailChanged) {
           Map data = {
-            'email': oldEmail,
+            'email': oldEmail.toLowerCase(),
             'name': nameChanged ? newName : oldName,
             'phoneNumber': newPhoneNumber.toString().startsWith('+966')
                 ? newPhoneNumber
@@ -359,7 +359,7 @@ class _EditAccountState extends State<EditAccount> {
             'city': cityChanged ? newCity : oldCity,
             'serial': serial
           };
-          String result = await updateUserEmail(newEmail, data);
+          String result = await updateUserEmail(newEmail.toLowerCase(), data);
           if (result == 'success') {
             showDialog(
                 context: context,
@@ -404,7 +404,7 @@ class _EditAccountState extends State<EditAccount> {
         }
         if (nameChanged || phoneNumberChanged || cityChanged) {
           Map data = {
-            'email': emailChanged ? newEmail : oldEmail,
+            'email': emailChanged ? newEmail.toLowerCase() : oldEmail.toLowerCase(),
             'phoneNumber': newPhoneNumber.startsWith('+966')
                 ? newPhoneNumber
                 : '+966$newPhoneNumber',
