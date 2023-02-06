@@ -6,6 +6,7 @@ import 'package:wrshh/Models/appointment.dart';
 import 'package:wrshh/Pages/client/client_home.dart';
 import 'package:wrshh/Pages/client/payment_page.dart';
 import 'package:wrshh/Pages/workshopTechnician/report_pages.dart';
+import 'package:wrshh/components/PDFPage.dart';
 import '../Services/Auth/client_database.dart';
 
 class AppointmentsCard extends StatefulWidget {
@@ -38,6 +39,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
   bool isRated = false;
   bool isReported = false;
   bool isPaid = false;
+  bool gotPath = false;
 
   @override
   void initState() {
@@ -422,26 +424,11 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
         onPressed: () async {
           var reportURL =
               await getAppointmentReport(widget.appointment.appointmentID);
-          if (reportURL != "") {
+          if (reportURL != "" && reportURL != null ) {
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Report'),
-                  ),
-                  backgroundColor: Colors.white,
-                  body: Column(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        // child:
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PDFPage(reportURL: reportURL)));
           } else {
             showDialog(
                 context: context,

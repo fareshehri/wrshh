@@ -88,6 +88,7 @@ class _ServiceSelectionState extends State<ServiceSelection> {
                         selectedServices[i] =
                             selectedServices[i].toString().split(' | ')[0];
                       }
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
