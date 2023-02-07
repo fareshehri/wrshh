@@ -122,7 +122,6 @@ List subServices = [
       'Bridgestone': {false: 0},
       'JAX Tyres & Auto': {false: 0},
       'Costco': {false: 0},
-      'company2': {false: 0},
       'Tyrepower': {false: 0},
       'Yokohama': {false: 0},
       'Michelin': {false: 0}
@@ -135,7 +134,6 @@ List subServices = [
       'Denso': {false: 0},
       'Delphi': {false: 0},
       'Valeo': {false: 0},
-      'company2': {false: 0},
       'Marelli': {false: 0},
       'Nissens': {false: 0},
       'Griffin': {false: 0},
@@ -154,7 +152,6 @@ List subServices = [
       'Pad Wear Sonsors': {false: 0},
       'Pads': {false: 0},
       'Calipars': {false: 0},
-      'company2': {false: 0},
       'Brake Fluid': {false: 0},
       'Pipe Unions': {false: 0},
       'Master Cylinders': {false: 0},
@@ -194,7 +191,6 @@ List subServices = [
     'subs': {
       'Cosmetic Flexible Bumper': {false: 0},
       'Plastic Tab': {false: 0},
-      'company2': {false: 0},
       'Flexible Patch Non-Structural Bumper': {false: 0},
       'Two-Sided Bumper': {false: 0},
       'Bondo® Repair Adhesive': {false: 0}
@@ -209,7 +205,6 @@ List subServices = [
       'Southeast Clutch': {false: 0},
       'McLeod': {false: 0},
       'SPEC': {false: 0},
-      'company2': {false: 0},
       'MITSUKO': {false: 0},
       'ACDelco': {false: 0},
       'Clutchmasters': {false: 0},
@@ -230,7 +225,6 @@ List subServices = [
       'Bolts & Nuts': {false: 0},
       'Bonnet Catch': {false: 0},
       'Sump Plug Washers': {false: 0},
-      'company2': {false: 0},
       'Hose Joiners': {false: 0}
     }
   },
