@@ -135,7 +135,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.upcoming),
-              label: 'View Appointments',
+              label: 'Appointments',
               backgroundColor: Colors.orange,
             ),
             BottomNavigationBarItem(

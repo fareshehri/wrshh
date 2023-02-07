@@ -39,29 +39,32 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          SizedBox(
-            height: 120,
-            // color: Colors.pink,
-            child: CalendarTimeline(
-              initialDate: selectedDate,
-              firstDate: DateTime.now().subtract(const Duration(days: 7)),
-              lastDate: DateTime.now().add(const Duration(days: 7)),
-              onDateSelected: (date) {
-                setState(() {
-                  selectedDate = date;
-                  gotPath = false;
-                  _asyncMethod();
-                });
-              },
-              leftMargin: 20,
-              monthColor: Colors.pink,
-              dayColor: Colors.pink,
-              activeDayColor: Colors.white,
-              activeBackgroundDayColor: Colors.pink,
-              dotsColor: const Color(0xFF333A47),
-              selectableDayPredicate: (date) => date.day != 23,
-              locale: 'en_ISO',
-            ),
+          FittedBox(
+            fit: BoxFit.contain,
+            child: SizedBox(
+              height: 140,
+              width: MediaQuery.of(context).size.width ,
+              child: CalendarTimeline(
+                initialDate: selectedDate,
+                firstDate: DateTime.now().subtract(const Duration(days: 7)),
+                lastDate: DateTime.now().add(const Duration(days: 7)),
+                onDateSelected: (date) {
+                  setState(() {
+                    selectedDate = date;
+                    gotPath = false;
+                    _asyncMethod();
+                  });
+                },
+                leftMargin: 20,
+                monthColor: Colors.pink,
+                dayColor: Colors.pink,
+                activeDayColor: Colors.white,
+                activeBackgroundDayColor: Colors.pink,
+                dotsColor: const Color(0xFF333A47),
+                selectableDayPredicate: (date) => date.day != 23,
+                locale: 'en_ISO',
+              ),
+            )
           ),
           const SizedBox(
             height: 20,

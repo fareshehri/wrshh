@@ -61,7 +61,7 @@ List<Widget> buildWorkshopsCards(Map workshops) {
     cards.add(
       WorkshopsCard(
         workshopID: workshop,
-        workshopName: workshops[workshop]['name'],
+        workshopName: workshops[workshop]['workshopName'],
         workshop: Workshop(
           workshopUID: workshop,
           adminEmail: workshops[workshop]['adminEmail'],
