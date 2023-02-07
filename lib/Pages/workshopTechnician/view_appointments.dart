@@ -42,7 +42,7 @@ class _ViewAppoinmentsState extends State<ViewAppoinments> {
           FittedBox(
             fit: BoxFit.contain,
             child: SizedBox(
-              height: 140,
+              height: 160,
               width: MediaQuery.of(context).size.width ,
               child: CalendarTimeline(
                 initialDate: selectedDate,

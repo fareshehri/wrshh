@@ -60,28 +60,32 @@ class _ClientBookingState extends State<ClientBooking> {
           shadowColor: Colors.transparent,
         ),
         body: Column(children: [
-          Container(
-            height: 120,
-            color: Colors.pink,
-            child: CalendarTimeline(
-              initialDate: selectedDate,
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 30)),
-              onDateSelected: (date) {
-                // setState(() {
-                selectedDate = date;
-                (context as Element).reassemble();
-                // (context as Element)
-                // });
-              },
-              leftMargin: 20,
-              monthColor: Colors.white,
-              dayColor: Colors.white,
-              activeDayColor: Colors.pink,
-              activeBackgroundDayColor: Colors.white,
-              dotsColor: const Color(0xFF333A47),
-              selectableDayPredicate: (date) => date.day != 23,
-              locale: 'en_ISO',
+          FittedBox(
+            fit: BoxFit.contain,
+            child: Container(
+              height: 160,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.pink,
+              child: CalendarTimeline(
+                initialDate: selectedDate,
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now().add(const Duration(days: 30)),
+                onDateSelected: (date) {
+                  // setState(() {
+                  selectedDate = date;
+                  (context as Element).reassemble();
+                  // (context as Element)
+                  // });
+                },
+                leftMargin: 20,
+                monthColor: Colors.white,
+                dayColor: Colors.white,
+                activeDayColor: Colors.pink,
+                activeBackgroundDayColor: Colors.white,
+                dotsColor: const Color(0xFF333A47),
+                selectableDayPredicate: (date) => date.day != 23,
+                locale: 'en_ISO',
+              ),
             ),
           ),
           const SizedBox(
