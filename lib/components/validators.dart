@@ -34,7 +34,7 @@ String? phoneNumberValidator(value) {
 }
 
 String? workshopNameValidator(value) {
-  if (value!.trim().isEmpty || !nameValidatorReg.hasMatch(value)) {
+  if (value!.trim().isEmpty ) {
     return 'Please enter your workshop name';
   }
   return null;
