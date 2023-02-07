@@ -399,55 +399,58 @@ class _AddScheduleState extends State<AddSchedule> {
             ),
 
             /// Capacity part
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Duration:',
-                        style: TextStyle(
-                          fontSize: 18,
-                        )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      value: duration,
-                      items: durationDropdown(),
-                      onChanged: (value) {
-                        setState(() {
-                          duration = value as int;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Capacity:',
-                        style: TextStyle(
-                          fontSize: 18,
-                        )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    DropdownButton(
-                      value: capacity,
-                      items: capacityDropdown(),
-                      onChanged: (value) {
-                        setState(() {
-                          capacity = value as int;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ],
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Duration:',
+                          style: TextStyle(
+                            fontSize: 18,
+                          )),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton(
+                        value: duration,
+                        items: durationDropdown(),
+                        onChanged: (value) {
+                          setState(() {
+                            duration = value as int;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Capacity:',
+                          style: TextStyle(
+                            fontSize: 18,
+                          )),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      DropdownButton(
+                        value: capacity,
+                        items: capacityDropdown(),
+                        onChanged: (value) {
+                          setState(() {
+                            capacity = value as int;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
 
             /// Update Button part

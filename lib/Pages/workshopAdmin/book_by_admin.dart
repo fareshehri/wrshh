@@ -35,9 +35,9 @@ class _ClientBookingState extends State<AdminBooking> {
   @override
   void initState() {
     // TODO: implement initState
+    workshopInfo = widget.workshopInfo;
     _asyncMethod();
     super.initState();
-    workshopInfo = widget.workshopInfo;
   }
 
   _asyncMethod() async {
