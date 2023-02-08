@@ -83,12 +83,7 @@ class _WorkshopTechnicianHomeState extends State<WorkshopTechnicianHome> {
               onTap: () {
                 AuthService().logOut();
                 setState(() {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const WelcomeScreen(),
-                  ));
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>const WelcomeScreen()), (Route<dynamic> route) => false);
                 });
               },
             )

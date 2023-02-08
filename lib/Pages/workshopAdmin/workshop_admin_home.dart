@@ -60,12 +60,7 @@ class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
               title: const Text('Update Profile'),
               onTap: () {
                 setState(() {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const EditAccount(),
-                  ));
+                  Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const EditAccount(),));
                 });
               },
             ),
@@ -76,12 +71,8 @@ class _WorkshopAdminHomeState extends State<WorkshopAdminHome> {
               onTap: () {
                 AuthService().logOut();
                 setState(() {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).push(MaterialPageRoute(
-                    builder: (BuildContext context) => const WelcomeScreen(),
-                  ));
+                  //Navigator.of(context,rootNavigator: true,).push(MaterialPageRoute(builder: (BuildContext context) => const WelcomeScreen(),));
+                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>const WelcomeScreen()), (Route<dynamic> route) => false);
                 });
               },
             )
