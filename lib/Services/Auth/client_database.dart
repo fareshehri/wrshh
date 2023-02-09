@@ -267,3 +267,9 @@ Future<bool> checkFutureAppointment() async {
   }
   return true;
 }
+
+void updateAppointmentPaidStatus(String appointmentID) async {
+  _firestore.collection('Appointments').doc(appointmentID).update({
+    'paid': true,
+  });
+}

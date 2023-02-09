@@ -315,7 +315,7 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const PaymentPage()));
+              MaterialPageRoute(builder: (context) => PaymentPage(appointmentID: widget.appointment.appointmentID!,)));
         },
         style: kButtonsStyle,
         child: const Text('Pay'),
@@ -402,7 +402,8 @@ class _AppointmentsCardState extends State<AppointmentsCard> {
                             if (rate != 0) {
                               rateAppointment(widget.appointment.appointmentID,
                                   widget.appointment.workshopID, rate);
-                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => const Home(index: 2,)));
                             }
                           },
                           style: kButtonsStyle,
