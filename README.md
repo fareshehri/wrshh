@@ -1,7 +1,7 @@
 # Wrshh
 
 
-Wrshh is a flutter app, which help customers schedule routine maintenance appointments and supports workshops with appointments creating.
+Wrshh is a flutter app, which support workshops with making appointments and reports, and assist consumers with scheduling routine maintenance appointments. 
 
 
 
