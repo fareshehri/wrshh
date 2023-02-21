@@ -1,16 +1,10 @@
-# wrshh
+# Wrshh
 
-A new Flutter project.
 
-## Getting Started
+Wrshh is a flutter app, which help customers schedule routine maintenance appointments and supports workshops with appointments creating.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+https://user-images.githubusercontent.com/65503195/220438247-8d3c5cdd-e97d-4cda-8d5a-544799990d08.mp4
+
